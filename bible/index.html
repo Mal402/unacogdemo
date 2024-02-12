@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bible Embedding Example</title>
+  <meta property="og:url" content="https://unacog.com/bible/">
+  <meta property="og:title" content="Bible GPT - a demo by Unacog">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://unacog.com/bible/img/ragChapterVerses.png">
+  <meta property="og:description"
+    content="Bible GPT demo was created to demonstrate different methods of implementing retrieval augmented generation (rag).">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="shortcut icon" href="/images/logo64.png">
+  <meta name='mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+  <meta name="description"
+    content="Bible GPT demo was created to demonstrate different methods of implementing retrieval augmented generation (rag).">
+  <link rel='icon' sizes='192x192' href='https://unacog.com/images/logo64.png'>
+  <link rel='apple-touch-icon' href='https://unacog.com/images/logo64.png'>
+  <meta name='msapplication-square310x310logo' content='https://unacog.com/images/logo64.png'>
+  <link rel='apple-touch-icon' href='https://unacog.com/images/logo64.png'>
+  <meta name="twitter:site" content="https://unacog.com/bible/">
+  <meta name="twitter:title" content="Unacog About">
+  <meta name="twitter:description"
+    content="Bible GPT demo was created to demonstrate different methods of implementing retrieval augmented generation (rag).">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:src" content="https://unacog.com/bible/img/ragChapterVerses.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script type="module">
+    import { loadModule } from 'https://klesun.github.io/ts-browser/src/ts-browser.js';
+    window.addEventListener("load", async () => {
+      // I don't know no javascript - so I use typescript...
+      const mod = await loadModule('./bibledemo.ts');
+      window.appInstance = new mod.BibleDemoApp();
+    });
+  </script>
+</head>
+
+<body class="initial heightflex">
+  <nav class="navbar navbar-dark bg-dark navbar-expand-lg" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  border-bottom: 1px solid rgba(127, 127, 127, .4);" aria-label="Main navigation">
+    <div class="container-xl">
+      <div class="dropdown">
+        <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          Bible GPT
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" href="/aiarchive">Visit AI Research Demo</a></li>
+          <li><a class="dropdown-item" href="/covid">Visit Covid Docs Demo</a></li>
+          <li><a class="dropdown-item" href="/embedding">Learn About Embedding</a></li>
+          <li><a class="reset_template_options_button dropdown-item" href="#reset">Reset Demo Configuration</a></li>
+          <li><a class="dropdown-item" href="/embedding#aboutdemos">About the Demos</a></li>
+          <li class="dropdown-item mt-2">
+            <a class="btn btn-secondary" href="/embedding/#cta_form">Hire Us</a>
+          </li>
+        </ul>
+      </div>
+      <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasElement" aria-controls="offcanvasElement">
+        <span class="material-icons-outlined text-light" style="font-size: 1.75em;">
+          menu
+        </span>
+      </button>
+      <div class="offcanvas offcanvas-start navbar-dark bg-dark" tabindex="-1" id="offcanvasElement"
+        aria-labelledby="offcanvasElementLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title text-light" id="offcanvasElementLabel">Bible GPT</h5>
+          <button type="button" class="btn-close btn-close-white btn_close" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body pt-0">
+          <ul class="navbar-nav nav d-flex justify-content-between w-100">
+            <div></div>
+            <div class="d-flex flex-column flex-lg-row">
+              <li class="nav-item"><a class="nav-link active" id="full_augmented_response_button" data-bs-toggle="tab"
+                  href="#full_augmented_response" aria-current="page" role="tab" aria-controls="chapters_view"
+                  aria-selected="true">
+                  <span class="material-icons-outlined nav-icon">send</span>
+                  <span class="nav-text">Send Query</span>
+                </a>
+              </li>
+              <li class="nav-item ms-3 ms-lg-0">
+                <a class="nav-link" id="verses_view_button" data-bs-toggle="tab" href="#verses_view" role="tab"
+                  aria-controls="verses_view" aria-selected="false" aria-disabled="true">
+                  <span class="material-icons-outlined nav-icon">format_list_numbered</span>
+                  <span class="nav-text">Verses</span>
+                </a>
+              </li>
+              <li class="nav-item ms-3 ms-lg-0">
+                <a class="nav-link" id="chapters_view_button" data-bs-toggle="tab" href="#chapters_view" role="tab"
+                  aria-controls="chapters_view" aria-selected="false" aria-disabled="true">
+                  <span class="material-icons-outlined nav-icon">article</span>
+                  <span class="nav-text">Chapters</span>
+                </a>
+              </li>
+              <li class="nav-item ms-3 ms-lg-0">
+                <a class="nav-link" id="full_augmented_prompt_button" data-bs-toggle="tab"
+                  href="#full_augmented_prompt_view" role="tab" aria-controls="full_augmented_prompt_view"
+                  aria-selected="false" aria-disabled="true">
+                  <span class="material-icons-outlined nav-icon">view_list</span>
+                  <span class="nav-text">Details</span>
+                </a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link" id="augmented_template_button" data-bs-toggle="tab" href="#augmented_template_view"
+                  role="tab" aria-controls="augmented_template_view" aria-selected="false">
+                  <span class="material-icons-outlined nav-icon">settings_applications</span>
+                  <span class="nav-text">Template</span>
+                </a>
+              </li>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="loading_screen text-center">
+    <div class="spinner-border text-dark" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <br><br>
+    <span class="text-muted">~3 seconds...</span>
+  </div>
+  <div class="container-xxl mx-auto heightflex tab_main_content">
+    <div class="tab-content heightflex">
+      <div class="tab-pane fade show active heightflex" style="position:relative" id="full_augmented_response"
+        role="tabpanel" aria-labelledby="full_augmented_response_button">
+        <div class="prompt_response_area text-start p-1 d-flex flex-column heightflex" style="overflow: auto;">
+          <div class="full_augmented_response m-2 small-caps"></div>
+          <div class="initial_user_message text-muted text-start p-3 mt-auto mb-auto small-caps fs-4"
+            style="cursor: not-allowed;">
+            <span class="onboarding_text">Enter a prompt to begin.</span>
+            <br><br>Adjust templates to modify results.
+            <br><br>Retrieve most similar chapter and verses.
+          </div>
+          <span class="muted small mt-auto"></span>
+          <div></div>
+        </div>
+        <div class="w-100 border border-secondary d-flex flex-row rounded">
+          <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
+            <textarea class="analyze_prompt_textarea form-control me-1"
+              style="padding-right: 70px;height: 5em;resize: none;" placeholder="Enter your prompt"
+              type="text"></textarea>
+            <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
+              style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
+              <span class="material-icons-outlined mt-1">
+                send
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade heightflex" id="chapters_view" role="tabpanel" aria-labelledby="chapters_view_button">
+        <div class="text-start py-2 d-flex flex-column heightflex" style="overflow: auto;">
+          <div class="lookup_chapter_response_feed"></div>
+          <div class="initial_user_message small-caps py-3 fs-5 text-center">Enter a query to retrieve similar chapters</div>
+          <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#chapterExpModal">
+            <figure class="figure border rounded">
+              <img class="p-3 img-fluid" src="img/retrievalChapters.png" alt="verse retrieval diagram">
+              <figcaption class="figure-caption">Loading and Indexing chapters
+              </figcaption>
+            </figure>
+          </a>
+        </div>
+      </div>
+      <div class="tab-pane fade heightflex" id="verses_view" role="tabpanel" aria-labelledby="verses_view_button">
+        <div class="text-start py-2 d-flex flex-column heightflex" style="overflow: auto;">
+          <div class="lookup_verse_response_feed"></div>
+          <div class="initial_user_message small-caps py-3 fs-5 text-center">Enter a query to retrieve similar verses</div>
+          <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#versesExpModal">
+            <figure class="figure border rounded">
+              <img class="p-3 img-fluid" src="img/retrievalVerses.png" alt="verse retrieval diagram">
+              <figcaption class="figure-caption">Loading and Indexing verses
+              </figcaption>
+            </figure>
+          </a>
+        </div>
+      </div>
+
+      <div class="tab-pane fade heightflex" id="full_augmented_prompt_view" role="tabpanel"
+        aria-labelledby="full_augmented_prompt_view">
+        <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);overflow: auto;">
+          <div class="initial_user_message small-caps pt-5 fs-5">Enter a query to retrieve similar verses</div>
+          <div class="summary_details p-2"></div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade text-start heightflex" id="augmented_template_view" role="tabpanel"
+        aria-labelledby="augmented_template_button" style="overflow: auto;overflow-x: hidden;padding-right: 4px;padding-left: 4px">
+        <div class="row py-3" style="justify-content:space-evenly">
+          <div class="d-flex flex-column gap-3 col-12 col-lg-6">
+            <label>Retrieval Pipeline</label>
+            <select class="form-select embedding_type_select">
+              <option>Query Verses to Embed Chapters</option>
+              <option>Query Verses to Embed Chunks</option>
+              <option>Query Verses to Embed Verses</option>
+              <option>Query Chapter to Embed Chapter</option>
+            </select>
+            <div class="text-muted small text-center">
+              <figure class="figure border rounded">
+                <a target="_blank" class="embedding_diagram_anchor text-center">
+                  <img src="" class="figure-img img-fluid rounded embedding_diagram_img p-3" alt="">
+                </a>
+                <figcaption class="figure-caption embedding_diagram_img_caption">
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+          <div class="d-flex flex-column col-12 col-lg-6 gap-3">
+            <label class="pt-3 pt-lg-0">Prompt Template: </label>
+            <select class="form-select prompt_template_select_preset">
+              <option selected>Provide Guidance</option>
+              <option>Rate embed text for political correctness</option>
+              <option>Write a poem</option>
+              <option>Love Counsel</option>
+              <option>Children's Story</option>
+            </select>
+            <textarea style="height:15em;width:100%;"
+              class="prompt_template_text_area monospace form-control"></textarea>
+            <span class="small text-info ms-2" style="position: relative;top:-12px">{{documents}} refers to retrieved
+              text chunk.</span>
+            <label>Embed Template: </label>
+            <textarea style="height:7em;width:100%;"
+              class="document_template_text_area monospace form-control"></textarea>
+            <span class="small text-info ms-2" style="position: relative;top:-12px">{{ id, book, bookIndex,
+              chapterIndex, verseIndex, title, url, matchIndex, prompt }}
+              from metadata<br>
+              {{ text }} for embedding text</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="text-muted text-center small pt-1">
+      <span>RAG Demos <a href="/#demo_list" class="text-black">Unacog</a></span>
+    </footer>
+  </div>
+  </div>
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Retrieve by Chapter</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="img/retrievalChapters.png" alt="Chapters" width="100%" height="100%" class="p-3">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Retrieve by Verse</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="img/retrievalVerses.png" alt="Verses" width="100%" height="100%" class="p-3 img-fluid">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .default_font {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+
+    .heightflex {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .tab-content>.active {
+      display: flex;
+    }
+
+    .verse_card {
+      margin: 8px;
+      border: solid 1px gray;
+      padding: 8px;
+      color: black;
+      font-size: 18px;
+      border-radius: 0.375rem;
+    }
+
+    .message_text,
+    .augmented_message_text {
+      width: 100%;
+      height: 5em;
+      margin-bottom: 12px;
+    }
+
+    .verse_card .selected {
+      font-weight: bold;
+    }
+
+    .full_augmented_prompt,
+    .full_augmented_response {
+      white-space: pre-wrap;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    .monospace {
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .small-caps {
+      font-variant: small-caps;
+    }
+
+    .raw_prompt {
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .pipeline_detail_anchor_hide {
+      display: none;
+    }
+
+    .running .pipeline_detail_anchor_hide,
+    .complete .pipeline_detail_anchor_hide {
+      display: block;
+    }
+
+    .initial .initial_user_message {
+      display: block;
+      text-align: center;
+    }
+
+    .initial_user_message {
+      display: none;
+    }
+
+    .nav_query_results {
+      margin-left: 24px;
+    }
+
+    .nav-icon {
+      font-size: 24px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    .nav-icon-mobile {
+      font-size: 36px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    .nav-text {
+      vertical-align: middle;
+    }
+
+    @keyframes fade-in-left {
+      0% {
+        transform: translateX(-10px);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .onboarding_text {
+      display: inline-block;
+      animation: fade-in-left 1s ease-out;
+    }
+
+    .loading_screen {
+      display: block;
+      margin: auto;
+    }
+
+    .tab_main_content {
+      display: none;
+    }
+  </style>
+</body>
+
+</html>
