@@ -474,8 +474,8 @@ export class BibleDemoApp {
       console.log("error", promptResult);
       return result.errorMessage;
     }
-    if (promptResult.assist.error) {
-      return promptResult.assist.error;
+    if (promptResult.assist.assist.error) {
+      return promptResult.assist.assist.error.message;
     } else {
       return promptResult.assist.assist.choices["0"].message.content;
     }

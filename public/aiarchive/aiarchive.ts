@@ -285,8 +285,8 @@ export class AIArchiveDemoApp {
         } else {
             console.log(promptResult);
         }
-        if (promptResult.assist.error) {
-            return promptResult.assist.error;
+        if (promptResult.assist.assist.error) {
+            return promptResult.assist.assist.error.message;
         } else {
             return promptResult.assist.assist.choices["0"].message.content;
         }
