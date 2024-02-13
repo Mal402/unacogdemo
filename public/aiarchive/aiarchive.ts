@@ -149,12 +149,12 @@ export class AIArchiveDemoApp {
     }
     updateRAGImages() {
         if (this.embedding_type_select.selectedIndex === 0) {
-            this.embedding_diagram_img.src = "img/rag_basic.png";
-            this.embedding_diagram_anchor.href = "img/rag_basic.png";
+            this.embedding_diagram_img.src = "img/rag_basic.svg";
+            this.embedding_diagram_anchor.href = "img/rag_basic.svg";
         }
         if (this.embedding_type_select.selectedIndex === 1) {
-            this.embedding_diagram_img.src = "img/rag_stb.png";
-            this.embedding_diagram_anchor.href = "img/rag_stb.png";
+            this.embedding_diagram_img.src = "img/rag_stb.svg";
+            this.embedding_diagram_anchor.href = "img/rag_stb.svg";
         }
     }
     async getMatchingVectors(message: string, topK: number, apiToken: string, sessionId: string): Promise<any> {

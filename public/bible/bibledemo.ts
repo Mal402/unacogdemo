@@ -123,20 +123,20 @@ export class BibleDemoApp {
   }
   updateRAGImages() {
     if (this.embedding_type_select.selectedIndex === 0) {
-      this.embedding_diagram_img.src = "img/ragChapterVerses.png";
-      this.embedding_diagram_anchor.href = "img/ragChapterVerses.png";
+      this.embedding_diagram_img.src = "img/ragChapterVerses.svg";
+      this.embedding_diagram_anchor.href = "img/ragChapterVerses.svg";
       this.embedding_diagram_img_caption.innerHTML = "Match most relevant verse, embed full chapter";
     } else if (this.embedding_type_select.selectedIndex === 1) {
-      this.embedding_diagram_img.src = "img/ragChunks.png";
-      this.embedding_diagram_anchor.href = "img/ragChunks.png";
+      this.embedding_diagram_img.src = "img/ragChunks.svg";
+      this.embedding_diagram_anchor.href = "img/ragChunks.svg";
       this.embedding_diagram_img_caption.innerHTML = "Match most relevant verse, embed surrounding verses";
     } else if (this.embedding_type_select.selectedIndex === 2) {
-      this.embedding_diagram_img.src = "img/ragVerses.png";
-      this.embedding_diagram_anchor.href = "img/ragVerses.png";
+      this.embedding_diagram_img.src = "img/ragVerses.svg";
+      this.embedding_diagram_anchor.href = "img/ragVerses.svg";
       this.embedding_diagram_img_caption.innerHTML = "Embed top matching verses";
     } else if (this.embedding_type_select.selectedIndex === 3) {
-      this.embedding_diagram_img.src = "img/ragChapters.png";
-      this.embedding_diagram_anchor.href = "img/ragChapters.png";
+      this.embedding_diagram_img.src = "img/ragChapters.svg";
+      this.embedding_diagram_anchor.href = "img/ragChapters.svg";
       this.embedding_diagram_img_caption.innerHTML = "Embed top matching chapter";
     }
   }
