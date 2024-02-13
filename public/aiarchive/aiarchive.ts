@@ -8,10 +8,7 @@ export class AIArchiveDemoApp {
     lookup_chapter_response_feed = document.body.querySelector(".lookup_chapter_response_feed") as HTMLDivElement;
     nav_link = document.body.querySelectorAll(".nav-link");
     btn_close = document.body.querySelector(".btn-close") as HTMLButtonElement;
-    source_view_button = document.body.querySelector("#source_view_button") as HTMLButtonElement;
-    full_augmented_prompt_button = document.body.querySelector("#full_augmented_prompt_button") as HTMLButtonElement;
     augmented_template_button = document.body.querySelector("#augmented_template_button") as HTMLButtonElement;
-    full_augmented_response_button = document.body.querySelector("#full_augmented_response_button") as HTMLButtonElement;
     embedding_type_select = document.body.querySelector(".embedding_type_select") as HTMLSelectElement;
     embedding_diagram_img = document.body.querySelector(".embedding_diagram_img") as HTMLImageElement;
     embedding_diagram_anchor = document.body.querySelector(".embedding_diagram_anchor") as HTMLAnchorElement;
@@ -54,10 +51,6 @@ export class AIArchiveDemoApp {
         this.prompt_template_select_preset.addEventListener("input", () => this.populatePromptTemplates());
         this.embedding_type_select.addEventListener("input", () => this.updateRAGImages());
 
-        this.full_augmented_prompt_button.addEventListener("click", () => this.clearMenusAndPopups());
-        this.full_augmented_response_button.addEventListener("click", () => this.clearMenusAndPopups());
-        this.augmented_template_button.addEventListener("click", () => this.clearMenusAndPopups());
-
         this.analyze_prompt_textarea.addEventListener("input", () => this.saveLocalStorage());
         this.prompt_template_text_area.addEventListener("input", () => this.saveLocalStorage());
         this.document_template_text_area.addEventListener("input", () => this.saveLocalStorage());
@@ -80,8 +73,6 @@ export class AIArchiveDemoApp {
         this.datachunk_source_size_buttons.forEach((btn: any) => btn.addEventListener("input", () => {
             const l: any = document.querySelector(".loading_screen")
             l.style.display = "";
-            const m: any = document.querySelector(".tab_main_content");
-            m.style.display = "";
             localStorage.setItem("datachunk_source_size", btn.value);
             this.loaded = false;
             this.load();
@@ -123,12 +114,14 @@ export class AIArchiveDemoApp {
         const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
         verseLink.addEventListener("click", (e: Event) => {
             e.preventDefault();
-            (<any>(document.getElementById("source_view_button"))).click();
+            const sourcesModal: any = document.querySelector("#sourcesModal");
+            (new (<any>window).bootstrap.Modal(sourcesModal)).show();
         });
         const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
         detailLink.addEventListener("click", (e: Event) => {
             e.preventDefault();
-            (<any>(document.getElementById("full_augmented_prompt_button"))).click();
+            const fullPromptModal: any = document.querySelector("#fullPromptModal");
+            (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
         });
 
         this.analyze_prompt_button.removeAttribute("disabled");
@@ -184,10 +177,6 @@ export class AIArchiveDemoApp {
         this.loaded = true;
         this.lookupData = {};
         this.lookedUpIds = {};
-        const l: any = document.querySelector(".loading_screen")
-        l.style.display = "none";
-        const m: any = document.querySelector(".tab_main_content");
-        m.style.display = "flex";
         this.updateEmbeddingOptionsDisplay();
     }
     hydrateFromLocalStorage() {

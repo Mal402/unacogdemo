@@ -60,215 +60,131 @@
           <li><a class="dropdown-item" href="/aiarchive">AI Documents Example</a></li>
           <li><a class="dropdown-item" href="/covid">Covid Documents Example</a></li>
           <li><a class="dropdown-item" href="/bible">Bible Verses Example</a></li>
-          <li><hr></li>
+          <li>
+            <hr>
+          </li>
           <li><a class="dropdown-item" href="https://unacog.com/embedding">Unacog Embedding Tools</a></li>
           <li><a class="dropdown-item" href="/">About RAG Applications</a></li>
-          <li><hr></li>
+          <li>
+            <hr>
+          </li>
           <li><a class="reset_template_options_button dropdown-item " href="#reset">Reset
               Demo Configuration</a></li>
         </ul>
       </div>
-      <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasElement" aria-controls="offcanvasElement">
-        <span class="material-icons-outlined text-light" style="font-size: 1.75em;">
-          menu
-        </span>
-      </button>
-      <div class="offcanvas offcanvas-start navbar-dark bg-dark" tabindex="-1" id="offcanvasElement"
-        aria-labelledby="offcanvasElementLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title text-light" id="offcanvasElementLabel">AI Papers</h5>
-          <button type="button" class="btn-close btn-close-white btn_close" data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body pt-0">
-          <ul class="navbar-nav nav d-flex justify-content-between w-100">
-            <div></div>
-            <div class="d-flex flex-column flex-lg-row">
-              <li class="nav-item"><a class="nav-link active" id="full_augmented_response_button" data-bs-toggle="tab"
-                  href="#full_augmented_response" aria-current="page" role="tab" aria-controls="full_augmented_response"
-                  aria-selected="true">
-                  <span class="material-icons-outlined nav-icon">send</span>
-                  <span class="nav-text">Send Query</span>
-                </a>
-              </li>
-              <li class="nav-item ms-3 ms-lg-0">
-                <a class="nav-link" id="source_view_button" data-bs-toggle="tab" href="#source_view" role="tab"
-                  aria-controls="source_view" aria-selected="false" aria-disabled="true">
-                  <span class="material-icons-outlined nav-icon">format_list_numbered</span>
-                  <span class="nav-text">Source</span>
-                </a>
-              </li>
-              <li class="nav-item ms-3 ms-lg-0">
-                <a class="nav-link" id="full_augmented_prompt_button" data-bs-toggle="tab"
-                  href="#full_augmented_prompt_view" role="tab" aria-controls="full_augmented_prompt_view"
-                  aria-selected="false" aria-disabled="true">
-                  <span class="material-icons-outlined nav-icon">view_list</span>
-                  <span class="nav-text">Details</span>
-                </a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="augmented_template_button" data-bs-toggle="tab" href="#augmented_template_view"
-                  role="tab" aria-controls="augmented_template_view" aria-selected="false">
-                  <span class="material-icons-outlined nav-icon">settings_applications</span>
-                  <span class="nav-text">Template</span>
-                </a>
-              </li>
-            </div>
-        </div>
+      <div>
+        <ul class="navbar-nav nav d-flex justify-content-between w-100">
+          <div class="d-flex flex-column flex-lg-row">
+            <li class="nav-item">
+               <a class="nav-link" id="augmented_template_button" href="template" role="button" 
+                data-bs-toggle="modal" data-bs-target="#templateModal">
+                <span class="material-icons-outlined nav-icon">settings_applications</span>
+                <span class="nav-text">Template</span>
+              </a>
+            </li>
         </ul>
       </div>
     </div>
-    </div>
   </nav>
-  <div class="loading_screen text-center">
-    <div class="spinner-border text-dark" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <br><br>
-    <span class="text-muted">~10 seconds...</span>
-  </div>
-  <div class="container-xxl mx-auto tab-content heightflex tab_main_content">
-    <div class="tab-pane fade show active heightflex"
-      style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;" id="full_augmented_response"
-      role="tabpanel" aria-labelledby="full_augmented_response_button">
-      <div class="heightflex" style="overflow:auto;">
-        <div class="full_augmented_response m-2"></div>
-        <div class="d-flex flex-column heightflex m-2" style="overflow: auto; justify-content: center;">
-          <div></div>
-          <div class="initial_user_message" style="flex: 1;">
-            <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-              <div><span class="onboarding_text">Enter a prompt to begin.</span>
-                <br><br>Retrieve results from 2673 AI research papers (500mb+ / 750k+ vectors).
-              </div>
-              <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
-                <span class="float-start">Article source: <a href="https://arxiv.org/">arxiv.org</a></span>
-                <span class="float-end"> Cutoff date: 02/04/2024</span>
-              </div>
+  <div class="heightflex" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;">
+    <div class="heightflex" style="overflow:auto;">
+      <div class="full_augmented_response m-2"></div>
+      <div class="d-flex flex-column heightflex m-2" style="overflow: auto; justify-content: center;">
+        <div></div>
+        <div class="initial_user_message" style="flex: 1;">
+          <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+            <div><span class="onboarding_text">Enter a prompt to begin.</span>
+              <br><br>Retrieve results from 2673 AI research papers (500mb+ / 750k+ vectors).
+            </div>
+            <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
+              <span class="float-start">Article source: <a href="https://arxiv.org/">arxiv.org</a></span>
+              <span class="float-end">Cutoff date: 02/04/2024</span>
             </div>
           </div>
-          <div></div>
-        </div>
-        <div></div>
-      </div>
-      <div class="w-100 d-flex flex-row rounded">
-        <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
-          <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
-            style="padding-right: 70px;height: 5em;resize: none;" placeholder="please provide prompt concerning ai..."
-            type="text"></textarea>
-          <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
-            style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
-            <span class="material-icons-outlined mt-1">
-              send
-            </span>
-          </button>
         </div>
       </div>
     </div>
-    <div class="tab-pane fade heightflex" id="source_view" style="flex:1" role="tabpanel"
-      aria-labelledby="source_view_button">
-      <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
-        <div class="text-start py-2 d-flex flex-column heightflex" style="overflow: auto;">
-          <div class="lookup_verse_response_feed"></div>
-          <div class="initial_user_message pt-2 pb-4 fs-5 text-center">Enter a query to see relevant articles</div>
-          <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#chapterExpModal">
-            <figure class="figure border rounded">
-              <img class="p-3 img-fluid" src="img/chunk_sentences.svg" alt="verse retrieval diagram"
-                style="max-height: 800px;">
-              <figcaption class="figure-caption text-center">Loading and Indexing articles
-              </figcaption>
-            </figure>
-          </a>
-        </div>
+    <div class="w-100 d-flex flex-row rounded">
+      <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
+        <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
+          style="padding-right: 70px;height: 5em;resize: none;" placeholder="please provide prompt concerning ai..."
+          type="text"></textarea>
+        <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
+          style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
+          <span class="material-icons-outlined mt-1">
+            send
+          </span>
+        </button>
       </div>
     </div>
-
-    <div class="tab-pane fade heightflex" id="full_augmented_prompt_view" role="tabpanel"
-      aria-labelledby="full_augmented_prompt_view">
-      <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
-        <div class="text-start d-flex flex-column heightflex" style="overflow: auto;">
-          <div class="summary_details p-2"></div>
-          <div class="initial_user_message pt-2 fs-5 text-center">Enter a query see prompt details</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-pane fade text-start heightflex" style="flex:1;width:100%;overflow:auto;overflow-x: hidden;"
-      id="augmented_template_view" role="tabpanel" aria-labelledby="augmented_template_button">
-      <div class="row py-3" style="justify-content:space-evenly">
-        <div class="d-flex flex-column col-12 col-lg-6 gap-3">
-          <label>Data Chunking and Embedding:</label>
-          <div>
-            <label class="form-check-label csv_choice_label">
-              <input class="form-radio-input" type="radio" checked value="chunk100" name="datachunk_source_size">
-              100 Tokens
-            </label>
-            &nbsp;
-            <label class="form-check-label csv_choice_label">
-              <input class="form-radio-input" type="radio" value="chunk200" name="datachunk_source_size">
-              200 Tokens
-            </label>
-            &nbsp;
-            <label class="form-check-label csv_choice_label">
-              <input class="form-radio-input" type="radio" value="chunk400" name="datachunk_source_size">
-              400 Tokens
-            </label>
-          </div>
-          <div style="padding:4px;">
-            <select class="form-select embedding_type_select">
-              <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
-              <option class="embed_sequential_chunks_option">Embed Chunk with Additional Context</option>
-            </select>
-          </div>
-          <label>Retrieval Pipeline:</label>
-          <div class="text-muted small text-center">
-            <a target="_blank" class="embedding_diagram_anchor text-center"><img class="embedding_diagram_img img-fluid"
-                src="" alt="" width="100%" height="100%" style="max-width: 600px;"></a>
-          </div>
-        </div>
-        <div class="d-flex flex-column gap-3 col-12 col-lg-6">
-          <label class="pt-3 pt-lg-0">Prompt Template: </label>
-          <div style="padding:4px">
-            <select class="form-select prompt_template_select_preset">
-              <option selected>Use Reference Documents</option>
-              <option>OpenAI Cookbook Primitive</option>
-              <option>LlamaIndex Cookbook Template</option>
-            </select>
-          </div>
-          <div style="padding:4px;">
-            <textarea style="height:15em;width:100%;"
-              class="prompt_template_text_area monospace form-control"></textarea>
-          </div>
-          <span class="small text-info ms-3" style="position: relative;top:-12px">{{documents}} refers to embedded
-            text.</span>
-          <label>Embed Template: </label>
-          <div style="padding:4px;">
-            <textarea style="height:7em;width:100%;"
-              class="document_template_text_area monospace form-control"></textarea>
-            <span class="small text-info ms-2" style="position: relative;top:4px">{{ id, doc_id,
-              primary_category, published, title, url, matchIndex, prompt }}
-              from metadata<br>
-              {{ text }} for embedding text</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <footer class="text-muted text-center small pt-1">
-      <span>RAG Demos <a href="/#demo_list" class="text-black">Unacog</a></span>
-    </footer>
-  </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Template Modal -->
+  <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Retrieve by Chapter</h5>
+          <h5 class="modal-title" id="templateModalLabel">Configure prompt template</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <img src="" alt="Chapters" width="100%" height="100%" class="p-3">
+          <div class="row py-3" style="justify-content:space-evenly">
+            <div class="d-flex flex-column col-12 col-lg-6 gap-3">
+              <label>Data Chunking and Embedding:</label>
+              <div>
+                <label class="form-check-label csv_choice_label">
+                  <input class="form-radio-input" type="radio" checked value="chunk100" name="datachunk_source_size">
+                  100 Tokens
+                </label>
+                &nbsp;
+                <label class="form-check-label csv_choice_label">
+                  <input class="form-radio-input" type="radio" value="chunk200" name="datachunk_source_size">
+                  200 Tokens
+                </label>
+                &nbsp;
+                <label class="form-check-label csv_choice_label">
+                  <input class="form-radio-input" type="radio" value="chunk400" name="datachunk_source_size">
+                  400 Tokens
+                </label>
+              </div>
+              <div style="padding:4px;">
+                <select class="form-select embedding_type_select">
+                  <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
+                  <option class="embed_sequential_chunks_option">Embed Chunk with Additional Context</option>
+                </select>
+              </div>
+              <label>Retrieval Pipeline:</label>
+              <div class="text-muted small text-center">
+                <a target="_blank" class="embedding_diagram_anchor text-center"><img class="embedding_diagram_img img-fluid"
+                    src="" alt="" width="100%" height="100%" style="max-width: 600px;"></a>
+              </div>
+            </div>
+            <div class="d-flex flex-column gap-3 col-12 col-lg-6">
+              <label class="pt-3 pt-lg-0">Prompt Template: </label>
+              <div style="padding:4px">
+                <select class="form-select prompt_template_select_preset">
+                  <option selected>Use Reference Documents</option>
+                  <option>OpenAI Cookbook Primitive</option>
+                  <option>LlamaIndex Cookbook Template</option>
+                </select>
+              </div>
+              <div style="padding:4px;">
+                <textarea style="height:15em;width:100%;"
+                  class="prompt_template_text_area monospace form-control"></textarea>
+              </div>
+              <span class="small text-info ms-3" style="position: relative;top:-12px">{{documents}} refers to embedded
+                text.</span>
+              <label>Embed Template: </label>
+              <div style="padding:4px;">
+                <textarea style="height:7em;width:100%;"
+                  class="document_template_text_area monospace form-control"></textarea>
+                <span class="small text-info ms-2" style="position: relative;top:4px">{{ id, doc_id,
+                  primary_category, published, title, url, matchIndex, prompt }}
+                  from metadata<br>
+                  {{ text }} for embedding text</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -276,15 +192,53 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+
+  <!-- Sources Modal -->
+  <div class="modal fade" id="sourcesModal" tabindex="-1" aria-labelledby="sourcesModalLabel">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2">Retrieve by Verse</h5>
+          <h5 class="modal-title" id="sourcesModalLabel">Data Source Results</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <img src="" alt="Verses" width="100%" height="100%" class="p-3 img-fluid">
+          <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
+            <div class="text-start py-2 d-flex flex-column heightflex" style="overflow: auto;">
+              <div class="lookup_verse_response_feed"></div>
+              <div class="initial_user_message pt-2 pb-4 fs-5 text-center">Enter a query to see relevant articles</div>
+              <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#chapterExpModal">
+                <figure class="figure border rounded">
+                  <img class="p-3 img-fluid" src="img/chunk_sentences.svg" alt="verse retrieval diagram"
+                    style="max-height: 800px;">
+                  <figcaption class="figure-caption text-center">Loading and Indexing articles
+                  </figcaption>
+                </figure>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Raw Prompt Modal -->
+  <div class="modal fade" id="fullPromptModal" tabindex="-1" aria-labelledby="fullPromptModalLabel">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="fullPromptModalLabel">Full Raw Prompt</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
+            <div class="text-start d-flex flex-column heightflex" style="overflow: auto;">
+              <div class="summary_details p-2"></div>
+              <div class="initial_user_message pt-2 fs-5 text-center">Enter a query see prompt details</div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -404,15 +358,6 @@
     .onboarding_text {
       display: inline-block;
       animation: fade-in-left 1s ease-out;
-    }
-
-    .loading_screen {
-      display: block;
-      margin: auto;
-    }
-
-    .tab_main_content {
-      display: none;
     }
   </style>
 </body>
