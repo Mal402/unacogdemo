@@ -1,4 +1,4 @@
-# unacogdemos
+# Unacog RAG Examples
 
 These applications are demonstrations of using data fetched from a Pinecone Index 
 using vectors generated from OpenAI's 3rd generation embedding model (text-embedding-003)
