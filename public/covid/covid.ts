@@ -133,25 +133,18 @@ export class CovidDemoApp {
 
         this.full_augmented_response.innerHTML = "Processing Query...<br><br>";
         this.semanticResults = await this.lookupAIDocumentChunks();
-        this.full_augmented_response.innerHTML += "Similar document chunks retrieved...<br><br>";
-
+    
+    
+        this.full_augmented_response.innerHTML += 
+        `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...`;
+        this._addFeedHandlers();
+        
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
         this.full_augmented_response.innerHTML +=
-            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2 mt-4" href="see verses">Top Search Results
-    </a><a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
-
-        const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
-        verseLink.addEventListener("click", (e: any) => {
-            e.preventDefault();
-            const sourcesModal: any = document.querySelector("#sourcesModal");
-            (new (<any>window).bootstrap.Modal(sourcesModal)).show();
-        });
-        const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
-        detailLink.addEventListener("click", (e: any) => {
-            e.preventDefault();
-            const fullPromptModal: any = document.querySelector("#fullPromptModal");
-            (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
-        });
+            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;">
+<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a>
+<a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
+        this._addFeedHandlers();
 
         this.analyze_prompt_button.removeAttribute("disabled");
         this.analyze_prompt_button.innerHTML = `<span class="material-icons-outlined mt-1">
@@ -160,6 +153,24 @@ export class CovidDemoApp {
         this.running = false;
         document.body.classList.add("complete");
         document.body.classList.remove("running");
+    }
+    _addFeedHandlers() {
+        const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
+        if (verseLink) {
+            verseLink.addEventListener("click", (e: Event) => {
+                e.preventDefault();
+                const sourcesModal: any = document.querySelector("#sourcesModal");
+                (new (<any>window).bootstrap.Modal(sourcesModal)).show();
+            });
+        }
+        const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
+        if (detailLink) {
+            detailLink.addEventListener("click", (e: Event) => {
+                e.preventDefault();
+                const fullPromptModal: any = document.querySelector("#fullPromptModal");
+                (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
+            });
+        }
     }
     dataSourcePrefix(): string {
         // let prefix = localStorage.getItem("datachunk_source_size");
@@ -199,7 +210,10 @@ export class CovidDemoApp {
             const chunkIndex = Number(parts[2]);
             const chunkCount = parts[3];
             const block = `<div class="verse_card">
-              <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}<div style="float-align:right">${d}</div><br>
+            <div style="float:right">${d}</div>
+            <span style="float: right;font-weight: bold">Match: ${(match.score * 100).toFixed()}% &nbsp;</span>
+            <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}
+              <br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
             html += block;
