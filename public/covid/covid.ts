@@ -58,7 +58,7 @@ export class CovidDemoApp {
         });
         this.hydrateFromLocalStorage();
         this.updateEmbeddingOptionsDisplay();
-        this.updateRAGImages(); 
+        this.updateRAGImages();
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
 
@@ -137,18 +137,20 @@ export class CovidDemoApp {
 
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
         this.full_augmented_response.innerHTML +=
-            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2" href="see verses">Top Search Results
+            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2 mt-4" href="see verses">Top Search Results
     </a><a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
 
         const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
         verseLink.addEventListener("click", (e: any) => {
             e.preventDefault();
-            (<any>(document.getElementById("source_view_button"))).click();
+            const sourcesModal: any = document.querySelector("#sourcesModal");
+            (new (<any>window).bootstrap.Modal(sourcesModal)).show();
         });
         const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
         detailLink.addEventListener("click", (e: any) => {
             e.preventDefault();
-            (<any>(document.getElementById("full_augmented_prompt_button"))).click();
+            const fullPromptModal: any = document.querySelector("#fullPromptModal");
+            (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
         });
 
         this.analyze_prompt_button.removeAttribute("disabled");
@@ -166,10 +168,6 @@ export class CovidDemoApp {
     }
     load() {
         this.loaded = true;
-        const l: any = document.querySelector(".loading_screen")
-        l.style.display = "none";
-        const m: any = document.querySelector(".tab_main_content");
-        m.style.display = "flex";
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
     }
