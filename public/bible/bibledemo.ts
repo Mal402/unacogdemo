@@ -186,7 +186,7 @@ export class BibleDemoApp {
       return;
     }
 
-    let html = '<span class="small text-muted">Most Relevant Verses...</span><br>';
+    let html = "";
     result.matches.forEach((match) => {
       const verse = this.getVerse(match.metadata.bookIndex, match.metadata.chapterIndex, match.metadata.verseIndex).text;
       const block = `<div class="verse_card">
@@ -238,7 +238,7 @@ export class BibleDemoApp {
       return;
     }
 
-    let html = '<span class="small text-muted">Most Relevant Chapters...<span><br>';
+    let html = "";
     result.matches.forEach((match) => {
       const verse = this.getChapter(match.metadata.bookIndex, match.metadata.chapterIndex, match.metadata.verseIndex).text;
 
@@ -440,7 +440,7 @@ export class BibleDemoApp {
     <label>Small to Big</label>: ${this.embedding_type_select.selectedIndex < 2 ? "True" : "False"}<br>
     <label>Top K</label>: ${queryDetails.topK}<br>
     <label>Include K</label>: ${queryDetails.includeK}<br><br>
-    <label>Full Raw Prompt</label>: <div class="raw_prompt">${prompt}</div><br>`;
+    <div class="raw_prompt">${prompt}</div><br>`;
 
 
     const body = {

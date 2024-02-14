@@ -207,7 +207,7 @@ export class AIArchiveDemoApp {
             console.log(result);
         }
 
-        let html = '<span class="small text-muted">Most Relevant Chunks...</span><br>';
+        let html = "";
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match) => {
             const textFrag = this.lookupData[match.id];
@@ -244,7 +244,7 @@ export class AIArchiveDemoApp {
         const prompt = await this.embedPrompt(message, this.semanticResults);
         const diagram = this.embedding_diagram_img.src;
         this.summary_details.innerHTML = `<a target="_blank" class="embedding_diagram_anchor" href="${diagram}"><img style="width:100px;float:right" class="embedding_diagram_img" src="${diagram}" alt=""></a>
-      <label>Full Raw Prompt</label>: <div class="raw_prompt">${prompt}</div><br>`;
+      <div class="raw_prompt">${prompt}</div><br>`;
 
         const apiToken = this[this.dataSourcePrefix() + "APIToken"];
         const sessionId = this[this.dataSourcePrefix() + "SessionId"];
