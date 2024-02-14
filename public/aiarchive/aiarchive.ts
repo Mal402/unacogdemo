@@ -70,10 +70,7 @@ export class AIArchiveDemoApp {
         this.analyze_prompt_textarea.select();
 
         this.datachunk_source_size_buttons.forEach((btn: any) => btn.addEventListener("input", () => {
-            const l: any = document.querySelector(".loading_screen")
-            l.style.display = "";
             localStorage.setItem("datachunk_source_size", btn.value);
-            this.loaded = false;
             this.load();
         }));
 

@@ -154,8 +154,6 @@ export class BibleDemoApp {
     const bibleDataResponse = await fetch("flattenedbible.json");
     this.bibleData = await bibleDataResponse.json();
     this.loaded = true;
-    const l: any = document.querySelector(".loading_screen")
-    l.style.display = "none";
     const abc: any = document.getElementById("full_augmented_response");
     abc.style.display = "";
     this.analyze_prompt_textarea.focus();
