@@ -50,7 +50,7 @@ export class BibleDemoApp {
       e.preventDefault();
       localStorage.clear();
       location.reload();
-  });
+    });
 
     this.hydrateFromLocalStorage();
     this.updateRAGImages();
@@ -107,7 +107,7 @@ export class BibleDemoApp {
       verseLink.addEventListener("click", (e: any) => {
         e.preventDefault();
         const sourcesModal: any = document.querySelector("#sourcesModal");
-        (new (<any>window).bootstrap.Modal(sourcesModal)).show();     
+        (new (<any>window).bootstrap.Modal(sourcesModal)).show();
       });
     }
     const chapterLink = this.full_augmented_response.querySelector(".response_chapter_link");
@@ -477,7 +477,9 @@ export class BibleDemoApp {
       console.log("error", promptResult);
       return result.errorMessage;
     }
-    if (promptResult.assist.assist.error) {
+    if (promptResult.assist.error) {
+      return promptResult.assist.error.message;
+    } else if (promptResult.assist.assist.error) {
       return promptResult.assist.assist.error.message;
     } else {
       return promptResult.assist.assist.choices["0"].message.content;

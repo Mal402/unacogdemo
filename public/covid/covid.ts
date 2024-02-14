@@ -210,9 +210,11 @@ export class CovidDemoApp {
             const chunkIndex = Number(parts[2]);
             const chunkCount = parts[3];
             const block = `<div class="verse_card">
-            <div style="float:right">${d}</div>
-            <span style="float: right;font-weight: bold">Match: ${(match.score * 100).toFixed()}% &nbsp;</span>
-            <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}
+            <span style="float:right;font-size:.9em;border:solid 1px silver;padding:.2em;">Match: <b>${(match.score * 100).toFixed()}%</b><br>
+            ${d}
+            </span>
+            ${chunkIndex}/${chunkCount}
+            <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a>
               <br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
@@ -259,7 +261,9 @@ export class CovidDemoApp {
         } else {
             console.log(promptResult);
         }
-        if (promptResult.assist.assist.error) {
+        if (promptResult.assist.error) {
+            return promptResult.assist.error.message;
+        } else if (promptResult.assist.assist.error) {
             return promptResult.assist.assist.error.message;
         } else {
             return promptResult.assist.assist.choices["0"].message.content;

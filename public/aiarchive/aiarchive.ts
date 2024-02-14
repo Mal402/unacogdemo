@@ -100,10 +100,10 @@ export class AIArchiveDemoApp {
 
         this.full_augmented_response.innerHTML = "Processing Query...<br><br>";
         this.semanticResults = await this.lookupAIDocumentChunks();
-        this.full_augmented_response.innerHTML += 
-        `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...`;
+        this.full_augmented_response.innerHTML +=
+            `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...`;
         this._addFeedHandlers();
-        
+
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
         this.full_augmented_response.innerHTML +=
             `<br><div class="d-flex flex-column link-primary" style="white-space:normal;">
@@ -230,9 +230,11 @@ export class AIArchiveDemoApp {
             const chunkIndex = Number(parts[1]);
             const chunkCount = parts[2];
             const block = `<div class="verse_card">
-            <div style="float:right">${d}</div>
-            <span style="float: right;font-weight: bold">Match: ${(match.score * 100).toFixed()}% &nbsp;</span>
-            <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}
+            <span style="float:right;font-size:.9em;border:solid 1px silver;padding:.2em;">Match: <b>${(match.score * 100).toFixed()}%</b><br>
+            ${d}
+            </span>
+            ${chunkIndex}/${chunkCount}
+            <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a>
               <br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
@@ -279,7 +281,9 @@ export class AIArchiveDemoApp {
         } else {
             console.log(promptResult);
         }
-        if (promptResult.assist.assist.error) {
+        if (promptResult.assist.error) {
+            return promptResult.assist.error.message;
+        } else if (promptResult.assist.assist.error) {
             return promptResult.assist.assist.error.message;
         } else {
             return promptResult.assist.assist.choices["0"].message.content;
