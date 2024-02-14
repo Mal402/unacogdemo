@@ -76,34 +76,22 @@ export class BibleDemoApp {
     document.body.classList.remove("complete");
 
     this.full_augmented_response.innerHTML = "Processing Query...<br><br>";
-    await this.lookupChaptersByVerse();
-    this.full_augmented_response.innerHTML += "Similar chapters retrieved...<br><br>";
-    await this.lookupChapters();
-    this.full_augmented_response.innerHTML += "Similar verses retrieved...<br><br>";
+    await Promise.all([
+      await this.lookupChapters(),
+      await this.lookupChaptersByVerse(),
+    ]);
+    this.full_augmented_response.innerHTML += `<a class="response_chapter_link p-2" href="see chapter">Top Chapters</a> retrieved...
+<br><a class="response_verse_link p-2 mt-4" href="see verses">Top Verses</a> retrieved...  
+    <br><br>`;
+    this._addHandlersToFeed();
     this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
     this.full_augmented_response.innerHTML +=
-      `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2 mt-4" href="see verses">Top Verses
-      </a><a class="response_chapter_link p-2" href="see chapter">Top Chapters 
-      </a><a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
-
-    const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
-    verseLink.addEventListener("click", (e: any) => {
-      e.preventDefault();
-      const sourcesModal: any = document.querySelector("#sourcesModal");
-      (new (<any>window).bootstrap.Modal(sourcesModal)).show();     
-    });
-    const chapterLink = this.full_augmented_response.querySelector(".response_chapter_link") as HTMLAnchorElement;
-    chapterLink.addEventListener("click", (e: any) => {
-      e.preventDefault();
-      const chaptersModal: any = document.querySelector("#chaptersModal");
-      (new (<any>window).bootstrap.Modal(chaptersModal)).show();
-    });
-    const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
-    detailLink.addEventListener("click", (e: any) => {
-      e.preventDefault();
-      const fullPromptModal: any = document.querySelector("#fullPromptModal");
-      (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
-    });
+      `<br><div class="d-flex flex-column link-primary" style="white-space:normal;">
+<a class="response_verse_link p-2 mt-4" href="see verses">Top Verses</a>
+<a class="response_chapter_link p-2" href="see chapter">Top Chapters</a>
+<a class="response_detail_link p-2" href="see details">Prompt Details</a>
+</div>`;
+    this._addHandlersToFeed();
 
     this.analyze_prompt_button.removeAttribute("disabled");
     this.analyze_prompt_button.innerHTML = `<span class="material-icons-outlined">
@@ -112,6 +100,32 @@ export class BibleDemoApp {
     this.running = false;
     document.body.classList.add("complete");
     document.body.classList.remove("running");
+  }
+  _addHandlersToFeed() {
+    const verseLink = this.full_augmented_response.querySelector(".response_verse_link");
+    if (verseLink) {
+      verseLink.addEventListener("click", (e: any) => {
+        e.preventDefault();
+        const sourcesModal: any = document.querySelector("#sourcesModal");
+        (new (<any>window).bootstrap.Modal(sourcesModal)).show();     
+      });
+    }
+    const chapterLink = this.full_augmented_response.querySelector(".response_chapter_link");
+    if (chapterLink) {
+      chapterLink.addEventListener("click", (e: any) => {
+        e.preventDefault();
+        const chaptersModal: any = document.querySelector("#chaptersModal");
+        (new (<any>window).bootstrap.Modal(chaptersModal)).show();
+      });
+    }
+    const detailLink = this.full_augmented_response.querySelector(".response_detail_link");
+    if (detailLink) {
+      detailLink.addEventListener("click", (e: any) => {
+        e.preventDefault();
+        const fullPromptModal: any = document.querySelector("#fullPromptModal");
+        (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
+      });
+    }
   }
   updateRAGImages() {
     if (this.embedding_type_select.selectedIndex === 0) {
