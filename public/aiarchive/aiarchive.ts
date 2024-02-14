@@ -18,6 +18,7 @@ export class AIArchiveDemoApp {
     datachunk_source_size_buttons = document.body.querySelectorAll(`[name="datachunk_source_size"]`);
     embed_distinct_chunks_option = document.body.querySelector(".embed_distinct_chunks_option") as HTMLOptionElement;
     embed_sequential_chunks_option = document.body.querySelector(".embed_sequential_chunks_option") as HTMLOptionElement;
+    embed_sequential_chunks2_option = document.body.querySelector(".embed_sequential_chunks2_option") as HTMLOptionElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -101,7 +102,8 @@ export class AIArchiveDemoApp {
         this.full_augmented_response.innerHTML = "Processing Query...<br><br>";
         this.semanticResults = await this.lookupAIDocumentChunks();
         this.full_augmented_response.innerHTML +=
-            `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...`;
+            `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...
+<a class="response_detail_link p-2" href="see details">Prompt Details</a>`;
         this._addFeedHandlers();
 
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
@@ -139,15 +141,16 @@ export class AIArchiveDemoApp {
     }
     updateEmbeddingOptionsDisplay() {
         let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
+        let halfK = Math.ceil(includeK / 2);
         this.embed_distinct_chunks_option.innerHTML = `Embed ${includeK}  Document Chunks`;
-        this.embed_sequential_chunks_option.innerHTML = `Embed 1 Chunk with ${includeK} Additional Contexts`;
+        this.embed_sequential_chunks_option.innerHTML = `Embed ${halfK} Chunks with ${halfK} Additional Contexts`;
+        this.embed_sequential_chunks2_option.innerHTML = `Embed 1 Chunk with ${includeK} Additional Contexts`;
     }
     updateRAGImages() {
         if (this.embedding_type_select.selectedIndex === 0) {
             this.embedding_diagram_img.src = "img/rag_basic.svg";
             this.embedding_diagram_anchor.href = "img/rag_basic.svg";
-        }
-        if (this.embedding_type_select.selectedIndex === 1) {
+        } else  {
             this.embedding_diagram_img.src = "img/rag_stb.svg";
             this.embedding_diagram_anchor.href = "img/rag_stb.svg";
         }
@@ -318,6 +321,25 @@ export class AIArchiveDemoApp {
         Object.assign(this.lookedUpIds, docIdMap);
         this.lookUpKeys = Object.keys(this.lookupData).sort();
     }
+    getSmallToBig(matchId: string, includeK: number): string {
+        const lookUpIndex = this.lookUpKeys.indexOf(matchId);
+        let firstIndex = lookUpIndex - Math.floor(includeK / 2);
+        let lastIndex = lookUpIndex + Math.ceil(includeK / 2);
+        if (firstIndex < 0) firstIndex = 0;
+        if (lastIndex > this.lookUpKeys.length - 1) lastIndex = this.lookUpKeys.length - 1;
+        const parts = matchId.split("_");
+        const docID = parts[0];
+        let text = "";
+        for (let i = firstIndex; i <= lastIndex; i++) {
+            const chunkKey = this.lookUpKeys[i];
+            if (chunkKey.indexOf(docID) === 0) {
+                if (this.lookupData[chunkKey]) {
+                    text += this.lookupData[chunkKey] + "\n";
+                }
+            }
+        }
+        return text;
+    }
     async embedPrompt(prompt: string, matches: any[]): Promise<string> {
         const embedIndex = this.embedding_type_select.selectedIndex;
         const promptTemplate = this.prompt_template_text_area.value;
@@ -325,8 +347,9 @@ export class AIArchiveDemoApp {
         const promptT = (<any>window).Handlebars.compile(promptTemplate);
         const docT = (<any>window).Handlebars.compile(documentTemplate);
         let documentsEmbedText = "";
+        let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
+        let halfK = Math.ceil(includeK / 2);
         if (embedIndex === 0) {
-            let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
             const includes = matches.slice(0, includeK);
             await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
             includes.forEach((match: any, index: number) => {
@@ -342,28 +365,27 @@ export class AIArchiveDemoApp {
                 documentsEmbedText += (<any>docT)(merge);
             });
         } else if (embedIndex === 1) {
+            const includes = matches.slice(0, halfK);
+            await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
+            includes.forEach((match: any, index: number) => {
+                const merge = Object.assign({}, match.metadata);
+                merge.id = match.id;
+                merge.matchIndex = index;
+                merge.text = this.getSmallToBig(match.id, halfK);
+                merge.prompt = prompt;
+                if (!merge.text) {
+                    console.log("missing merge", match.id, this.lookupData)
+                }
+                documentsEmbedText += (<any>docT)(merge);
+            });
+        } else if (embedIndex === 2) {
             const match = matches[0];
             await this.fetchDocumentsLookup([match.id]);
             const merge = Object.assign({}, match.metadata);
             merge.id = match.id;
             merge.matchIndex = 0;
             merge.prompt = prompt;
-            const lookUpIndex = this.lookUpKeys.indexOf(match.id);
-
-            let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
-            let firstIndex = lookUpIndex - Math.floor(includeK / 2);
-            let lastIndex = lookUpIndex + Math.ceil(includeK / 2);
-            if (firstIndex < 0) firstIndex = 0;
-            if (lastIndex > this.lookUpKeys.length - 1) lastIndex = this.lookUpKeys.length - 1;
-            const parts = match.id.split("_");
-            const docID = parts[0];
-            console.log("this is merge object", merge, firstIndex, lastIndex, docID);
-            for (let i = firstIndex; i <= lastIndex; i++) {
-                const chunkKey = this.lookUpKeys[i];
-                if (chunkKey.indexOf(docID) === 0) {
-                    merge.text += this.lookupData[chunkKey] + "\n";
-                }
-            }
+            merge.text = this.getSmallToBig(match.id, includeK);
             documentsEmbedText += (<any>docT)(merge);
         }
 
