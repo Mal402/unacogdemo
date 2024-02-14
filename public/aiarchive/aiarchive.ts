@@ -167,7 +167,7 @@ export class AIArchiveDemoApp {
     dataSourcePrefix(): string {
         let prefix = localStorage.getItem("datachunk_source_size");
         if (prefix) return prefix as string;
-        return "chunk200";
+        return "chunk400";
     }
     async load() {
         this.loaded = true;
@@ -225,7 +225,9 @@ export class AIArchiveDemoApp {
             const chunkCount = parts[2];
             const block = `<div class="verse_card">
               <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}
-              <div style="float:right">${d}</div><br>
+              <div style="float:right">${d}</div>
+              <span style="float: right;font-weight: bold">Match: ${(match.score * 100).toFixed()}% &nbsp;</span>
+              <br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
             html += block;
