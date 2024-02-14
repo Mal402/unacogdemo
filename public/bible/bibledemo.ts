@@ -183,11 +183,9 @@ export class BibleDemoApp {
     if (!documentTemplate) documentTemplate = promptTemplates[0].documentPrompt;
     if (documentTemplate) this.document_template_text_area.value = documentTemplate;
 
-    let templateIndex = localStorage.getItem("templateIndex") || 0;
-    this.prompt_template_select_preset.selectedIndex = templateIndex as number;
     let queryIndex = localStorage.getItem("queryIndex") || 0;
     this.embedding_type_select.selectedIndex = queryIndex as number;
-    if (!promptTemplate) this.populatePromptTemplates(templateIndex as number, true);
+    if (!promptTemplate) this.populatePromptTemplates(0, true);
   }
   async lookupChaptersByVerse() {
     this.lookup_verse_response_feed.innerHTML = "";
@@ -516,7 +514,7 @@ export class BibleDemoApp {
     }
   }
   populatePromptTemplates(templateIndex: number = -1, noSave = false) {
-    if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex;
+    if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex - 1;
 
     this.prompt_template_text_area.value = promptTemplates[templateIndex].mainPrompt;
     this.document_template_text_area.value = promptTemplates[templateIndex].documentPrompt;
@@ -524,7 +522,6 @@ export class BibleDemoApp {
   }
   saveLocalStorage() {
     localStorage.setItem("queryIndex", this.embedding_type_select.selectedIndex.toString());
-    localStorage.setItem("templateIndex", this.prompt_template_select_preset.selectedIndex.toString());
     localStorage.setItem("lastPrompt", this.analyze_prompt_textarea.value);
     localStorage.setItem("promptTemplate", this.prompt_template_text_area.value);
     localStorage.setItem("documentTemplate", this.document_template_text_area.value);

@@ -139,25 +139,22 @@
               </div>
             </div>
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
-              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <select class="form-select prompt_template_select_preset">
-                <option selected>Provide Guidance</option>
+                <option selected>Select a prompt</option>
+                <option>Provide Guidance</option>
                 <option>Rate embed text for political correctness</option>
                 <option>Write a poem</option>
                 <option>Love Counsel</option>
                 <option>Children's Story</option>
               </select>
+              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <textarea style="height:15em;width:100%;"
                 class="prompt_template_text_area monospace form-control"></textarea>
-              <span class="small text-info ms-2" style="position: relative;top:-12px">{{documents}} refers to retrieved
-                text chunk.</span>
-              <label>Embed Template: </label>
+              <label>Embedded Document: </label>
               <textarea style="height:7em;width:100%;"
                 class="document_template_text_area monospace form-control"></textarea>
               <span class="small text-info ms-2" style="position: relative;top:-12px">{{ id, book, bookIndex,
-                chapterIndex, verseIndex, title, url, matchIndex, prompt }}
-                from metadata<br>
-                {{ text }} for embedding text</span>
+                chapterIndex, verseIndex, title, url, matchIndex, prompt, text }}</span>
             </div>
           </div>
         </div>

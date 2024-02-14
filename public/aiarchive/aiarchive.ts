@@ -190,10 +190,8 @@ export class AIArchiveDemoApp {
         const documentTemplate = localStorage.getItem("ai_documentTemplate");
         if (documentTemplate) this.document_template_text_area.value = documentTemplate;
 
-        let templateIndex = localStorage.getItem("ai_templateIndex") || 0;
-        this.prompt_template_select_preset.selectedIndex = templateIndex as number;
         if (!promptTemplate) {
-            this.populatePromptTemplates(templateIndex as number, true);
+            this.populatePromptTemplates(0, true);
         }
         let queryIndex = localStorage.getItem("ai_queryIndex") || 0;
         this.embedding_type_select.selectedIndex = queryIndex as number;
@@ -376,14 +374,13 @@ export class AIArchiveDemoApp {
         return (<any>promptT)(mainMerge);
     }
     populatePromptTemplates(templateIndex: number = -1, noSave = false) {
-        if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex;
+        if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex - 1;
 
         this.prompt_template_text_area.value = promptTemplates[templateIndex].mainPrompt;
         this.document_template_text_area.value = promptTemplates[templateIndex].documentPrompt;
         if (!noSave) this.saveLocalStorage();
     }
     saveLocalStorage() {
-        localStorage.setItem("ai_templateIndex", this.prompt_template_select_preset.selectedIndex.toString());
         localStorage.setItem("ai_queryIndex", this.embedding_type_select.selectedIndex.toString());
         localStorage.setItem("ai_lastPrompt", this.analyze_prompt_textarea.value);
         localStorage.setItem("ai_promptTemplate", this.prompt_template_text_area.value);

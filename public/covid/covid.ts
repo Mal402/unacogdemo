@@ -81,12 +81,10 @@ export class CovidDemoApp {
         const documentTemplate = localStorage.getItem("covid_documentTemplate");
         if (documentTemplate) this.document_template_text_area.value = documentTemplate;
 
-        let templateIndex = localStorage.getItem("covid_templateIndex") || 0;
-        this.prompt_template_select_preset.selectedIndex = templateIndex as number;
         let queryIndex = localStorage.getItem("covid_queryIndex") || 0;
         this.embedding_type_select.selectedIndex = queryIndex as number;
 
-        if (!promptTemplate) this.populatePromptTemplates(templateIndex as number, true);
+        if (!promptTemplate) this.populatePromptTemplates(0, true);
     }
     updateEmbeddingOptionsDisplay() {
         let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
@@ -321,7 +319,7 @@ export class CovidDemoApp {
         return (<any>promptT)(mainMerge);
     }
     populatePromptTemplates(templateIndex: number = -1, noSave = false) {
-        if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex;
+        if (templateIndex < 0) templateIndex = this.prompt_template_select_preset.selectedIndex - 1;
 
         this.prompt_template_text_area.value = promptTemplates[templateIndex].mainPrompt;
         this.document_template_text_area.value = promptTemplates[templateIndex].documentPrompt;
@@ -329,7 +327,6 @@ export class CovidDemoApp {
     }
 
     saveLocalStorage() {
-        localStorage.setItem("covid_templateIndex", this.prompt_template_select_preset.selectedIndex);
         localStorage.setItem("covid_queryIndex", this.embedding_type_select.selectedIndex);
         localStorage.setItem("covid_lastPrompt", this.analyze_prompt_textarea.value);
         localStorage.setItem("covid_promptTemplate", this.prompt_template_text_area.value);

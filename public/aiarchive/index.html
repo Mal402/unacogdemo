@@ -162,7 +162,8 @@
               <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <div style="padding:4px">
                 <select class="form-select prompt_template_select_preset">
-                  <option selected>Use Reference Documents</option>
+                  <option selected>Select a prompt</option>                 
+                  <option>Use Reference Documents</option>
                   <option>OpenAI Cookbook Primitive</option>
                   <option>LlamaIndex Cookbook Template</option>
                 </select>
@@ -171,16 +172,12 @@
                 <textarea style="height:15em;width:100%;"
                   class="prompt_template_text_area monospace form-control"></textarea>
               </div>
-              <span class="small text-info ms-3" style="position: relative;top:-12px">{{documents}} refers to embedded
-                text.</span>
               <label>Embed Template: </label>
               <div style="padding:4px;">
                 <textarea style="height:7em;width:100%;"
                   class="document_template_text_area monospace form-control"></textarea>
                 <span class="small text-info ms-2" style="position: relative;top:4px">{{ id, doc_id,
-                  primary_category, published, title, url, matchIndex, prompt }}
-                  from metadata<br>
-                  {{ text }} for embedding text</span>
+                  primary_category, published, title, url, matchIndex, prompt, text }}</span>
               </div>
             </div>
           </div>
