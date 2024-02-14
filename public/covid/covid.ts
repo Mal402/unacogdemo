@@ -7,7 +7,6 @@ export class CovidDemoApp {
     analyze_prompt_textarea = document.body.querySelector(".analyze_prompt_textarea") as HTMLTextAreaElement;
     lookup_chapter_response_feed: any = document.body.querySelector(".lookup_chapter_response_feed");
     nav_link = document.body.querySelectorAll(".nav-link");
-    btn_close = document.body.querySelector(".btn-close") as HTMLButtonElement;
     source_view_button = document.body.querySelector("#source_view_button") as HTMLButtonElement;
     full_augmented_prompt_button = document.body.querySelector("#full_augmented_prompt_button") as HTMLButtonElement;
     augmented_template_button = document.body.querySelector("#augmented_template_button") as HTMLButtonElement;
@@ -40,10 +39,6 @@ export class CovidDemoApp {
         this.analyze_prompt_button.addEventListener("click", () => this.analyzePrompt());
         this.prompt_template_select_preset.addEventListener("input", () => this.populatePromptTemplates());
         this.embedding_type_select.addEventListener("input", () => this.updateRAGImages());
-
-        this.full_augmented_prompt_button.addEventListener("click", () => this.clearMenusAndPopups());
-        this.full_augmented_response_button.addEventListener("click", () => this.clearMenusAndPopups());
-        this.augmented_template_button.addEventListener("click", () => this.clearMenusAndPopups());
 
         this.analyze_prompt_textarea.addEventListener("input", () => this.saveLocalStorage());
         this.prompt_template_text_area.addEventListener("input", () => this.saveLocalStorage());
@@ -92,9 +87,6 @@ export class CovidDemoApp {
         this.embedding_type_select.selectedIndex = queryIndex as number;
 
         if (!promptTemplate) this.populatePromptTemplates(templateIndex as number, true);
-    }
-    clearMenusAndPopups() {
-        this.btn_close.click();
     }
     updateEmbeddingOptionsDisplay() {
         let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
@@ -209,7 +201,7 @@ export class CovidDemoApp {
             const chunkIndex = Number(parts[2]);
             const chunkCount = parts[3];
             const block = `<div class="verse_card">
-              <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}<div style="text-align:right">${d}</div><br>
+              <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}<div style="float-align:right">${d}</div><br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
             html += block;

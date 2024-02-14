@@ -61,65 +61,30 @@
           <li><a class="dropdown-item" href="/aiarchive">AI Documents Example</a></li>
           <li><a class="dropdown-item" href="/covid">Covid Documents Example</a></li>
           <li><a class="dropdown-item" href="/bible">Bible Verses Example</a></li>
-          <li><hr></li>
+          <li>
+            <hr>
+          </li>
           <li><a class="dropdown-item" href="https://unacog.com/embedding">Unacog Embedding Tools</a></li>
           <li><a class="dropdown-item" href="/">About RAG Applications</a></li>
-          <li><hr></li>
+          <li>
+            <hr>
+          </li>
           <li><a class="reset_template_options_button dropdown-item " href="#reset">Reset
               Demo Configuration</a></li>
         </ul>
       </div>
-      <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasElement" aria-controls="offcanvasElement">
-        <span class="material-icons-outlined text-light" style="font-size: 1.75em;">
-          menu
-        </span>
-      </button>
-      <div class="offcanvas offcanvas-start navbar-dark bg-dark" tabindex="-1" id="offcanvasElement"
-        aria-labelledby="offcanvasElementLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title text-light" id="offcanvasElementLabel">Covid Docs</h5>
-          <button type="button" class="btn-close btn-close-white btn_close" data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body pt-0">
-          <ul class="navbar-nav nav d-flex justify-content-between w-100">
-            <div></div>
-            <div class="d-flex flex-column flex-lg-row">
-              <li class="nav-item"><a class="nav-link active" id="full_augmented_response_button" data-bs-toggle="tab"
-                  href="#full_augmented_response" aria-current="page" role="tab" aria-controls="full_augmented_response"
-                  aria-selected="true">
-                  <span class="material-icons-outlined nav-icon">send</span>
-                  <span class="nav-text">Send Query</span>
-                </a>
-              </li>
-              <li class="nav-item ms-3 ms-lg-0">
-                <a class="nav-link" id="source_view_button" data-bs-toggle="tab" href="#source_view" role="tab"
-                  aria-controls="source_view" aria-selected="false" aria-disabled="true">
-                  <span class="material-icons-outlined nav-icon">format_list_numbered</span>
-                  <span class="nav-text">Source</span>
-                </a>
-              </li>
-              <li class="nav-item ms-3 ms-lg-0">
-                <a class="nav-link" id="full_augmented_prompt_button" data-bs-toggle="tab"
-                  href="#full_augmented_prompt_view" role="tab" aria-controls="full_augmented_prompt_view"
-                  aria-selected="false" aria-disabled="true">
-                  <span class="material-icons-outlined nav-icon">view_list</span>
-                  <span class="nav-text">Details</span>
-                </a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="augmented_template_button" data-bs-toggle="tab" href="#augmented_template_view"
-                  role="tab" aria-controls="augmented_template_view" aria-selected="false">
-                  <span class="material-icons-outlined nav-icon">settings_applications</span>
-                  <span class="nav-text">Template</span>
-                </a>
-              </li>
-            </div>
-        </div>
+      <div>
+        <ul class="navbar-nav nav d-flex justify-content-between w-100">
+          <div class="d-flex flex-column flex-lg-row">
+            <li class="nav-item">
+              <a class="nav-link" id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
+                data-bs-target="#templateModal">
+                <span class="material-icons-outlined nav-icon">settings_applications</span>
+                <span class="nav-text">Template</span>
+              </a>
+            </li>
         </ul>
       </div>
-    </div>
     </div>
   </nav>
   <div class="loading_screen text-center">
@@ -174,7 +139,8 @@
           <div class="initial_user_message pt-2 pb-4 fs-5 text-center">Enter a query to see relevant articles</div>
           <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#chapterExpModal">
             <figure class="figure rounded">
-              <img class="p-3 img-fluid" src="img/covid_diagram.svg" alt="verse retrieval diagram" style="max-height: 800px;">
+              <img class="p-3 img-fluid" src="img/covid_diagram.svg" alt="verse retrieval diagram"
+                style="max-height: 800px;">
               <figcaption class="figure-caption text-center">Preparing data for embed
               </figcaption>
             </figure>
@@ -198,7 +164,7 @@
       <div class="row py-3" style="justify-content:space-evenly">
         <div class="d-flex flex-column col-12 col-lg-6 gap-3">
           <label>Data Chunking:</label>
-            <p>300 token chunks with 20 token overlaps.</p>
+          <p>300 token chunks with 20 token overlaps.</p>
           <label>Retrieval Pipeline:</label>
           <div style="padding:4px;">
             <select class="form-select embedding_type_select">
@@ -230,9 +196,10 @@
           <div style="padding:4px;">
             <textarea style="height:7em;width:100%;"
               class="document_template_text_area monospace form-control"></textarea>
-              <span class="small text-info ms-2" style="position: relative;top:4px">{{ coverDate, title, type, url, prompt }}
-                from metadata<br>
-                {{ text }} for embedding text</span>
+            <span class="small text-info ms-2" style="position: relative;top:4px">{{ coverDate, title, type, url, prompt
+              }}
+              from metadata<br>
+              {{ text }} for embedding text</span>
           </div>
         </div>
       </div>

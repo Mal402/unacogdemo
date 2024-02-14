@@ -8,8 +8,6 @@ export class BibleDemoApp {
   lookup_chapter_response_feed = document.body.querySelector(".lookup_chapter_response_feed") as HTMLDivElement;
   nav_link = document.body.querySelectorAll(".nav-link");
   btn_close = document.body.querySelector(".btn-close") as HTMLButtonElement;
-  chapters_view_button = document.body.querySelector("#chapters_view_button") as HTMLButtonElement;
-  verses_view_button = document.body.querySelector("#verses_view_button") as HTMLButtonElement;
   full_augmented_prompt_button = document.body.querySelector("#full_augmented_prompt_button") as HTMLButtonElement;
   full_augmented_response_button = document.body.querySelector("#full_augmented_response_button") as HTMLButtonElement;
   augmented_template_button = document.body.querySelector("#augmented_template_button") as HTMLButtonElement;
@@ -36,12 +34,6 @@ export class BibleDemoApp {
 
     this.prompt_template_select_preset.addEventListener("input", () => this.populatePromptTemplates());
     this.embedding_type_select.addEventListener("input", () => this.updateRAGImages());
-
-    this.chapters_view_button.addEventListener("click", () => this.clearMenusAndPopups());
-    this.verses_view_button.addEventListener("click", () => this.clearMenusAndPopups());
-    this.full_augmented_prompt_button.addEventListener("click", () => this.clearMenusAndPopups());
-    this.full_augmented_response_button.addEventListener("click", () => this.clearMenusAndPopups());
-    this.augmented_template_button.addEventListener("click", () => this.clearMenusAndPopups());
 
     this.analyze_prompt_textarea.addEventListener("input", () => this.saveLocalStorage());
     this.prompt_template_text_area.addEventListener("input", () => this.saveLocalStorage());
@@ -90,24 +82,27 @@ export class BibleDemoApp {
     this.full_augmented_response.innerHTML += "Similar verses retrieved...<br><br>";
     this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
     this.full_augmented_response.innerHTML +=
-      `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2" href="see verses">Top Verses
+      `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2 mt-4" href="see verses">Top Verses
       </a><a class="response_chapter_link p-2" href="see chapter">Top Chapters 
       </a><a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
 
     const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
     verseLink.addEventListener("click", (e: any) => {
       e.preventDefault();
-      (document.getElementById("verses_view_button") as HTMLButtonElement).click();
+      const sourcesModal: any = document.querySelector("#sourcesModal");
+      (new (<any>window).bootstrap.Modal(sourcesModal)).show();     
     });
     const chapterLink = this.full_augmented_response.querySelector(".response_chapter_link") as HTMLAnchorElement;
     chapterLink.addEventListener("click", (e: any) => {
       e.preventDefault();
-      (document.getElementById("chapters_view_button") as HTMLButtonElement).click();
+      const chaptersModal: any = document.querySelector("#chaptersModal");
+      (new (<any>window).bootstrap.Modal(chaptersModal)).show();
     });
     const detailLink = this.full_augmented_response.querySelector(".response_detail_link") as HTMLAnchorElement;
     detailLink.addEventListener("click", (e: any) => {
       e.preventDefault();
-      (document.getElementById("full_augmented_prompt_button") as HTMLButtonElement).click();
+      const fullPromptModal: any = document.querySelector("#fullPromptModal");
+      (new (<any>window).bootstrap.Modal(fullPromptModal)).show();
     });
 
     this.analyze_prompt_button.removeAttribute("disabled");
@@ -117,9 +112,6 @@ export class BibleDemoApp {
     this.running = false;
     document.body.classList.add("complete");
     document.body.classList.remove("running");
-  }
-  clearMenusAndPopups() {
-    this.btn_close.click();
   }
   updateRAGImages() {
     if (this.embedding_type_select.selectedIndex === 0) {
@@ -164,9 +156,8 @@ export class BibleDemoApp {
     this.loaded = true;
     const l: any = document.querySelector(".loading_screen")
     l.style.display = "none";
-    const m: any = document.querySelector(".tab_main_content");
-    m.style.display = "flex";
-
+    const abc: any = document.getElementById("full_augmented_response");
+    abc.style.display = "";
     this.analyze_prompt_textarea.focus();
     this.analyze_prompt_textarea.select();
   }

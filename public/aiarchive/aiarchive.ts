@@ -7,7 +7,6 @@ export class AIArchiveDemoApp {
     analyze_prompt_textarea = document.body.querySelector(".analyze_prompt_textarea") as HTMLTextAreaElement;
     lookup_chapter_response_feed = document.body.querySelector(".lookup_chapter_response_feed") as HTMLDivElement;
     nav_link = document.body.querySelectorAll(".nav-link");
-    btn_close = document.body.querySelector(".btn-close") as HTMLButtonElement;
     augmented_template_button = document.body.querySelector("#augmented_template_button") as HTMLButtonElement;
     embedding_type_select = document.body.querySelector(".embedding_type_select") as HTMLSelectElement;
     embedding_diagram_img = document.body.querySelector(".embedding_diagram_img") as HTMLImageElement;
@@ -108,7 +107,7 @@ export class AIArchiveDemoApp {
 
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
         this.full_augmented_response.innerHTML +=
-            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2" href="see verses">Top Search Results
+            `<br><div class="d-flex flex-column link-primary" style="white-space:normal;"><a class="response_verse_link p-2 mt-4" href="see verses">Top Search Results
         </a><a class="response_detail_link p-2" href="see details">Prompt Details</a></div>`;
 
         const verseLink = this.full_augmented_response.querySelector(".response_verse_link") as HTMLAnchorElement;
@@ -131,9 +130,6 @@ export class AIArchiveDemoApp {
         this.running = false;
         document.body.classList.add("complete");
         document.body.classList.remove("running");
-    }
-    clearMenusAndPopups() {
-        this.btn_close.click();
     }
     updateEmbeddingOptionsDisplay() {
         let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
@@ -228,7 +224,8 @@ export class AIArchiveDemoApp {
             const chunkIndex = Number(parts[1]);
             const chunkCount = parts[2];
             const block = `<div class="verse_card">
-              <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}<div style="text-align:right">${d}</div><br>
+              <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a> ${chunkIndex}/${chunkCount}
+              <div style="float:right">${d}</div><br>
               <div class="verse_card_text">${textFrag}</div>
               </div>`;
             html += block;
