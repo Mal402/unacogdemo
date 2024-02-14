@@ -121,13 +121,13 @@
         <div class="modal-body">
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column gap-3 col-12 col-lg-6">
-              <label>Retrieval Pipeline</label>
               <select class="form-select embedding_type_select">
                 <option>Query Verses to Embed Chapters</option>
                 <option>Query Verses to Embed Chunks</option>
                 <option>Query Verses to Embed Verses</option>
                 <option>Query Chapter to Embed Chapter</option>
               </select>
+              <label>Retrieval Pipeline</label>
               <div class="text-muted small text-center">
                 <figure class="figure border rounded">
                   <a target="_blank" class="embedding_diagram_anchor text-center">
@@ -150,11 +150,12 @@
               <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <textarea style="height:15em;width:100%;"
                 class="prompt_template_text_area monospace form-control"></textarea>
-              <label>Embedded Document: </label>
+              <label>Document Template: </label>
+              <span class="small text-info ms-2" style="position: relative;margin-top:-16px;margin-bottom:-16px;">
+                id, book, bookIndex,
+                chapterIndex, verseIndex, title, url, matchIndex, prompt, text</span>
               <textarea style="height:7em;width:100%;"
                 class="document_template_text_area monospace form-control"></textarea>
-              <span class="small text-info ms-2" style="position: relative;top:-12px">{{ id, book, bookIndex,
-                chapterIndex, verseIndex, title, url, matchIndex, prompt, text }}</span>
             </div>
           </div>
         </div>
