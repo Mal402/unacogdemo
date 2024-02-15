@@ -134,8 +134,22 @@
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
               <div style="padding-left: 12px;">
-                Chunk size: 300 tokens<br>
-                Overlap size: 20 tokens
+                Chunk size: 300 tokens
+              </div>
+              <div>
+                <div style="white-space: nowrap;font-size:1.1em;">
+                  &nbsp; &nbsp;
+                  <label class="form-check-label" style="font-weight: normal;">
+                    <input class="form-radio-input" type="radio" value="chunkNormal" name="datachunk_source_size">
+                    Normal Split
+                  </label>
+                  &nbsp;
+                  <label class="form-check-label" style="font-weight: normal;">
+                    <input class="form-radio-input" type="radio" checked value="chunkRecursive" name="datachunk_source_size">
+                    Recursive Split
+                  </label>
+                  &nbsp;
+                </div>
               </div>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">

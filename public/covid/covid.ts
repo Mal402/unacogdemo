@@ -21,14 +21,21 @@ export class CovidDemoApp {
     embed_distinct_chunks_option: any = document.body.querySelector(".embed_distinct_chunks_option");
     embed_sequential_chunks_option: any = document.body.querySelector(".embed_sequential_chunks_option");
     embed_sequential_chunks2_option = document.body.querySelector(".embed_sequential_chunks2_option") as HTMLOptionElement;
+    datachunk_source_size_buttons = document.body.querySelectorAll(`[name="datachunk_source_size"]`);
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
-    chunk300APIToken = "12781bbc-5d71-4359-831b-377e06d4a27b";
-    chunk300SessionId = "cyf1pd1l4wpc";
-    chunk300LookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-list-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    chunk300topK = 25;
-    chunk300includeK = 5;
+    chunkNormalAPIToken = "338ddcc0-e083-4057-a6bc-6ceecbd98cf6";
+    chunkNormalSessionId = "4fg8acknmo5u";
+    chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-sizechunk-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
+    chunkNormaltopK = 25;
+    chunkNormalincludeK = 5;
+
+    chunkRecursiveAPIToken = "12781bbc-5d71-4359-831b-377e06d4a27b";
+    chunkRecursiveSessionId = "cyf1pd1l4wpc";
+    chunkRecursiveLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-list-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
+    chunkRecursivetopK = 25;
+    chunkRecursiveincludeK = 5;
 
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
@@ -44,6 +51,11 @@ export class CovidDemoApp {
         this.analyze_prompt_textarea.addEventListener("input", () => this.saveLocalStorage());
         this.prompt_template_text_area.addEventListener("input", () => this.saveLocalStorage());
         this.document_template_text_area.addEventListener("input", () => this.saveLocalStorage());
+
+        this.datachunk_source_size_buttons.forEach((btn: any) => btn.addEventListener("input", () => {
+            localStorage.setItem("datachunk_source_size", btn.value);
+            this.load();
+        }));
 
         this.reset_template_options_button.addEventListener("click", (e: Event) => {
             e.preventDefault();
@@ -62,7 +74,6 @@ export class CovidDemoApp {
         this.updateRAGImages();
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
-
     }
     updateRAGImages() {
         if (this.embedding_type_select.selectedIndex === 0) {
@@ -83,7 +94,10 @@ export class CovidDemoApp {
 
         let queryIndex = localStorage.getItem("covid_queryIndex") || 0;
         this.embedding_type_select.selectedIndex = queryIndex as number;
-
+        let chunkSize = this.dataSourcePrefix();
+        this.datachunk_source_size_buttons.forEach((btn: any) => {
+            if (btn.value === chunkSize) btn.checked = true;
+        });
         if (!promptTemplate) this.populatePromptTemplates(0, true);
     }
     updateEmbeddingOptionsDisplay() {
@@ -174,12 +188,14 @@ export class CovidDemoApp {
         }
     }
     dataSourcePrefix(): string {
-        // let prefix = localStorage.getItem("datachunk_source_size");
-        // if (prefix) return prefix as string;
-        return "chunk300";
+        let prefix = localStorage.getItem("datachunk_source_size");
+        if (prefix) return prefix as string;
+        return "chunkNormal";
     }
     load() {
         this.loaded = true;
+        this.lookedUpIds = {};
+        this.lookupData = {};
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
     }
