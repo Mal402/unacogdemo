@@ -130,22 +130,26 @@
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
               <div>
-                <label class="form-check-label csv_choice_label">
-                  <input class="form-radio-input" type="radio" checked value="chunk100" name="datachunk_source_size">
-                  100
-                </label>
-                &nbsp;
-                <label class="form-check-label csv_choice_label">
-                  <input class="form-radio-input" type="radio" value="chunk200" name="datachunk_source_size">
-                  200
-                </label>
-                &nbsp;
-                <label class="form-check-label csv_choice_label">
-                  <input class="form-radio-input" type="radio" value="chunk400" name="datachunk_source_size">
-                  400 
-                </label>
-                Tokens / Chunk
+                <label>Tokens Per Recursive Chunk </label>
+                <div style="white-space: nowrap;font-weight: normal!important;font-size:1.25em;">
+                  &nbsp; &nbsp;
+                  <label class="form-check-label csv_choice_label">
+                    <input class="form-radio-input" type="radio" checked value="chunk100" name="datachunk_source_size">
+                    100
+                  </label>
+                  &nbsp;
+                  <label class="form-check-label csv_choice_label">
+                    <input class="form-radio-input" type="radio" value="chunk200" name="datachunk_source_size">
+                    200
+                  </label>
+                  &nbsp;
+                  <label class="form-check-label csv_choice_label">
+                    <input class="form-radio-input" type="radio" value="chunk400" name="datachunk_source_size">
+                    400 
+                  </label>
+                </div>
               </div>
+              <label>Retrieval Pipeline:</label>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">
                   <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
@@ -153,13 +157,13 @@
                   <option class="embed_sequential_chunks2_option">Embed 1 Chunk with Additional Context</option>
                 </select>
               </div>
-              <label>Retrieval Pipeline:</label>
               <div class="text-muted small text-center">
                 <a target="_blank" class="embedding_diagram_anchor text-center"><img class="embedding_diagram_img img-fluid"
                     src="" alt="" width="100%" height="100%" style="max-width: 600px;"></a>
               </div>
             </div>
             <div class="d-flex flex-column gap-3 col-12 col-lg-6">
+              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <div style="padding:4px">
                 <select class="form-select prompt_template_select_preset">
                   <option selected>Select a prompt</option>                 
@@ -168,12 +172,10 @@
                   <option>LlamaIndex Cookbook Template</option>
                 </select>
               </div>
-              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <div style="padding:4px;">
                 <textarea style="height:15em;width:100%;"
                   class="prompt_template_text_area monospace form-control"></textarea>
               </div>
-              <label>Document Template: </label>
               <span class="small text-info ms-2" style="position: relative;margin-top:-16px;margin-bottom:-16px;">
                 id, doc_id,
                 primary_category, published, title, url, matchIndex, prompt, text</span>

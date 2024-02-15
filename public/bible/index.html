@@ -115,19 +115,19 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="templateModalLabel">Configure prompt template</h5>
+          <h5 class="modal-title" id="templateModalLabel">Configure Pipeline and Template</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column gap-3 col-12 col-lg-6">
+              <label>Retrieval Pipeline</label>
               <select class="form-select embedding_type_select">
                 <option>Query Verses to Embed Chapters</option>
                 <option>Query Verses to Embed Chunks</option>
                 <option>Query Verses to Embed Verses</option>
                 <option>Query Chapter to Embed Chapter</option>
               </select>
-              <label>Retrieval Pipeline</label>
               <div class="text-muted small text-center">
                 <figure class="figure border rounded">
                   <a target="_blank" class="embedding_diagram_anchor text-center">
@@ -139,6 +139,7 @@
               </div>
             </div>
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
+              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <select class="form-select prompt_template_select_preset">
                 <option selected>Select a prompt</option>
                 <option>Provide Guidance</option>
@@ -147,10 +148,8 @@
                 <option>Love Counsel</option>
                 <option>Children's Story</option>
               </select>
-              <label class="pt-3 pt-lg-0">Prompt Template: </label>
               <textarea style="height:15em;width:100%;"
                 class="prompt_template_text_area monospace form-control"></textarea>
-              <label>Document Template: </label>
               <span class="small text-info ms-2" style="position: relative;margin-top:-16px;margin-bottom:-16px;">
                 id, book, bookIndex,
                 chapterIndex, verseIndex, title, url, matchIndex, prompt, text</span>
