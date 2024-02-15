@@ -34,6 +34,12 @@ export class AIArchiveDemoApp {
     chunk200topK = 25;
     chunk200includeK = 10;
 
+    chunk300APIToken = "7f585847-9c4b-4da8-99e8-4102408f1564";
+    chunk300SessionId = "2pa7jvukf892";
+    chunk300LookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2Farxivchunkedv2%2FDOC_ID_URIENCODED.json?alt=media";
+    chunk300topK = 25;
+    chunk300includeK = 8;
+
     chunk400APIToken = "8168ca87-2017-49ad-a8f3-bba00683e7de";
     chunk400SessionId = "ppdbgryy52mn";
     chunk400LookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Far-arxiv-full-400%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
