@@ -81,7 +81,9 @@ export class BibleDemoApp {
       await this.lookupChaptersByVerse(),
     ]);
     this.full_augmented_response.innerHTML += `<a class="response_chapter_link p-2" href="see chapter">Top Chapters</a> retrieved...
-<br><a class="response_verse_link p-2 mt-4" href="see verses">Top Verses</a> retrieved...  
+<br><a class="response_verse_link p-2 mt-4" href="see verses">Top Verses</a> retrieved...
+
+<a class="response_detail_link p-2" href="see details">Prompt Details</a> 
     <br><br>`;
     this._addHandlersToFeed();
     this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
