@@ -127,15 +127,16 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="templateModalLabel">Configure Pipeline and Template</h5>
+          <h5 class="modal-title" id="templateModalLabel">Configuration</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
-              Chunk size: 300 tokens<br>
-              Overlap size: 20 tokens
-              <label>Retrieval Options:</label>
+              <div style="padding-left: 12px;">
+                Chunk size: 300 tokens<br>
+                Overlap size: 20 tokens
+              </div>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">
                   <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
