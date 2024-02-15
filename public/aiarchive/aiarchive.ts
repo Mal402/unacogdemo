@@ -77,7 +77,7 @@ export class AIArchiveDemoApp {
         this.analyze_prompt_textarea.select();
 
         this.datachunk_source_size_buttons.forEach((btn: any) => btn.addEventListener("input", () => {
-            localStorage.setItem("datachunk_source_size", btn.value);
+            localStorage.setItem("ai_datachunk_source_size", btn.value);
             this.load();
         }));
 
@@ -180,7 +180,7 @@ export class AIArchiveDemoApp {
         return await fetchResults.json();
     }
     dataSourcePrefix(): string {
-        let prefix = localStorage.getItem("datachunk_source_size");
+        let prefix = localStorage.getItem("ai_datachunk_source_size");
         if (prefix) return prefix as string;
         return "chunk400";
     }
@@ -367,8 +367,9 @@ export class AIArchiveDemoApp {
                 merge.prompt = prompt;
                 if (!merge.text) {
                     console.log("missing merge", match.id, this.lookupData)
+                    merge.text = "";
                 }
-
+                merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
         } else if (embedIndex === 1) {
@@ -382,7 +383,9 @@ export class AIArchiveDemoApp {
                 merge.prompt = prompt;
                 if (!merge.text) {
                     console.log("missing merge", match.id, this.lookupData)
+                    merge.text = "";
                 }
+                merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
         } else if (embedIndex === 2) {
@@ -393,6 +396,7 @@ export class AIArchiveDemoApp {
             merge.matchIndex = 0;
             merge.prompt = prompt;
             merge.text = this.getSmallToBig(match.id, includeK);
+            merge.text = merge.text.replaceAll("\n", " ");
             documentsEmbedText += (<any>docT)(merge);
         }
 

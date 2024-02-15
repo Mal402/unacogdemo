@@ -53,7 +53,7 @@ export class CovidDemoApp {
         this.document_template_text_area.addEventListener("input", () => this.saveLocalStorage());
 
         this.datachunk_source_size_buttons.forEach((btn: any) => btn.addEventListener("input", () => {
-            localStorage.setItem("datachunk_source_size", btn.value);
+            localStorage.setItem("covid_datachunk_source_size", btn.value);
             this.load();
         }));
 
@@ -188,7 +188,7 @@ export class CovidDemoApp {
         }
     }
     dataSourcePrefix(): string {
-        let prefix = localStorage.getItem("datachunk_source_size");
+        let prefix = localStorage.getItem("covid_datachunk_source_size");
         if (prefix) return prefix as string;
         return "chunkNormal";
     }
@@ -326,8 +326,9 @@ export class CovidDemoApp {
                 merge.prompt = prompt;
                 if (!merge.text) {
                     console.log("missing merge", match.id, this.lookupData)
+                    merge.text = "";
                 }
-
+                merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
         } else if (embedIndex === 1) {
@@ -341,7 +342,9 @@ export class CovidDemoApp {
                 merge.prompt = prompt;
                 if (!merge.text) {
                     console.log("missing merge", match.id, this.lookupData)
+                    merge.text = "";
                 }
+                merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
         } else if (embedIndex === 2) {
@@ -352,6 +355,7 @@ export class CovidDemoApp {
             merge.matchIndex = 0;
             merge.prompt = prompt;
             merge.text = this.getSmallToBig(match.id, includeK);
+            merge.text = merge.text.replaceAll("\n", " ");
             documentsEmbedText += (<any>docT)(merge);
         }
 
