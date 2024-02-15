@@ -332,6 +332,7 @@ export class AIArchiveDemoApp {
         let text = "";
         for (let i = firstIndex; i <= lastIndex; i++) {
             const chunkKey = this.lookUpKeys[i];
+            if (!chunkKey) continue;
             if (chunkKey.indexOf(docID) === 0) {
                 if (this.lookupData[chunkKey]) {
                     text += this.lookupData[chunkKey] + "\n";
