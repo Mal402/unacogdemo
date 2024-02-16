@@ -64,23 +64,19 @@
           <li>
             <hr>
           </li>
-          <li><a class="dropdown-item" href="https://unacog.com/embedding">Unacog Embedding Tools</a></li>
-          <li><a class="dropdown-item" href="/">About RAG Applications</a></li>
-          <li>
-            <hr>
-          </li>
-          <li><a class="reset_template_options_button dropdown-item " href="#reset">Default Configuration</a></li>
+          <li><a class="dropdown-item" href="https://unacog.com/embedding">Embedding with Unacog</a></li>
         </ul>
       </div>
       <div>
         <ul class="navbar-nav nav d-flex justify-content-between w-100">
-            <li class="nav-item">
-              <a class="nav-link" style="color:rgb(50,255,50);font-size:1.1em;margin:-10px;" id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
-                data-bs-target="#templateModal">
-                <span class="nav-text">Configure</span>
-                <span class="material-icons-outlined nav-icon">settings_applications</span>
-              </a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:rgb(50,255,50);font-size:1.1em;margin:-10px;"
+              id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
+              data-bs-target="#templateModal">
+              <span class="nav-text">Configure</span>
+              <span class="material-icons-outlined nav-icon">settings_applications</span>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -109,8 +105,8 @@
     <div class="w-100 d-flex flex-row rounded">
       <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
         <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
-          style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);" placeholder="please provide prompt concerning ai..."
-          type="text"></textarea>
+          style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);"
+          placeholder="please provide prompt concerning ai..." type="text"></textarea>
         <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
           style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
           <span class="material-icons-outlined mt-1">
@@ -144,7 +140,8 @@
                   </label>
                   &nbsp;
                   <label class="form-check-label" style="font-weight: normal;">
-                    <input class="form-radio-input" type="radio" checked value="chunkRecursive" name="datachunk_source_size">
+                    <input class="form-radio-input" type="radio" checked value="chunkRecursive"
+                      name="datachunk_source_size">
                     Recursive Split
                   </label>
                   &nbsp;
@@ -188,6 +185,8 @@
           </div>
         </div>
         <div class="modal-footer">
+          <button class="reset_template_options_button btn btn-secondary">Default</button>
+          &nbsp;
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
