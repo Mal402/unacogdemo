@@ -131,8 +131,8 @@ export class CovidDemoApp {
             return;
         }
         const message = this.analyze_prompt_textarea.value.trim();
-        if (!message) {
-            alert("please supply a message");
+        if (!message || message.length < 10) {
+            alert("please supply a message of at least 10 characters");
             return [];
         }
         this.analyze_prompt_button.setAttribute("disabled", "");
