@@ -131,17 +131,17 @@ export class BibleDemoApp {
   }
   updateRAGImages() {
     if (this.embedding_type_select.selectedIndex === 0) {
-      this.embedding_diagram_img.src = "img/ragChapterVerses.svg";
-      this.embedding_diagram_anchor.href = "img/ragChapterVerses.svg";
-      this.embedding_diagram_img_caption.innerHTML = "Match most relevant verse, embed full chapter";
+      this.embedding_diagram_img.src = "img/ragVerses.svg";
+      this.embedding_diagram_anchor.href = "img/ragVerses.svg";
+      this.embedding_diagram_img_caption.innerHTML = "Embed top matching verses";
     } else if (this.embedding_type_select.selectedIndex === 1) {
       this.embedding_diagram_img.src = "img/ragChunks.svg";
       this.embedding_diagram_anchor.href = "img/ragChunks.svg";
       this.embedding_diagram_img_caption.innerHTML = "Match most relevant verse, embed surrounding verses";
     } else if (this.embedding_type_select.selectedIndex === 2) {
-      this.embedding_diagram_img.src = "img/ragVerses.svg";
-      this.embedding_diagram_anchor.href = "img/ragVerses.svg";
-      this.embedding_diagram_img_caption.innerHTML = "Embed top matching verses";
+       this.embedding_diagram_img.src = "img/ragChapterVerses.svg";
+      this.embedding_diagram_anchor.href = "img/ragChapterVerses.svg";
+      this.embedding_diagram_img_caption.innerHTML = "Match most relevant verse, embed full chapter";
     } else if (this.embedding_type_select.selectedIndex === 3) {
       this.embedding_diagram_img.src = "img/ragChapters.svg";
       this.embedding_diagram_anchor.href = "img/ragChapters.svg";
@@ -384,8 +384,8 @@ export class BibleDemoApp {
     if (this.embedding_type_select.selectedIndex === 0) {
       return {
         topK: 10,
-        includeK: 1,
-        include: "chapter",
+        includeK: 10,
+        include: "verse",
         pineconeDB: "verse",
         apiToken: this.byVerseAPIToken,
         sessionId: this.byVerseSessionId,
@@ -402,8 +402,8 @@ export class BibleDemoApp {
     } else if (this.embedding_type_select.selectedIndex === 2) {
       return {
         topK: 10,
-        includeK: 10,
-        include: "verse",
+        includeK: 2,
+        include: "chapter",
         pineconeDB: "verse",
         apiToken: this.byVerseAPIToken,
         sessionId: this.byVerseSessionId,
@@ -411,7 +411,7 @@ export class BibleDemoApp {
     } else {
       return {
         topK: 5,
-        includeK: 1,
+        includeK: 2,
         include: "chapter",
         pineconeDB: "chapter",
         apiToken: this.byChapterToken,
@@ -439,10 +439,10 @@ export class BibleDemoApp {
       let cIndex = result.matches[0].metadata.chapterIndex;
       let bIndex = result.matches[0].metadata.bookIndex;
       for (let c = 1, l = result.matches.length; c < l; c++) {
+        if (matches.length >= queryDetails.includeK) break;
         let match = result.matches[c];
         if (match.metadata.chapterIndex.toString() !== cIndex.toString() || match.metadata.bookIndex.toString() !== bIndex.toString()) {
           matches.push(match);
-          if (matches.length >= queryDetails.includeK) break;
         }
       }
     }
@@ -532,13 +532,33 @@ export class BibleDemoApp {
 
 const promptTemplates = [
   {
-    mainPrompt: `Use Bible verses below as context:
----------------------
- {{documents}}
----------------------
-Given the context information and using biblical language, provide guidance to the following prompt:
-{{prompt}}`,
-    documentPrompt: `({{title}}):
+    mainPrompt: `Please evaluate these bible verses for their level of violence appropriateness for 16-year-olds, rating them on a scale from 1 to 10, where 10 means completely inappropriate due to violence and 1 means fully appropriate with no concerning violent content. Provide a one-sentence justification for each rating:
+{{documents}}
+
+Respond in this format for each document:
+<b>Title</b>:
+<b>Score</b>:
+<b>Verse Text</b>:
+<b>Explanation</b>:
+<hr>`
+    ,
+    documentPrompt: `Document Id: {{id}}  Index: {{matchIndex}}  Title: {{title}}:
+{{text}}
+`,
+  },
+  {
+    mainPrompt: `Please assess the age appropriateness of these bible verses using the Maturity-Based Rating (MBR) system. Assign a recommended minimum age for each document, considering factors like language, themes, and content maturity. Include a brief explanation for your recommended age:
+{{documents}}
+
+Respond in this format for each document:
+<b>Title</b>: 
+<b>Verse Text</b>:
+<b>Recommended Age</b>: 
+<b>Explanation</b>:
+<hr>
+`
+    ,
+    documentPrompt: `Document Id: {{id}}  Index: {{matchIndex}}  Title: {{title}}:
 {{text}}
 `,
   },
@@ -552,45 +572,6 @@ Please respond with json and only json in this format:
 }`,
     documentPrompt: `Document Id: {{id}}  Index: {{matchIndex}}  Title: {{title}}:
 {{text}}
-
-`,
-  },
-  {
-    mainPrompt: `Use Bible verses below as context: 
----------------------
-{{documents}}
----------------------
-This context serves as the source of inspiration for a poem based on the following prompt:
-    {{prompt}}`,
-    documentPrompt: `{{title}}:
-{{text}}
-
-`,
-  },
-  {
-    mainPrompt: `You are a relationship advice columnist. Use Bible verses below as context:
----------------------
-{{documents}}
----------------------
-
-Refer to lessons from context to give relationship advice for the following situation:
-    {{prompt}}`,
-    documentPrompt: `{{title}}:
-{{text}}
-
-`,
-  },
-  {
-    mainPrompt: `Use Bible verses below as context:
----------------------
-{{documents}}
----------------------
-    
-Using this context, tell a charming, funny tale for kids around the following prompt:
-    {{prompt}}`,
-    documentPrompt: `{{title}}:
-{{text}}
-
 `,
   },
 ];

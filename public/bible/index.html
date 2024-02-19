@@ -54,7 +54,7 @@
       <div class="dropdown">
         <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
           data-bs-toggle="dropdown" aria-expanded="false">
-          Bible GPT
+          Semantic Bible
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <li><a class="dropdown-item" href="/aiarchive">AI Documents Example</a></li>
@@ -84,9 +84,8 @@
     <div class="prompt_response_area text-start p-1 d-flex flex-column heightflex" style="overflow: auto;">
       <div class="full_augmented_response m-2 small-caps"></div>
       <div class="initial_user_message text-muted text-start p-3 mt-auto mb-auto small-caps fs-4">
-        <span class="onboarding_text">Enter a prompt to begin.</span>
-        <br><br>Adjust templates to modify results.
-        <br><br>Retrieve most similar chapters and verses.
+        <span class="onboarding_text">Prompt to return chapters and verses.</span>
+        <br><br>Configure templates to modify results.
       </div>
       <span class="muted small mt-auto"></span>
     </div>
@@ -116,9 +115,9 @@
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column gap-3 col-12 col-lg-6">
               <select class="form-select embedding_type_select">
-                <option>Query Verses to Embed Chapters</option>
-                <option>Query Verses to Embed Chunks</option>
                 <option>Query Verses to Embed Verses</option>
+                <option>Query Verses to Embed Chunks</option>
+                <option>Query Verses to Embed Chapters</option>
                 <option>Query Chapter to Embed Chapter</option>
               </select>
               <div class="text-muted small text-center">
@@ -135,11 +134,9 @@
               <label class="pt-3 pt-lg-0">Customize the Prompt!</label>
               <select class="form-select prompt_template_select_preset">
                 <option selected>Select a prompt</option>
-                <option>Provide Guidance</option>
+                <option>Assess level of violence for adolescents</option>
+                <option>Estimate age rating using MBR</option>
                 <option>Rate embed text for political correctness</option>
-                <option>Write a poem</option>
-                <option>Love Counsel</option>
-                <option>Children's Story</option>
               </select>
               <textarea style="height:15em;width:100%;border-color: rgb(100,100,255);"
                 class="prompt_template_text_area monospace form-control"></textarea>
