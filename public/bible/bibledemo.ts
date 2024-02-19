@@ -61,9 +61,9 @@ export class BibleDemoApp {
       return;
     }
     const message = this.analyze_prompt_textarea.value.trim();
-    if (!message) {
-      alert("please supply a message");
-      return;
+    if (!message || message.length < 10) {
+        alert("please supply a message of at least 10 characters");
+        return [];
     }
     this.analyze_prompt_button.setAttribute("disabled", "");
     this.analyze_prompt_button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
