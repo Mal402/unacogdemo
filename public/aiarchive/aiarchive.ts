@@ -341,11 +341,27 @@ export class AIArchiveDemoApp {
             if (!chunkKey) continue;
             if (chunkKey.indexOf(docID) === 0) {
                 if (this.lookupData[chunkKey]) {
-                    text += this.lookupData[chunkKey] + "\n";
+                    text = this.annexChunkWithoutOverlap(text, this.lookupData[chunkKey]);
                 }
             }
         }
         return text;
+    }
+    annexChunkWithoutOverlap(text: string, chunkText: string, searchDepth = 500): string {
+        let startPos = -1;
+        const l = Math.min(chunkText.length - 1, searchDepth);
+        for (let nextPos = 1; nextPos < l; nextPos++) {
+            const existingOverlap = text.slice(-1 * nextPos);
+            const nextOverlap = chunkText.slice(0, nextPos);
+            if (existingOverlap === nextOverlap) {
+                startPos = nextPos;
+                // break;
+            }
+        }
+        if (startPos > 0) {
+            return text + chunkText.slice(startPos) + " ";
+        }
+        return text + chunkText + " ";
     }
     async embedPrompt(prompt: string, matches: any[]): Promise<string> {
         const embedIndex = this.embedding_type_select.selectedIndex;
