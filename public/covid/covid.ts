@@ -37,6 +37,12 @@ export class CovidDemoApp {
     chunkRecursivetopK = 25;
     chunkRecursiveincludeK = 5;
 
+    sentenceChunkAPIToken ="1d4fffc7-5257-4ccd-bba3-6e96fcfd4722";
+    sentenceChunkSessionId = "1gcrc37j1miq";
+    sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-sentencechunk-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
+    sentenceChunktopK = 15;
+    sentenceChunkincludeK = 3;
+
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
@@ -197,6 +203,7 @@ export class CovidDemoApp {
         this.loaded = true;
         this.lookedUpIds = {};
         this.lookupData = {};
+        this.updateEmbeddingOptionsDisplay();
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
     }
