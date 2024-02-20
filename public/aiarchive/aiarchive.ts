@@ -50,6 +50,7 @@ export class AIArchiveDemoApp {
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
     lookUpKeys: string[] = [];
+    verboseDebugging = false;
 
     constructor() {
         this.load();
@@ -359,8 +360,12 @@ export class AIArchiveDemoApp {
             }
         }
         if (startPos > 0) {
+            if (this.verboseDebugging)
+                console.log("overlap", chunkText.slice(0, startPos), startPos);
             return text + chunkText.slice(startPos) + " ";
         }
+        if (this.verboseDebugging)
+            console.log("no overlap");
         return text + chunkText + " ";
     }
     async embedPrompt(prompt: string, matches: any[]): Promise<string> {
