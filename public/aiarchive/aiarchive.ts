@@ -157,7 +157,7 @@ export class AIArchiveDemoApp {
         if (this.embedding_type_select.selectedIndex === 0) {
             this.embedding_diagram_img.src = "img/rag_basic.svg";
             this.embedding_diagram_anchor.href = "img/rag_basic.svg";
-        } else  {
+        } else {
             this.embedding_diagram_img.src = "img/rag_stb.svg";
             this.embedding_diagram_anchor.href = "img/rag_stb.svg";
         }
@@ -377,6 +377,7 @@ export class AIArchiveDemoApp {
         let documentsEmbedText = "";
         let includeK = Number(this[this.dataSourcePrefix() + "includeK"]);
         let halfK = Math.ceil(includeK / 2);
+        // include K chunks as doc
         if (embedIndex === 0) {
             const includes = matches.slice(0, includeK);
             await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
@@ -393,6 +394,7 @@ export class AIArchiveDemoApp {
                 merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
+            // include halfK doc w/ halfK chunks
         } else if (embedIndex === 1) {
             const includes = matches.slice(0, halfK);
             await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
@@ -409,6 +411,7 @@ export class AIArchiveDemoApp {
                 merge.text = merge.text.replaceAll("\n", " ");
                 documentsEmbedText += (<any>docT)(merge);
             });
+            // include 1 doc w includeK chunks
         } else if (embedIndex === 2) {
             const match = matches[0];
             await this.fetchDocumentsLookup([match.id]);
