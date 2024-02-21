@@ -22,6 +22,7 @@ export class CovidDemoApp {
     embed_sequential_chunks_option: any = document.body.querySelector(".embed_sequential_chunks_option");
     embed_sequential_chunks2_option = document.body.querySelector(".embed_sequential_chunks2_option") as HTMLOptionElement;
     datachunk_source_size_buttons = document.body.querySelectorAll(`[name="datachunk_source_size"]`);
+    datachunking_details = document.body.querySelector(".datachunking_details") as HTMLSpanElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -37,7 +38,7 @@ export class CovidDemoApp {
     chunkRecursivetopK = 25;
     chunkRecursiveincludeK = 5;
 
-    sentenceChunkAPIToken ="1d4fffc7-5257-4ccd-bba3-6e96fcfd4722";
+    sentenceChunkAPIToken = "1d4fffc7-5257-4ccd-bba3-6e96fcfd4722";
     sentenceChunkSessionId = "1gcrc37j1miq";
     sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-sentencechunk-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     sentenceChunktopK = 15;
@@ -83,6 +84,15 @@ export class CovidDemoApp {
         this.analyze_prompt_textarea.select();
     }
     updateRAGImages() {
+        let chunkType = localStorage.getItem("covid_datachunk_source_size");
+        if (chunkType === "chunkRecursive") {
+            this.datachunking_details.innerHTML = "Max Size: 300 tokens / 20 overlap";
+        } else if (chunkType === "sentenceChunk") {
+            this.datachunking_details.innerHTML = "15 sentence blocks with 3 overlap";
+        } else {
+            this.datachunking_details.innerHTML = "Sentence blocks sized 300 tokens";
+        }
+
         if (this.embedding_type_select.selectedIndex === 0) {
             this.embedding_diagram_img.src = "img/rag_basic.svg";
             this.embedding_diagram_anchor.href = "img/rag_basic.svg";
@@ -154,13 +164,13 @@ export class CovidDemoApp {
 
         this.full_augmented_response.innerHTML = "Processing Query...<br><br>";
         this.semanticResults = await this.lookupAIDocumentChunks();
-    
-    
-        this.full_augmented_response.innerHTML += 
-        `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...
+
+
+        this.full_augmented_response.innerHTML +=
+            `<a class="response_verse_link p-2 mt-4" href="see verses">Top k Search Results</a> retrieved...
 <a class="response_detail_link p-2" href="see details">Prompt Details</a>`;
         this._addFeedHandlers();
-        
+
         this.full_augmented_response.innerHTML = await this.sendPromptToLLM();
         this.full_augmented_response.innerHTML +=
             `<br><div class="d-flex flex-column link-primary" style="white-space:normal;">
@@ -204,6 +214,7 @@ export class CovidDemoApp {
         this.lookedUpIds = {};
         this.lookupData = {};
         this.updateEmbeddingOptionsDisplay();
+        this.updateRAGImages();
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
     }

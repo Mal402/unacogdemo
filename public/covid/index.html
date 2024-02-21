@@ -70,7 +70,7 @@
       <div>
         <ul class="navbar-nav nav d-flex justify-content-between w-100">
           <li class="nav-item">
-            <a class="nav-link" style="color:rgb(50,255,50);font-size:1.1em;margin:-10px;"
+            <a class="nav-link text-light" style="font-size:1.1em;margin:-10px;"
               id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
               data-bs-target="#templateModal">
               <span class="nav-text">Configure</span>
@@ -91,6 +91,9 @@
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
             <div><span class="onboarding_text">Enter a prompt to begin.</span>
               <br><br>Powered by 350 research papers (100k vectors)
+              <br><br>
+              <a href="template" role="button" data-bs-toggle="modal"
+                      data-bs-target="#templateModal">Configure</a> prompts and templates
             </div>
             <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
               <span class="float-start">Article source: <a href="https://science.org/">science.org</a></span>
@@ -106,7 +109,7 @@
       <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
         <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
           style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);"
-          placeholder="prompt concerning covid research..." type="text"></textarea>
+          placeholder="augmented chat with Covid research" type="text"></textarea>
         <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
           style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
           <span class="material-icons-outlined mt-1">
@@ -129,14 +132,14 @@
           <div class="row py-3" style="justify-content:space-evenly">
             <div class="d-flex flex-column col-12 col-lg-6 gap-3">
               <div style="padding-left: 12px;">
-                Chunk size: 300 tokens
+                <label class="pt-3 pt-lg-0">Chunk By</label>
               </div>
               <div>
                 <div style="white-space: nowrap;font-size:1.1em;">
                   &nbsp; &nbsp;
                   <label class="form-check-label" style="font-weight: normal;">
                     <input class="form-radio-input" type="radio" value="chunkNormal" name="datachunk_source_size">
-                    Token Size
+                    Size
                   </label>
                   &nbsp;
                   <label class="form-check-label" style="font-weight: normal;">
@@ -152,6 +155,7 @@
                   </label>
                   &nbsp;
                 </div>
+                &nbsp; &nbsp; <span class="datachunking_details"></span>
               </div>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">
