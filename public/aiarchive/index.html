@@ -53,7 +53,7 @@
     <div class="container-xxl">
       <div class="dropdown">
         <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.1em;">
+          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.25em;">
           AI Research Papers
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -69,11 +69,9 @@
       <div class="d-flex flex-column flex-lg-row">
         <ul class="navbar-nav nav d-flex justify-content-between w-100">
           <li class="nav-item">
-            <a class="nav-link text-light" style="font-size:1.1em;margin:-10px;"
-              id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
-              data-bs-target="#templateModal">
-              <span class="nav-text">Configure</span>
-              <span class="material-icons-outlined nav-icon">settings_applications</span>
+            <a class="nav-link text-light" id="augmented_template_button" href="template" role="button"
+              data-bs-toggle="modal" data-bs-target="#templateModal">
+              <span class="material-icons nav-icon" style="font-size:30px">settings</span>
             </a>
           </li>
         </ul>
@@ -88,10 +86,10 @@
         <div class="initial_user_message" style="flex: 1;">
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
             <div><span class="onboarding_text">Enter a prompt to begin.</span>
-              <br><br>Powered by 2500+ research papers (1 million vectors)
+              <br><br>Powered by 2500+ research papers (1.5 million vectors)
               <br><br>
-              <a href="template" role="button" data-bs-toggle="modal"
-                      data-bs-target="#templateModal">Configure</a> prompts and templates
+              <a href="template" role="button" data-bs-toggle="modal" data-bs-target="#templateModal">Configure</a>
+              prompts and templates
             </div>
             <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
               <span class="float-start">Article source: <a href="https://arxiv.org/">arxiv.org</a></span>
@@ -152,6 +150,13 @@
                   </label>
                 </div>
               </div>
+              <div>
+                &nbsp; &nbsp;
+                <label class="form-check-label" style="font-weight: normal;font-size:1em;">
+                  <input class="form-check-input uniqueDocsCheck" type="checkbox">
+                  &nbsp;Use 1 chunk per doc
+                </label>
+              </div>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">
                   <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
@@ -173,9 +178,9 @@
               <div style="padding:4px">
                 <select class="form-select prompt_template_select_preset">
                   <option selected>Select a prompt</option>
-                  <option>Use Reference Documents</option>
+                  <option>Answer with Doc Summary</option>
                   <option>OpenAI Cookbook Primitive</option>
-                  <option>LlamaIndex Cookbook Template</option>
+                  <option>Answer with Doc Keywords</option>
                 </select>
               </div>
               <div style="padding:4px;">

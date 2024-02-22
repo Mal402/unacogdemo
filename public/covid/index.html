@@ -54,7 +54,7 @@
     <div class="container-xxl">
       <div class="dropdown">
         <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.1em;">
+          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.25em;">
           Covid Research Papers
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -70,11 +70,9 @@
       <div>
         <ul class="navbar-nav nav d-flex justify-content-between w-100">
           <li class="nav-item">
-            <a class="nav-link text-light" style="font-size:1.1em;margin:-10px;"
-              id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
-              data-bs-target="#templateModal">
-              <span class="nav-text">Configure</span>
-              <span class="material-icons-outlined nav-icon">settings_applications</span>
+            <a class="nav-link text-light" id="augmented_template_button" href="template" role="button"
+              data-bs-toggle="modal" data-bs-target="#templateModal">
+              <span class="material-icons nav-icon" style="font-size:30px">settings</span>
             </a>
           </li>
         </ul>
@@ -90,10 +88,10 @@
         <div class="initial_user_message" style="flex: 1;">
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
             <div><span class="onboarding_text">Enter a prompt to begin.</span>
-              <br><br>Powered by 350 research papers (100k vectors)
+              <br><br>Powered by 350+ research papers (100k vectors)
               <br><br>
-              <a href="template" role="button" data-bs-toggle="modal"
-                      data-bs-target="#templateModal">Configure</a> prompts and templates
+              <a href="template" role="button" data-bs-toggle="modal" data-bs-target="#templateModal">Configure</a>
+              prompts and templates
             </div>
             <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
               <span class="float-start">Article source: <a href="https://science.org/">science.org</a></span>
@@ -149,13 +147,12 @@
                   </label>
                   &nbsp;
                   <label class="form-check-label" style="font-weight: normal;">
-                    <input class="form-radio-input" type="radio" value="sentenceChunk"
-                      name="datachunk_source_size">
+                    <input class="form-radio-input" type="radio" value="sentenceChunk" name="datachunk_source_size">
                     Sentence
                   </label>
                   &nbsp;
                 </div>
-                &nbsp; &nbsp; <span class="datachunking_details"></span>
+                &nbsp; &nbsp; &nbsp; &nbsp;<span class="datachunking_details" style="font-style: italic;font-size: .95em;"></span>
               </div>
               <div style="padding:4px;">
                 <select class="form-select embedding_type_select">

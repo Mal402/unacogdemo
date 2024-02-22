@@ -53,7 +53,7 @@
     <div class="container-xxl">
       <div class="dropdown">
         <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.1em;">
+          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.25em;">
           Semantic Bible Search
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -68,34 +68,34 @@
       </div>
       <div class="d-flex flex-column flex-lg-row">
         <ul class="navbar-nav nav d-flex justify-content-between w-100">
-            <li class="nav-item">
-              <a class="nav-link text-light" style="font-size:1.1em;margin:-10px;" id="augmented_template_button" href="template" role="button" data-bs-toggle="modal"
-                data-bs-target="#templateModal">
-                <span class="nav-text">Configure</span>
-                <span class="material-icons-outlined nav-icon">settings_applications</span>
-              </a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" id="augmented_template_button" href="template" role="button"
+              data-bs-toggle="modal" data-bs-target="#templateModal">
+              <span class="material-icons nav-icon" style="font-size:30px">settings</span>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
-  <div class="heightflex container-xxl" style="position:relative;display:none;" id="full_augmented_response" role="tabpanel"
-    aria-labelledby="full_augmented_response_button">
+  <div class="heightflex container-xxl" style="position:relative;display:none;" id="full_augmented_response"
+    role="tabpanel" aria-labelledby="full_augmented_response_button">
     <div class="prompt_response_area text-start p-1 d-flex flex-column heightflex" style="overflow: auto;">
       <div class="full_augmented_response m-2 small-caps"></div>
       <div class="initial_user_message text-muted text-start p-3 mt-auto mb-auto small-caps fs-4">
         <span class="onboarding_text">Prompt for chapters and verses</span>
         <br><br>Subjective moderation scoring
         <br><br>
-        <a href="template" role="button" data-bs-toggle="modal"
-                data-bs-target="#templateModal">Configure</a> prompts and templates
+        <a href="template" role="button" data-bs-toggle="modal" data-bs-target="#templateModal">Configure</a> prompts
+        and templates
       </div>
       <span class="muted small mt-auto"></span>
     </div>
     <div class="w-100 border border-secondary d-flex flex-row rounded">
       <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
         <textarea class="analyze_prompt_textarea form-control me-1"
-          style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);" placeholder="Semantic search for verses" type="text"></textarea>
+          style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);"
+          placeholder="Semantic search for verses" type="text"></textarea>
         <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
           style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
           <span class="material-icons-outlined mt-1">
@@ -304,7 +304,7 @@
 
     .raw_prompt {
       white-space: pre-wrap;
-      font-family:  monospace;
+      font-family: monospace;
     }
 
     .pipeline_detail_anchor_hide {

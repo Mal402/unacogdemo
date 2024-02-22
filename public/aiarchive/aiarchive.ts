@@ -19,6 +19,7 @@ export class AIArchiveDemoApp {
     embed_distinct_chunks_option = document.body.querySelector(".embed_distinct_chunks_option") as HTMLOptionElement;
     embed_sequential_chunks_option = document.body.querySelector(".embed_sequential_chunks_option") as HTMLOptionElement;
     embed_sequential_chunks2_option = document.body.querySelector(".embed_sequential_chunks2_option") as HTMLOptionElement;
+    uniqueDocsCheck = document.body.querySelector(".uniqueDocsCheck") as HTMLInputElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -61,6 +62,7 @@ export class AIArchiveDemoApp {
         this.analyze_prompt_textarea.addEventListener("input", () => this.saveLocalStorage());
         this.prompt_template_text_area.addEventListener("input", () => this.saveLocalStorage());
         this.document_template_text_area.addEventListener("input", () => this.saveLocalStorage());
+        this.uniqueDocsCheck.addEventListener("input", () => this.saveLocalStorage());
 
         this.analyze_prompt_textarea.addEventListener("keydown", (e: any) => {
             if (e.key === "Enter" && e.shiftKey === false) {
@@ -199,6 +201,8 @@ export class AIArchiveDemoApp {
         if (promptTemplate) this.prompt_template_text_area.value = promptTemplate;
         const documentTemplate = localStorage.getItem("ai_documentTemplate");
         if (documentTemplate) this.document_template_text_area.value = documentTemplate;
+        const uniqueDocsCheck = localStorage.getItem("ai_uniqueDocsCheck");
+        this.uniqueDocsCheck.checked = !(uniqueDocsCheck === "false");
 
         if (!promptTemplate) {
             this.populatePromptTemplates(0, true);
@@ -209,6 +213,23 @@ export class AIArchiveDemoApp {
         this.datachunk_source_size_buttons.forEach((btn: any) => {
             if (btn.value === chunkSize) btn.checked = true;
         });
+    }
+     filterUniqueDocs(matches: any[]): any[] {
+        let uniqueDocsChecked = this.uniqueDocsCheck.checked;
+        if (uniqueDocsChecked) {
+            let docMap: any = {};
+            let uniqueMatches: any[] = [];
+            matches.forEach((match: any) => {
+                const parts = match.id.split("_");
+                const docID = parts[0];    
+                if (!docMap[docID]) {
+                    docMap[docID] = true;
+                    uniqueMatches.push(match);
+                }
+            });
+            matches = uniqueMatches;
+        }
+        return matches;
     }
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.lookup_verse_response_feed.innerHTML = "";
@@ -225,8 +246,9 @@ export class AIArchiveDemoApp {
         }
 
         let html = "";
-        await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
-        result.matches.forEach((match) => {
+        let matches = this.filterUniqueDocs(result.matches);
+        await this.fetchDocumentsLookup(matches.map((match: any) => match.id));
+        matches.forEach((match) => {
             const textFrag = this.lookupData[match.id];
             if (!textFrag) {
                 console.log(match.id, this.lookupData)
@@ -379,7 +401,8 @@ export class AIArchiveDemoApp {
         let halfK = Math.ceil(includeK / 2);
         // include K chunks as doc
         if (embedIndex === 0) {
-            const includes = matches.slice(0, includeK);
+            let filteredMatches = this.filterUniqueDocs(matches);
+            const includes = filteredMatches.slice(0, includeK);
             await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
             includes.forEach((match: any, index: number) => {
                 const merge = Object.assign({}, match.metadata);
@@ -396,7 +419,8 @@ export class AIArchiveDemoApp {
             });
             // include halfK doc w/ halfK chunks
         } else if (embedIndex === 1) {
-            const includes = matches.slice(0, halfK);
+            let filteredMatches = this.filterUniqueDocs(matches);
+            const includes = filteredMatches.slice(0, halfK);
             await this.fetchDocumentsLookup(includes.map((match: any) => match.id));
             includes.forEach((match: any, index: number) => {
                 const merge = Object.assign({}, match.metadata);
@@ -442,18 +466,22 @@ export class AIArchiveDemoApp {
         localStorage.setItem("ai_lastPrompt", this.analyze_prompt_textarea.value);
         localStorage.setItem("ai_promptTemplate", this.prompt_template_text_area.value);
         localStorage.setItem("ai_documentTemplate", this.document_template_text_area.value);
+        localStorage.setItem("ai_uniqueDocsCheck", this.uniqueDocsCheck.checked ? "true" : "false");
     }
 }
 
 const promptTemplates = [
     {
-        mainPrompt: `You are an AI research assistant. Your job is to answer my prompt based on the context information provided below:
----------------------
-{{documents}}
----------------------
-Answer the following prompt:
-{{prompt}}`,
-        documentPrompt: `({{title}}):
+        mainPrompt: `Given the context information below and without prior knowledge, please answer the query.
+Context:{{documents}}
+
+Query: {{prompt}}
+Overall Response to Query based on all documents:
+
+In addition, respond for each document using the following format:
+Title:
+Summary:`,
+        documentPrompt: `Title: {{title}}:
   {{text}}
   `,
     },
@@ -467,14 +495,12 @@ Answer:`,
 Answer: {{text}}\n`,
     },
     {
-        mainPrompt: `Context information is below.
----------------------
-{{documents}}
----------------------
-Given the context information and not prior knowledge, answer the query.
+        mainPrompt: `Given the context information below and without prior knowledge, please answer the query.
+Context:{{documents}}
 Query: {{prompt}}
-Answer:`,
-        documentPrompt: `({{title}}):
+
+Provide title and a list of keywords for each document:`,
+        documentPrompt: `Title: {{title}}:
   {{text}}
   `,
     },
