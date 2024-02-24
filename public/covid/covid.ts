@@ -219,6 +219,7 @@ export class CovidDemoApp {
         this.analyze_prompt_textarea.select();
     }
     escapeHTML(str: string): string {
+        if (!str) str = "";
         return str.replace(/[&<>'"]/g,
             (match) => {
                 switch (match) {
@@ -468,12 +469,15 @@ export class CovidDemoApp {
 
 const promptTemplates = [
     {
-        mainPrompt: `You are an AI research assistant. Your job is to answer my prompt based on the context information provided below:
----------------------
-{{documents}}
----------------------
-Answer the following prompt:
-{{prompt}}`,
+        mainPrompt: `Given the context information below and without prior knowledge, please answer the query.
+Context:{{documents}}
+
+Query: {{prompt}}
+Overall Response to Query based on all documents:
+
+In addition, respond for each document using the following format:
+Title:
+Summary:`,
         documentPrompt: `({{title}}):
   {{text}}
   `,
@@ -488,13 +492,11 @@ Answer:`,
 Answer: {{text}}\n`,
     },
     {
-        mainPrompt: `Context information is below.
----------------------
-{{documents}}
----------------------
-Given the context information and not prior knowledge, answer the query.
+        mainPrompt: `Given the context information below and without prior knowledge, please answer the query.
+Context:{{documents}}
 Query: {{prompt}}
-Answer:`,
+
+Provide title and a list of keywords for each document:`,
         documentPrompt: `({{title}}):
   {{text}}
   `,

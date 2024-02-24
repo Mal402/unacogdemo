@@ -276,6 +276,7 @@ export class AIArchiveDemoApp {
         return result.matches;
     }
     escapeHTML(str: string): string {
+        if (!str) str = "";
         return str.replace(/[&<>'"]/g,
             (match) => {
                 switch (match) {
