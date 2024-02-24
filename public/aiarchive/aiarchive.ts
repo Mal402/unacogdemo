@@ -214,14 +214,14 @@ export class AIArchiveDemoApp {
             if (btn.value === chunkSize) btn.checked = true;
         });
     }
-     filterUniqueDocs(matches: any[]): any[] {
+    filterUniqueDocs(matches: any[]): any[] {
         let uniqueDocsChecked = this.uniqueDocsCheck.checked;
         if (uniqueDocsChecked) {
             let docMap: any = {};
             let uniqueMatches: any[] = [];
             matches.forEach((match: any) => {
                 const parts = match.id.split("_");
-                const docID = parts[0];    
+                const docID = parts[0];
                 if (!docMap[docID]) {
                     docMap[docID] = true;
                     uniqueMatches.push(match);
@@ -266,7 +266,7 @@ export class AIArchiveDemoApp {
             ${chunkIndex}/${chunkCount}
             <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a>
               <br>
-              <div class="verse_card_text">${textFrag}</div>
+              <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
               </div>`;
             html += block;
         });
@@ -274,6 +274,20 @@ export class AIArchiveDemoApp {
         this.lookup_verse_response_feed.innerHTML = html;
 
         return result.matches;
+    }
+    escapeHTML(str: string): string {
+        return str.replace(/[&<>'"]/g,
+            (match) => {
+                switch (match) {
+                    case "&": return "&amp;";
+                    case "<": return "&lt;";
+                    case ">": return "&gt;";
+                    case "'": return "&#39;";
+                    case "\"": return "&quot;";
+                }
+
+                return match;
+            });
     }
     async sendPromptToLLM(): Promise<string> {
         this.saveLocalStorage();

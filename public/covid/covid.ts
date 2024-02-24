@@ -218,6 +218,20 @@ export class CovidDemoApp {
         this.analyze_prompt_textarea.focus();
         this.analyze_prompt_textarea.select();
     }
+    escapeHTML(str: string): string {
+        return str.replace(/[&<>'"]/g,
+            (match) => {
+                switch (match) {
+                    case "&": return "&amp;";
+                    case "<": return "&lt;";
+                    case ">": return "&gt;";
+                    case "'": return "&#39;";
+                    case "\"": return "&quot;";
+                }
+
+                return match;
+            });
+    }
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.lookup_verse_response_feed.innerHTML = "";
         const message = this.analyze_prompt_textarea.value.trim();
@@ -252,7 +266,7 @@ export class CovidDemoApp {
             ${chunkIndex}/${chunkCount}
             <a href="${match.metadata.url}" target="_blank">${match.metadata.title}</a>
               <br>
-              <div class="verse_card_text">${textFrag}</div>
+              <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
               </div>`;
             html += block;
         });
