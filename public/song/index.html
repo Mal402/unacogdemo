@@ -42,8 +42,8 @@
     import { loadModule } from 'https://klesun.github.io/ts-browser/src/ts-browser.js';
     window.addEventListener("load", async () => {
       // I don't know no javascript - so I use typescript...
-      const mod = await loadModule('./covid.ts');
-      window.appInstance = new mod.CovidDemoApp();
+      const mod = await loadModule('./song.ts');
+      window.appInstance = new mod.SongSearchApp();
     });
   </script>
 </head>
@@ -52,35 +52,10 @@
   <nav class="navbar navbar-dark bg-dark navbar-expand-lg" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
   border-bottom: 1px solid rgba(127, 127, 127, .4);" aria-label="Main navigation">
     <div class="container-xxl">
-      <div class="dropdown">
-        <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
-          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.25em;">
-          Covid Research Papers
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li><a class="dropdown-item" href="/aiarchive">AI Research Papers</a></li>
-          <li class="dropdown-item active">Covid Research Papers</li>
-          <li><a class="dropdown-item" href="/bible">Semantic Bible Search</a></li>
-          <li>
-            <hr>
-          </li>
-          <li><a class="dropdown-item" href="https://unacog.com/embedding">Augmenting with Unacog</a></li>
-        </ul>
-      </div>
-      <div>
-        <ul class="navbar-nav nav d-flex justify-content-between w-100">
-          <li class="nav-item">
-            <a class="nav-link text-light" id="augmented_template_button" href="template" role="button"
-              data-bs-toggle="modal" data-bs-target="#templateModal">
-              <span class="material-icons nav-icon" style="font-size:30px">settings</span>
-            </a>
-          </li>
-        </ul>
-      </div>
     </div>
   </nav>
   <div class="heightflex container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;"
-    id="full_augmented_response" role="tabpanel" aria-labelledby="full_augmented_response_button">
+    aria-labelledby="full_augmented_response_button">
     <div class="heightflex" style="overflow:auto;">
       <div class="full_augmented_response m-2"></div>
       <div class="d-flex flex-column heightflex m-2" style="overflow: auto; justify-content: center;">
@@ -88,14 +63,10 @@
         <div class="initial_user_message" style="flex: 1;">
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
             <div><span class="onboarding_text">Enter a prompt to begin.</span>
-              <br><br>Powered by 350+ research papers (100k vectors)
-              <br><br>
-              <a href="template" role="button" data-bs-toggle="modal" data-bs-target="#templateModal">Configure</a>
-              prompts and templates
             </div>
             <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
-              <span class="float-start">Article source: <a href="https://science.org/">science.org</a></span>
-              <span class="float-end"> Cutoff date: 01/24/2024</span>
+              <span class="float-start"></a></span>
+              <span class="float-end">Top 100 Billboard</span>
             </div>
           </div>
         </div>
@@ -117,143 +88,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Template Modal -->
-  <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="templateModalLabel">Configuration</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row py-3" style="justify-content:space-evenly">
-            <div class="d-flex flex-column col-12 col-lg-6 gap-3">
-              <div style="padding-left: 12px;">
-                <label class="pt-3 pt-lg-0">Chunk By</label>
-              </div>
-              <div>
-                <div style="white-space: nowrap;font-size:1.1em;">
-                  &nbsp; &nbsp;
-                  <label class="form-check-label" style="font-weight: normal;">
-                    <input class="form-radio-input" type="radio" value="chunkNormal" name="datachunk_source_size">
-                    Size
-                  </label>
-                  &nbsp;
-                  <label class="form-check-label" style="font-weight: normal;">
-                    <input class="form-radio-input" type="radio" checked value="chunkRecursive"
-                      name="datachunk_source_size">
-                    Recursive
-                  </label>
-                  &nbsp;
-                  <label class="form-check-label" style="font-weight: normal;">
-                    <input class="form-radio-input" type="radio" value="sentenceChunk" name="datachunk_source_size">
-                    Sentence
-                  </label>
-                  &nbsp;
-                </div>
-                &nbsp; &nbsp; &nbsp; &nbsp;<span class="datachunking_details" style="font-style: italic;font-size: .95em;"></span>
-              </div>
-              <div style="padding:4px;">
-                <select class="form-select embedding_type_select">
-                  <option class="embed_distinct_chunks_option">Embed 5 Document Chunks</option>
-                  <option class="embed_sequential_chunks_option">Embed 2 Document Chunks</option>
-                  <option class="embed_sequential_chunks2_option">Embed 1 Chunk with Additional Context</option>
-                </select>
-              </div>
-              <div class="text-muted small text-center">
-                <a target="_blank" class="embedding_diagram_anchor text-center"><img
-                    class="embedding_diagram_img img-fluid" src="" alt="" width="100%" height="100%"
-                    style="max-width: 600px;"></a>
-              </div>
-            </div>
-            <div class="d-flex flex-column gap-3 col-12 col-lg-6">
-              <label class="pt-3 pt-lg-0">Customize the Prompt!</label>
-              <div style="padding:4px">
-                <select class="form-select prompt_template_select_preset">
-                  <option selected>Select a prompt</option>
-                  <option>Answer with Doc Summary</option>
-                  <option>OpenAI Cookbook Primitive</option>
-                  <option>Answer with Doc Keywords</option>
-                </select>
-              </div>
-              <div style="padding:4px;">
-                <textarea style="height:15em;width:100%;border-color: rgb(100,100,255);"
-                  class="prompt_template_text_area monospace form-control"></textarea>
-              </div>
-              <span class="small ms-2" style="position: relative;margin-top:-16px;margin-bottom:-16px;">
-                coverDate, title, type, url,
-                prompt, text</span>
-              <div style="padding:4px;">
-                <textarea style="height:7em;width:100%;border-color: rgb(100,100,255);"
-                  class="document_template_text_area monospace form-control"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="reset_template_options_button btn btn-secondary">Default</button>
-          &nbsp;
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sources Modal -->
-  <div class="modal fade" id="sourcesModal" tabindex="-1" aria-labelledby="sourcesModalLabel">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="sourcesModalLabel">Data Source Results</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
-            <div class="text-start py-2 d-flex flex-column heightflex" style="overflow: auto;">
-              <div class="lookup_verse_response_feed"></div>
-              <div class="initial_user_message pt-2 pb-4 fs-5 text-center">Enter a query to see relevant articles</div>
-              <a type="button" class="text-center" data-bs-toggle="modal" data-bs-target="#chapterExpModal">
-                <figure class="figure rounded">
-                  <img class="p-3 img-fluid" src="img/covid_diagram.svg" alt="verse retrieval diagram"
-                    style="max-height: 800px;">
-                  <figcaption class="figure-caption text-center">Preparing data for embed
-                  </figcaption>
-                </figure>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Full Raw Prompt Modal -->
-  <div class="modal fade" id="fullPromptModal" tabindex="-1" aria-labelledby="fullPromptModalLabel">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="fullPromptModalLabel">Full Raw Prompt</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex flex-column heightflex" style="background-image: var(--bs-gradient);">
-            <div class="text-start d-flex flex-column heightflex" style="overflow: auto;">
-              <div class="summary_details p-2"></div>
-              <div class="initial_user_message pt-2 fs-5 text-center">Enter a query see prompt details</div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <style>
     html,
     body {
