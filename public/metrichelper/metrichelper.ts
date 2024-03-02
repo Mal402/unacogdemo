@@ -1,8 +1,7 @@
-export class SongSearchApp {
+export class MetricHelperApp {
     running = false;
     analyze_prompt_button = document.body.querySelector(".analyze_prompt_button") as HTMLButtonElement;
     analyze_prompt_textarea = document.body.querySelector(".analyze_prompt_textarea") as HTMLTextAreaElement;
-    embedding_diagram_anchor: any = document.body.querySelector(".embedding_diagram_anchor");
     full_augmented_response = document.body.querySelector(".full_augmented_response") as HTMLDivElement;
     lookupData: any = {};
     lookedUpIds: any = {};
@@ -12,18 +11,6 @@ export class SongSearchApp {
     chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     chunkNormaltopK = 25;
     chunkNormalincludeK = 5;
-
-    chunkRecursiveAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
-    chunkRecursiveSessionId = "8umxl4rdt32x";
-    chunkRecursiveLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    chunkRecursivetopK = 25;
-    chunkRecursiveincludeK = 5;
-
-    sentenceChunkAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
-    sentenceChunkSessionId = "8umxl4rdt32x";
-    sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    sentenceChunktopK = 15;
-    sentenceChunkincludeK = 3;
 
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
