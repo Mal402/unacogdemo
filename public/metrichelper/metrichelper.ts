@@ -3,6 +3,13 @@ export class MetricHelperApp {
     analyze_prompt_button = document.body.querySelector(".analyze_prompt_button") as HTMLButtonElement;
     analyze_prompt_textarea = document.body.querySelector(".analyze_prompt_textarea") as HTMLTextAreaElement;
     full_augmented_response = document.body.querySelector(".full_augmented_response") as HTMLDivElement;
+    prompt_upload_button = document.body.querySelector(".prompt_upload_button") as HTMLButtonElement;
+    import_prompt_list_file = document.body.querySelector(".import_prompt_list_file") as HTMLInputElement;
+    prompt_list_preview = document.body.querySelector(".prompt_list_preview") as HTMLDivElement;
+    id_upload_button = document.body.querySelector(".id_upload_button") as HTMLButtonElement;
+    import_id_list_file = document.body.querySelector(".import_id_list_file") as HTMLInputElement;
+    id_list_preview = document.body.querySelector(".id_list_preview") as HTMLDivElement;
+    run_prompts_button = document.body.querySelector(".run_prompts_button") as HTMLButtonElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -17,10 +24,22 @@ export class MetricHelperApp {
     loaded = false;
     lookUpKeys: string[] = [];
     verboseDebugging = false;
-
+   
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
             await this.lookupAIDocumentChunks();
+        });
+        this.import_prompt_list_file.addEventListener("change", async () => {
+            await this.updateImportRowsDisplay();
+        });
+        this.id_upload_button.addEventListener("click", async () => {
+            this.import_id_list_file.click();
+        });
+        this.import_id_list_file.addEventListener("change", async () => {
+            this.updateImportRowsDisplay();
+        });
+        this.prompt_upload_button.addEventListener("click", async () => {
+            this.import_prompt_list_file.click();
         });
         this.load();
     }
@@ -217,4 +236,40 @@ Please respond with json and only json in this format:
             return promptResult.assist.assist.choices["0"].message.content;
         }
     }
+    async updateImportRowsDisplay() {
+        const records: any = await this.getImportDataFromDomFile(this.import_upload_file);
+        this.prompt_rows_preview.innerHTML = records.length + " rows";
+        if (records.length > 0) this.modal_send_tickets_to_api_button.style.display = "inline-block";
+        else this.modal_send_tickets_to_api_button.style.display = "none";
+    }
+      /**
+   * @param { any } fileInput DOM file input element
+   * @return { Promise<Array<any>> } array of data
+  */
+   async getImportDataFromDomFile(fileInput: any): Promise<Array<any>> {
+    if (!fileInput.files[0]) {
+      return [];
+    }
+
+    const fileContent = await fileInput.files[0].text();
+    let formatFilter = "json";
+    if (fileInput.files[0].name.slice(-4).toLowerCase() === ".csv") formatFilter = "csv";
+
+    try {
+      let records: Array<any> = [];
+      if (formatFilter === "json") {
+        records = JSON.parse(fileContent);
+      } else {
+        const result = Papa.parse(fileContent, {
+          header: true,
+        });
+        records = result.data;
+      }
+
+      return records;
+    } catch (importError) {
+      console.log("Import ERROR", importError);
+      return [];
+    }
+  }
 }

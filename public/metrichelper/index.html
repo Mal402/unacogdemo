@@ -63,16 +63,24 @@
         <div class="initial_user_message" style="flex: 1;">
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
             <div style="line-height:3.5em;" class="template_import_options_section">
-              <button class="btn btn-secondary modal_upload_tickets_button">
+              <button class="btn btn-secondary prompt_upload_button">
                 <i class="material-icons">upload_file</i>
-                Upload
+                Upload prompt list
               </button>
-              <input class="import_upload_file" style="display:none;" type="file" accept=".json,.csv">
+              <input class="import_prompt_list_file" style="display:none;" type="file" accept=".json,.csv">
               &nbsp; &nbsp;
-              <div class="doc_options_import_rows_preview"></div>
+              <div class="prompt_list_preview"></div>
               <br>
-              <button class="btn btn-primary modal_send_tickets_to_api_button"
-                style="display: none;float: right;">Append Session</button>
+              <button class="btn btn-secondary id_upload_button">
+                <i class="material-icons">upload_file</i>
+                Upload id list
+              </button>
+              <input class="import_id_list_file" style="display:none;" type="file" accept=".json,.csv">
+              &nbsp; &nbsp;
+              <div class="id_list_preview"></div>
+              <br>
+              <button class="btn btn-primary run_prompts_button"
+                style="display: none;float: right;">Run prompts</button>
               <div style="clear:both"></div>
               <hr>
             </div>
