@@ -149,55 +149,7 @@ export class SongSearchApp {
                 return match;
             });
     }
-    async getMetricsForSong(song: string) {
-        let romanceScore = await this.sendPromptForMetric(song, "romantic");
-        let motivationalScore = await this.sendPromptForMetric(song, "motivational");
-        let seasonalScore = await this.sendPromptForMetric(song, "seasonal");
-        let matureScore = await this.sendPromptForMetric(song, "mature");
-        let languageScore = await this.sendPromptForMetric(song, "inappropriate language");
-        let violenceScore = await this.sendPromptForMetric(song, "violent");
-        let politicalScore = await this.sendPromptForMetric(song, "political");
-        let religionScore = await this.sendPromptForMetric(song, "religious");
-        let funnyScore = await this.sendPromptForMetric(song, "comedic/funny");
-        let sadScore = await this.sendPromptForMetric(song, "sad");
-        let summary: any = {};
-        try {
-            summary.romanceScore = JSON.parse(romanceScore).contentRating;
-            summary.motivationalScore = JSON.parse(motivationalScore).contentRating;
-            summary.seasonalScore = JSON.parse(seasonalScore).contentRating;
-            summary.languageScore = JSON.parse(languageScore).contentRating;
-            summary.violenceScore = JSON.parse(violenceScore).contentRating;
-            summary.religionScore = JSON.parse(religionScore).contentRating;
-            summary.politicalScore = JSON.parse(politicalScore).contentRating;
-            summary.matureScore = JSON.parse(matureScore).contentRating;
-            summary.funScore = JSON.parse(funnyScore).contentRating;
-            summary.sadScore = JSON.parse(sadScore).contentRating;
-        }
-        catch (error) {
-            summary.error = true;
-            console.log(error);
-        }
-        return summary;
-    }
-    async sendPromptForMetric(song: string, subject: string) {
-        let fullprompt = `Rate the following song 0-10 for ${subject} content: ${song}
-Please respond with json and only json in this format:
-{
-  "contentRating": 0
-}`;
-
-        try {
-            let result = await this.sendPromptToLLM(fullprompt);
-            return result;
-        } catch (error) {
-            console.log(song, subject, error);
-            return `{
-        "contentRating": 0
-      }`;
-        }
-    }
     async sendPromptToLLM(message: string): Promise<string> {
-
         const apiToken = this.chunkNormalAPIToken;
         const sessionId = this.chunkNormalSessionId;
         const body = {
