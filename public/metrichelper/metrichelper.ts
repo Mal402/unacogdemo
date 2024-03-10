@@ -11,16 +11,21 @@ export class MetricHelperApp {
     session_id = document.body.querySelector(".session_id") as HTMLInputElement;
     session_lookup_path = document.body.querySelector(".session_lookup_path") as HTMLInputElement;
     prompt_log_console = document.body.querySelector(".prompt_log_console") as HTMLDivElement;
+    next_button = document.body.querySelector(".next_button") as HTMLButtonElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
     promptRows: any[] = [];
     idRows: any[] = [];
+    resultRows: any[] = [];
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
     lookUpKeys: string[] = [];
     verboseDebugging = false;
+    promptTable: any = null; 
+    idTable: any = null;
+    consoleTable: any = null;
 
     constructor() {
         this.run_prompts_button.addEventListener("click", () => {
@@ -38,9 +43,62 @@ export class MetricHelperApp {
         this.prompt_upload_button.addEventListener("click", () => {
             this.import_prompt_list_file.click();
         });
-
-
+        this.next_button.addEventListener("click", () => { 
+            this.nextTab();
+        });
+        this.paintPromptTable();
+        this.paintIdTable();
+        this.paintConsole();
         this.load();
+    }
+    paintPromptTable(data: any[] = []) {
+        if (!this.promptTable) {
+            this.promptTable = new (window as any).Tabulator(".prompt_table_preview", {
+                height:"311px",
+                layout:"fitDataStretch",
+                responsiveLayout:"collapse",
+                columns:[
+                    {title:"Id", field:"id", width:200, },
+                    {title:"Prompt", field:"prompt"},
+                ],
+                data,
+            });
+        } else {
+            this.promptTable.setData(data);
+        }
+    } 
+    paintIdTable(data: any[] = []) {
+        if (!this.idTable) {
+            this.idTable = new (window as any).Tabulator(".document_table_preview", {
+                height:"311px",
+                layout:"fitDataStretch",
+                responsiveLayout:"collapse",
+                columns:[
+                    {title:"Id", field:"id", width:200},
+                    {title: "Text", field: "text"},
+                ],
+                data,
+            });
+        } else {
+            this.idTable.setData(data);
+        }
+    }
+    paintConsole() {
+        if (!this.consoleTable) {
+            this.consoleTable = new (window as any).Tabulator(".console_table_preview", {
+                height:"622px",
+                layout:"fitDataStretch",
+                responsiveLayout:"collapse",
+                columns:[
+                    {title:"source id", field:"sourceId", width:200},
+                    {title: "prompt id", field: "promptId", width:200},
+                    {title: "result", field: "result"},
+                ],
+                data: this.semanticResults,
+            });
+        } else {
+            this.consoleTable.setData(this.semanticResults);
+        }
     }
     async getMatchingVectors(message: string, topK: number, apiToken: string, sessionId: string): Promise<any> {
         const body = {
@@ -130,10 +188,11 @@ export class MetricHelperApp {
         this.prompt_log_console.innerHTML = "starting prompts...<br>";
         const idList = this.idRows.map((row: any) => row.id);
         (<any>window).resultsMap = {};
-        const delay = ms => new Promise(res => setTimeout(res, ms));
-
+        const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+        this.semanticResults = [];
+        this.paintConsole();
         await this.fetchDocumentsLookup(idList);
-        for (let c = 0, l = idList.length; c < l; c++) {
+        for (let c = 0, l = 2; c < l; c++) {
             let id = idList[c];
             const promises: any[] = [];
             const song = this.lookupData[id];
@@ -147,20 +206,29 @@ export class MetricHelperApp {
                     (<any>window).resultsMap[id] = {};
                 }
                 const value = JSON.parse(result);
+                let rating = -1;
                 try {
                     (<any>window).resultsMap[id][this.promptRows[index].id] = value.contentRating;
+                    rating = value.contentRating;
                 }
                 catch (error) {
                     console.log("ERROR", error);
                     console.log("result", result);
-                    (<any>window).resultsMap[id][this.promptRows[index].id] = 0;
+                    (<any>window).resultsMap[id][this.promptRows[index].id] = -1;
                 }
+
+                this.semanticResults.push({
+                    sourceId: id,
+                    promptId: this.promptRows[index].id,
+                    result: rating,
+                });
             });
-            
+            this.paintConsole();
             this.prompt_log_console.innerHTML += `${id} processed<br>`;
             await delay(5000);
         }
-        this.prompt_log_console.innerHTML += "all prompts processed<br>";
+        this.prompt_log_console.innerHTML += `<div class="alert alert-primary mt-3" role="alert">
+        all prompts processed</div>`;
         console.log("resultsMap", (<any>window).resultsMap);
     }
     async sendPromptToLLM(message: string): Promise<string> {
@@ -200,10 +268,12 @@ export class MetricHelperApp {
     async updatePromptRowsDisplay() {
         this.promptRows = await this.getImportDataFromDomFile(this.import_prompt_list_file);
         this.prompt_list_preview.innerHTML = this.promptRows.length + " rows";
+        this.promptTable.setData(this.promptRows);
     }
     async updateIDRowsDisplay() {
         this.idRows = await this.getImportDataFromDomFile(this.import_id_list_file);
         this.id_list_preview.innerHTML = this.idRows.length + " rows";
+        this.idTable.setData(this.idRows);
     }
     /**
  * @param { any } fileInput DOM file input element
@@ -234,5 +304,11 @@ export class MetricHelperApp {
             console.log("Import ERROR", importError);
             return [];
         }
+    }
+    nextTab() {
+        const tabs = Array.prototype.slice.call(document.querySelectorAll('.nav-item .nav-link'));
+        const activeTab = tabs.find(tab => tab.classList.contains('active'));
+        const nextTab = tabs[(tabs.indexOf(activeTab) + 1) % tabs.length];
+        nextTab.click();
     }
 }

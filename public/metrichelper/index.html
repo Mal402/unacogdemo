@@ -31,7 +31,8 @@
     integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-
+  <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
@@ -50,48 +51,81 @@
   </script>
 </head>
 
-<body class="initial heightflex">
-  <nav class="navbar navbar-dark bg-dark navbar-expand-lg" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-  border-bottom: 1px solid rgba(127, 127, 127, .4);" aria-label="Main navigation">
-    <div class="container-xxl">
-    </div>
-  </nav>
-  <div class="container">
-    <div class="d-flex flex-column justify-content-between">
-      <div style="line-height:3.5em;" class="template_import_options_section">
-        <div>
-          <button class="btn btn-secondary prompt_upload_button">
+<body class="initial">
+  <div class="container-xl">
+    <ul class="nav nav-tabs mt-2">
+      <li class="nav-item">
+        <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+          role="tab" aria-selected="true">Instructions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="nav-config-tab" data-bs-toggle="tab" data-bs-target="#nav-config" type="button"
+          role="tab" aria-selected="false">Configure</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="nav-metric-prompts-tab" data-bs-toggle="tab" data-bs-target="#nav-metric-prompts"
+          type="button" role="tab" aria-selected="false">Analysis Prompts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="nav-text-source-tab" data-bs-toggle="tab" data-bs-target="#nav-text-source"
+          type="button" role="tab" aria-selected="false">Text Source</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="nav-console-tab" data-bs-toggle="tab" data-bs-target="#nav-console" type="button"
+          role="tab" aria-selected="false">Console</a>
+      </li>
+    </ul>
+    <div class="py-3">
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
+          tabindex="0">
+          INSTRUCTionS UNCLEAR I SPENT $2000 on LLM
+        </div>
+        <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab" tabindex="0">
+          <div class="d-flex flex-column justify-content-between">
+            <div class="form-control">
+              <label class="form-label">session api token</label>
+              <input type="text" class="session_api_token form-control"
+                value="cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16"><br>
+              <label class="form-label">session id</label>
+              <input type="text" class="session_id form-control" value="8umxl4rdt32x"><br>
+              <label class="form-label">session lookup path</label>
+              <input type="text" class="session_lookup_path form-control"
+                value="https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media"><br>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-metric-prompts" role="tabpanel" aria-labelledby="nav-metric-prompts-tab"
+          tabindex="0">
+          <button class="btn btn-secondary prompt_upload_button mb-2">
             <i class="material-icons">upload_file</i>
             Upload prompt list
           </button>
           <input class="import_prompt_list_file" style="display:none;" type="file" accept=".json,.csv">
           &nbsp; &nbsp;
           <div class="prompt_list_preview">upload file to start</div>
+          <div class="prompt_table_preview"></div>
         </div>
-        <div>
-          <button class="btn btn-secondary id_upload_button">
+        <div class="tab-pane fade" id="nav-text-source" role="tabpanel" aria-labelledby="nav-text-source-tab"
+          tabindex="0">
+          <button class="btn btn-secondary id_upload_button mb-2">
             <i class="material-icons">upload_file</i>
             Upload id list
           </button>
           <input class="import_id_list_file" style="display:none;" type="file" accept=".json,.csv">
           &nbsp; &nbsp;
           <div class="id_list_preview">id list required</div>
+          <div class="document_table_preview"></div>
         </div>
-        <label class="form-label">session api token</label>
-        <input type="text" class="session_api_token form-control" value="cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16"><br>
-        <label class="form-label">session id</label>
-        <input type="text" class="session_id form-control" value="8umxl4rdt32x"><br>
-        <label class="form-label">session lookup path</label>
-        <input type="text" class="session_lookup_path form-control"
-          value="https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media"><br>
-        <br>
-        <button class="btn btn-primary run_prompts_button">Run
-          prompts</button>
-        <div style="clear:both"></div>
-        <hr>
+        <div class="tab-pane fade" id="nav-console" role="tabpanel" aria-labelledby="nav-console-tab" tabindex="0">
+          <button class="btn btn-primary run_prompts_button">Run
+            prompts</button>
+          <div class="prompt_log_console mb-3"></div>
+          <div class="console_table_preview"></div>
+        </div>
       </div>
-      <div class="prompt_log_console">
-
+      <div class="menu_nav">
+        <button type="button" class="btn btn-lg btn-primary next_button">Next</button>
       </div>
     </div>
   </div>
@@ -101,6 +135,18 @@
       font-family: Georgia, 'Times New Roman', Times, serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+    }
+
+    .menu_nav {
+      position: absolute;
+      bottom: 20px;
+      left: 85%;
+      transform: translateX(-50%);
+    }
+
+    .btn-lg.next_button {
+      font-size: 24px;
+      padding: 20px 40px;
     }
   </style>
 </body>
