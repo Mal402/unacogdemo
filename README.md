@@ -12,7 +12,7 @@ so no need to build anything, just change, reload the webpage and check out the 
 - Metadata does not include text in this example
 - More then 1 million vectors indexed on Pinecone
 - Over 2800 source documents 
-- 3 Indexes for 100, 200 and 400 token sizes
+- 3 Indexes for 100, 200, ~300and 400 token sizes
 - Text lookups are generated, stored and fetch from cloud storage. 
 - Scraped data from https://huggingface.co/datasets/jamescalam/ai-arxiv2
 - Original data from Cornell University - https://arxiv.org/
@@ -29,3 +29,6 @@ so no need to build anything, just change, reload the webpage and check out the 
 - Small to big possible with verse -> chapter
 - Lots of interesting prompt templates!
 - Used verse and chapter data from https://github.com/thiagobodruk/bible
+
+Templates are fully customizable. Users have the ability to inject additional data using the embedded template.
+Each example comes with its own metadata you can embed (listed under textarea in each example).
