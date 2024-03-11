@@ -209,7 +209,7 @@ export class MetricHelperApp {
         this.semanticResults = [];
         this.paintConsole();
         await this.fetchDocumentsLookup(idList);
-        for (let c = 0, l = 4; c < l; c++) {
+        for (let c = 0, l = idList.length; c < l; c++) {
             let id = idList[c];
             const promises: any[] = [];
             const song = this.lookupData[id];
