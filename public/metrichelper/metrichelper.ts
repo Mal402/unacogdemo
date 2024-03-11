@@ -12,6 +12,7 @@ export class MetricHelperApp {
     session_lookup_path = document.body.querySelector(".session_lookup_path") as HTMLInputElement;
     prompt_log_console = document.body.querySelector(".prompt_log_console") as HTMLDivElement;
     next_button = document.body.querySelector(".next_button") as HTMLButtonElement;
+    download_results_button = document.querySelector(".download_results_button") as HTMLButtonElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -23,7 +24,7 @@ export class MetricHelperApp {
     loaded = false;
     lookUpKeys: string[] = [];
     verboseDebugging = false;
-    promptTable: any = null; 
+    promptTable: any = null;
     idTable: any = null;
     consoleTable: any = null;
 
@@ -43,8 +44,19 @@ export class MetricHelperApp {
         this.prompt_upload_button.addEventListener("click", () => {
             this.import_prompt_list_file.click();
         });
-        this.next_button.addEventListener("click", () => { 
+        this.next_button.addEventListener("click", () => {
             this.nextTab();
+        });
+        this.download_results_button.addEventListener("click", () => {
+            const csvText = (window as any).Papa.unparse(this.semanticResults, { header: true, });
+            const csvContent = "data:text/csv;charset=utf-8," + csvText;
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "results.csv");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         });
         this.paintPromptTable();
         this.paintIdTable();
@@ -54,28 +66,31 @@ export class MetricHelperApp {
     paintPromptTable(data: any[] = []) {
         if (!this.promptTable) {
             this.promptTable = new (window as any).Tabulator(".prompt_table_preview", {
-                height:"311px",
-                layout:"fitDataStretch",
-                responsiveLayout:"collapse",
-                columns:[
-                    {title:"Id", field:"id", width:200, },
-                    {title:"Prompt", field:"prompt"},
+                height: "311px",
+                layout: "fitDataStretch",
+                responsiveLayout: "collapse",
+                columns: [
+                    { title: "Id", field: "id", width: 200, headerSort: false },
+                    {
+                        title: "Prompt", field: "prompt", headerSort: false,
+                        formatter: "textarea",
+                    },
                 ],
                 data,
             });
         } else {
             this.promptTable.setData(data);
         }
-    } 
+    }
     paintIdTable(data: any[] = []) {
         if (!this.idTable) {
             this.idTable = new (window as any).Tabulator(".document_table_preview", {
-                height:"311px",
-                layout:"fitDataStretch",
-                responsiveLayout:"collapse",
-                columns:[
-                    {title:"Id", field:"id", width:200},
-                    {title: "Text", field: "text"},
+                height: "311px",
+                layout: "fitDataStretch",
+                responsiveLayout: "collapse",
+                columns: [
+                    { title: "Id", field: "id", width: 200, headerSort: false},
+                    { title: "Text", field: "text", headerSort: false },
                 ],
                 data,
             });
@@ -84,20 +99,21 @@ export class MetricHelperApp {
         }
     }
     paintConsole() {
+        const data = this.semanticResults.reverse();
         if (!this.consoleTable) {
             this.consoleTable = new (window as any).Tabulator(".console_table_preview", {
-                height:"622px",
-                layout:"fitDataStretch",
-                responsiveLayout:"collapse",
-                columns:[
-                    {title:"source id", field:"sourceId", width:200},
-                    {title: "prompt id", field: "promptId", width:200},
-                    {title: "result", field: "result"},
+                height: "622px",
+                layout: "fitDataStretch",
+                responsiveLayout: "collapse",
+                columns: [
+                    { title: "source id", field: "sourceId", width: 200, headerSort: false},
+                    { title: "prompt id", field: "promptId", width: 200, headerSort: false},
+                    { title: "result", field: "result", headerSort: false },
                 ],
-                data: this.semanticResults,
+                data,
             });
         } else {
-            this.consoleTable.setData(this.semanticResults);
+            this.consoleTable.setData(data);
         }
     }
     async getMatchingVectors(message: string, topK: number, apiToken: string, sessionId: string): Promise<any> {
@@ -185,14 +201,15 @@ export class MetricHelperApp {
         }
     }
     async runPrompts() {
-        this.prompt_log_console.innerHTML = "starting prompts...<br>";
+        this.prompt_log_console.innerHTML = `<div class="alert alert-primary mt-3" role="alert">
+        processing metric prompts...</div>`;
         const idList = this.idRows.map((row: any) => row.id);
         (<any>window).resultsMap = {};
         const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
         this.semanticResults = [];
         this.paintConsole();
         await this.fetchDocumentsLookup(idList);
-        for (let c = 0, l = 2; c < l; c++) {
+        for (let c = 0, l = 4; c < l; c++) {
             let id = idList[c];
             const promises: any[] = [];
             const song = this.lookupData[id];
@@ -224,12 +241,10 @@ export class MetricHelperApp {
                 });
             });
             this.paintConsole();
-            this.prompt_log_console.innerHTML += `${id} processed<br>`;
             await delay(5000);
         }
         this.prompt_log_console.innerHTML += `<div class="alert alert-primary mt-3" role="alert">
         all prompts processed</div>`;
-        console.log("resultsMap", (<any>window).resultsMap);
     }
     async sendPromptToLLM(message: string): Promise<string> {
 
@@ -275,10 +290,6 @@ export class MetricHelperApp {
         this.id_list_preview.innerHTML = this.idRows.length + " rows";
         this.idTable.setData(this.idRows);
     }
-    /**
- * @param { any } fileInput DOM file input element
- * @return { Promise<Array<any>> } array of data
-*/
     async getImportDataFromDomFile(fileInput: any): Promise<Array<any>> {
         if (!fileInput.files[0]) {
             return [];
