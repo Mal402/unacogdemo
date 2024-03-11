@@ -4,28 +4,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Covid Documents and Chunking</title>
+  <title>Song Demo</title>
   <meta property="og:url" content="https://unacogdemos.web.app/covid/">
   <meta property="og:title" content="RAG Demo Covid Research Papers">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://unacogdemos.web.app/images/aiarchivedemo.gif">
-  <meta property="og:description"
-    content="This demo demonstrates retrieval augmented generation (rag) using Covid research papers.">
+  <meta property="og:description" content="Hot songs demo">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="shortcut icon" href="/images/logo64.png">
   <meta name='mobile-web-app-capable' content='yes'>
   <meta name='apple-mobile-web-app-capable' content='yes'>
   <meta name='apple-mobile-web-app-status-bar-style' content='black'>
-  <meta name="description"
-    content="This demo demonstrates retrieval augmented generation (rag) using Covid research papers.">
+  <meta name="description" content="Hot songs demo">
   <link rel='icon' sizes='192x192' href='https://unacog.com/images/logo64.png'>
   <link rel='apple-touch-icon' href='https://unacog.com/images/logo64.png'>
   <meta name='msapplication-square310x310logo' content='https://unacog.com/images/logo64.png'>
   <link rel='apple-touch-icon' href='https://unacog.com/images/logo64.png'>
   <meta name="twitter:site" content="https://unacogdemos.web.app/covid/">
-  <meta name="twitter:title" content="Unacog Covid Research Demo on semantic retrieval.">
-  <meta name="twitter:description"
-    content="This demo demonstrates retrieval augmented generation (rag) using Covid research papers.">
+  <meta name="twitter:title" content="Hot songs demo">
+  <meta name="twitter:description" content="Hot songs demo">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image:src" content="https://unacogdemos.web.app/images/aiarchivedemo.gif">
 
@@ -48,31 +45,41 @@
   </script>
 </head>
 
-<body class="initial heightflex">
-  <nav class="navbar navbar-dark bg-dark navbar-expand-lg" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-  border-bottom: 1px solid rgba(127, 127, 127, .4);" aria-label="Main navigation">
-    <div class="container-xxl">
-    </div>
-  </nav>
-  <div class="heightflex container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;"
+<body class="initial">
+  <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;"
     aria-labelledby="full_augmented_response_button">
-    <div class="heightflex" style="overflow:auto;">
-      <div class="full_augmented_response m-2"></div>
-      <div class="d-flex flex-column heightflex m-2" style="overflow: auto; justify-content: center;">
-        <div></div>
-        <div class="initial_user_message" style="flex: 1;">
-          <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-            <div><span class="onboarding_text">Enter a prompt to begin.</span>
+    <div>
+      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+        aria-controls="offcanvasExample">
+        Filter
+      </button>
+    </div>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div>
+          <div>
+            <div style="padding:4px;display: inline-block;">
+              <select class="form-select metric_filter_select">
+                <option selected>Romantic</option>
+              </select>
             </div>
-            <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
-              <span class="float-start"></a></span>
-              <span class="float-end">Top 100 Billboard</span>
+            <div style="padding:4px;display: inline-block;">
+              <select class="form-select" name="" id="">
+                <option value="">less than</option>
+                <option value="">greater than</option>
+              </select>
+            </div>
+            <br>
+            <div style="padding:4px;display: inline-block;width: 340px;">
+              <input type="range" class="form-range" min="0" max="10" step="1" value="1">
             </div>
           </div>
         </div>
-        <div></div>
       </div>
-      <div></div>
     </div>
     <div class="w-100 d-flex flex-row rounded">
       <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
@@ -98,63 +105,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .heightflex {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .tab-content>.active {
-      display: flex;
-    }
-
-    .verse_card {
-      margin: 8px;
-      border-bottom: solid 1px gray;
-      padding: 8px;
-      color: black;
-      font-size: 18px;
-    }
-
-    .message_text,
-    .augmented_message_text {
-      width: 100%;
-      height: 5em;
-      margin-bottom: 12px;
-    }
-
-    .verse_card .selected {
-      font-weight: bold;
-    }
-
-    .full_augmented_prompt,
-    .full_augmented_response {
-      white-space: pre-wrap;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    .monospace {
-      font-family: monospace;
-    }
-
-    .raw_prompt {
-      white-space: pre-wrap;
-      font-family: monospace;
-    }
-
-    .pipeline_detail_anchor_hide {
-      display: none;
-    }
-
-    .running .pipeline_detail_anchor_hide,
-    .complete .pipeline_detail_anchor_hide {
-      display: block;
-    }
-
     .initial .initial_user_message {
       display: block;
       text-align: start;
@@ -162,38 +112,6 @@
 
     .initial_user_message {
       display: none;
-    }
-
-    .nav_query_results {
-      margin-left: 24px;
-    }
-
-    .nav-icon {
-      font-size: 24px;
-      vertical-align: middle;
-      margin-right: 5px;
-    }
-
-    .nav-icon-mobile {
-      font-size: 36px;
-      vertical-align: middle;
-      margin-right: 5px;
-    }
-
-    .nav-text {
-      vertical-align: middle;
-    }
-
-    @keyframes fade-in-left {
-      0% {
-        transform: translateX(-10px);
-        opacity: 0;
-      }
-
-      100% {
-        transform: translateX(0);
-        opacity: 1;
-      }
     }
 
     .onboarding_text {

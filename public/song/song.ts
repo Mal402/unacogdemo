@@ -1,9 +1,12 @@
+import {prompts} from "./prompts";
+
 export class SongSearchApp {
     running = false;
     analyze_prompt_button = document.body.querySelector(".analyze_prompt_button") as HTMLButtonElement;
     analyze_prompt_textarea = document.body.querySelector(".analyze_prompt_textarea") as HTMLTextAreaElement;
     embedding_diagram_anchor: any = document.body.querySelector(".embedding_diagram_anchor");
     full_augmented_response = document.body.querySelector(".full_augmented_response") as HTMLDivElement;
+    metric_filter_select = document.body.querySelector(".metric_filter_select") as HTMLSelectElement;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
@@ -24,7 +27,7 @@ export class SongSearchApp {
     sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     sentenceChunktopK = 15;
     sentenceChunkincludeK = 3;
-
+    metricPrompts: any[] = [];
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
@@ -55,7 +58,15 @@ export class SongSearchApp {
         });
         return await fetchResults.json();
     }
-    load() {
+     load() {
+        this.metricPrompts = prompts;
+        this.loaded = true;
+
+        let html = "<option>Choose a metric</option>";
+        this.metricPrompts.forEach((prompt: any) => {
+            html += `<option>${prompt.id}</option>`;
+        });
+        this.metric_filter_select.innerHTML = html;
     }
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.full_augmented_response.innerHTML = "";
@@ -65,7 +76,7 @@ export class SongSearchApp {
 
         let html = "";
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
-        result.matches.forEach((match) => {
+        result.matches.forEach((match: any) => {
             const textFrag = this.lookupData[match.id];
             if (!textFrag) {
                 console.log(match.id, this.lookupData)
