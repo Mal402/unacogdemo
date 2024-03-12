@@ -38,14 +38,25 @@ export class SongSearchApp {
         this.analyze_prompt_button.addEventListener("click", async () => {
             await this.lookupAIDocumentChunks();
         });
+        this.analyze_prompt_textarea.addEventListener("keydown", (e: any) => {
+            if (e.key === "Enter" && e.shiftKey === false) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.analyze_prompt_button.click();
+            }
+        });
         this.load();
     }
     async getMatchingVectors(message: string, topK: number, apiToken: string, sessionId: string): Promise<any> {
+        let filter = {
+            ["romantic"]: { ["$gte"]: 1 },
+        };
         const body = {
             message,
             apiToken,
             sessionId,
             topK,
+            filter,
         };
         const fetchResults = await fetch(this.queryUrl, {
             method: "POST",
@@ -71,7 +82,6 @@ export class SongSearchApp {
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.full_augmented_response.innerHTML = "";
         const message = this.analyze_prompt_textarea.value.trim();
-
         let result = await this.getMatchingVectors(message, 10, this.chunkNormalAPIToken, this.chunkNormalSessionId);
 
         let html = "";
@@ -90,6 +100,8 @@ export class SongSearchApp {
             <span style="float:right;font-size:.9em;border:solid 1px silver;padding:.2em;">Match: <b>${(match.score * 100).toFixed()}%</b><br>
             </span>
             ${match.metadata.artist} - ${match.metadata.title}
+            <br>
+           rom: ${match.metadata.romantic} com: ${match.metadata.comedic} lang: ${match.metadata.inappropriatelanguage} 
             <audio controls>
             <source src="${match.metadata.url}" type="audio/mpeg">
             </audio>
@@ -159,38 +171,5 @@ export class SongSearchApp {
 
                 return match;
             });
-    }
-    async sendPromptToLLM(message: string): Promise<string> {
-        const apiToken = this.chunkNormalAPIToken;
-        const sessionId = this.chunkNormalSessionId;
-        const body = {
-            message,
-            apiToken,
-            sessionId,
-            disableEmbedding: true,
-        };
-        const fetchResults = await fetch(this.promptUrl, {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-        });
-        const promptResult = await fetchResults.json();
-        if (!promptResult.success) {
-            console.log("error", promptResult);
-            return promptResult.errorMessage;
-        } else {
-            console.log(promptResult);
-        }
-        if (promptResult.assist.error) {
-            return promptResult.assist.error.message;
-        } else if (promptResult.assist.assist.error) {
-            return promptResult.assist.assist.error.message;
-        } else {
-            return promptResult.assist.assist.choices["0"].message.content;
-        }
     }
 }

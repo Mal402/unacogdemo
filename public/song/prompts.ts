@@ -21,7 +21,7 @@ export const prompts =
       "prompt": "Rate the following song 0-10, regarding its \"mature\" content. Guideline for \"mature\" metrics: Evaluate mature content by identifying explicit references to violence, sexual acts, drug use, and mature themes. Assess intensity, explicitness, and context. Consider language and imagery that depict or imply adult situations, aggression, or substance abuse. Gauge the impact on the narrative and its appropriateness for various audiences. \nSong Lyrics: {{query}}\nPlease respond with json and only json in this format:\n{\n  \"contentRating\": 0\n}"
     },
     {
-      "id": "inappropriate language",
+      "id": "inappropriatelanguage",
       "description": "For language content, evaluate the presence and context of profanity, slurs, and vulgar expressions. Consider the frequency and intensity of inappropriate language, considering its impact on the narrative or message. Consider if such language serves a stylistic or thematic purpose. Note the audience appropriateness and cultural sensitivity of the expressions used.",
       "prompt": "Rate the following song 0-10, regarding its \"inappropriate language\" content. Guideline for \"inappropriate language\" metrics: For language content, evaluate the presence and context of profanity, slurs, and vulgar expressions. Consider the frequency and intensity of inappropriate language, considering its impact on the narrative or message. Consider if such language serves a stylistic or thematic purpose. Note the audience appropriateness and cultural sensitivity of the expressions used. \nSong Lyrics: {{query}}\nPlease respond with json and only json in this format:\n{\n  \"contentRating\": 0\n}"
     },

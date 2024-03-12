@@ -46,9 +46,10 @@
 </head>
 
 <body class="initial">
-  <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;"
+  <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;
+    height:100%;display:flex;flex-direction: column;"
     aria-labelledby="full_augmented_response_button">
-    <div class="full_augmented_response"></div>
+    <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
     <div>
       <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
         aria-controls="offcanvasExample">
