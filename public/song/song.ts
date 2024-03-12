@@ -1,4 +1,4 @@
-import {prompts} from "./prompts";
+import { prompts } from "./prompts";
 
 export class SongSearchApp {
     running = false;
@@ -7,9 +7,13 @@ export class SongSearchApp {
     embedding_diagram_anchor: any = document.body.querySelector(".embedding_diagram_anchor");
     full_augmented_response = document.body.querySelector(".full_augmented_response") as HTMLDivElement;
     metric_filter_select = document.body.querySelector(".metric_filter_select") as HTMLSelectElement;
+    filter_container = document.body.querySelector(".filter_container") as HTMLDivElement;
+    audio_visualizer = document.body.querySelector(".audio_visualizer") as HTMLDivElement;
+    motionVisualizer: any = null;
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
+    selectedFilters: any[] = [];
     chunkNormalAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
     chunkNormalSessionId = "8umxl4rdt32x";
     chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
@@ -45,12 +49,66 @@ export class SongSearchApp {
                 this.analyze_prompt_button.click();
             }
         });
+        this.analyze_prompt_textarea.addEventListener("input", () => {
+            localStorage.setItem("song_lastPrompt", this.analyze_prompt_textarea.value);
+        });
+        this.metric_filter_select.addEventListener("input", () => this.addMetricFilter());
         this.load();
     }
+    addMetricFilter() {
+        const metaField = this.metric_filter_select.value;
+        this.selectedFilters.push({ metaField, value: 1, operator: "$gte" });
+        this.renderFilters();
+        this.saveFiltersToLocalStorage();
+        this.metric_filter_select.selectedIndex = 0;
+    }
+    renderFilters() {
+        this.filter_container.innerHTML = "";
+        this.selectedFilters.forEach((filter: any, filterIndex: number) => {
+            let filterDiv = document.createElement("div");
+            filterDiv.innerHTML = this.selectedFilterTemplate(filter, filterIndex);
+            this.filter_container.appendChild(filterDiv);
+        });
+        this.filter_container.querySelectorAll("button").forEach((button: HTMLButtonElement) => {
+            button.addEventListener("click", () => {
+                let filterIndex = Number(button.getAttribute("data-filterindex"));
+                this.selectedFilters.splice(filterIndex, 1);
+                this.renderFilters();
+                this.saveFiltersToLocalStorage();
+            });
+        });
+        this.filter_container.querySelectorAll("select").forEach((select: HTMLSelectElement) => {
+            select.addEventListener("input", () => {
+                let filterIndex = Number(select.getAttribute("data-filterindex"));
+                this.selectedFilters[filterIndex].operator = select.value;
+                this.saveFiltersToLocalStorage();
+            });
+        });
+        this.filter_container.querySelectorAll("input").forEach((input: HTMLInputElement) => {
+            input.addEventListener("input", () => {
+                let filterIndex = Number(input.getAttribute("data-filterindex"));
+                this.selectedFilters[filterIndex].value = input.value;
+                this.saveFiltersToLocalStorage();
+            });
+        });
+
+        let html = "<option>Choose a metric</option>";
+        this.metricPrompts.forEach((prompt: any) => {
+            let promptUsed = false;
+            this.selectedFilters.forEach((filter: any) => {
+                if (filter.metaField === prompt.id) promptUsed = true;
+            });
+
+            if (promptUsed === false) html += `<option>${prompt.id}</option>`;
+        });
+        this.metric_filter_select.innerHTML = html;
+    }
     async getMatchingVectors(message: string, topK: number, apiToken: string, sessionId: string): Promise<any> {
-        let filter = {
-            ["romantic"]: { ["$gte"]: 1 },
-        };
+        const filter: any = {};
+        this.selectedFilters.forEach((selectedFilter: any) => {
+            filter[selectedFilter.metaField] = { [selectedFilter.operator]: Number(selectedFilter.value) };
+        });
+
         const body = {
             message,
             apiToken,
@@ -69,15 +127,14 @@ export class SongSearchApp {
         });
         return await fetchResults.json();
     }
-     load() {
+    saveFiltersToLocalStorage() {
+        localStorage.setItem("song_filters", JSON.stringify(this.selectedFilters));
+    }
+    load() {
         this.metricPrompts = prompts;
         this.loaded = true;
 
-        let html = "<option>Choose a metric</option>";
-        this.metricPrompts.forEach((prompt: any) => {
-            html += `<option>${prompt.id}</option>`;
-        });
-        this.metric_filter_select.innerHTML = html;
+        this.hydrateFromLocalStorage();
     }
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.full_augmented_response.innerHTML = "";
@@ -101,8 +158,14 @@ export class SongSearchApp {
             </span>
             ${match.metadata.artist} - ${match.metadata.title}
             <br>
-           rom: ${match.metadata.romantic} com: ${match.metadata.comedic} lang: ${match.metadata.inappropriatelanguage} 
-            <audio controls>
+            rom: ${match.metadata.romantic} com: ${match.metadata.comedic} lang: ${match.metadata.inappropriatelanguage} 
+            <br>
+            mat: ${match.metadata.mature} sea: ${match.metadata.seasonal} mot: ${match.metadata.motivational} 
+            <br>
+            pol: ${match.metadata.political} reli: ${match.metadata.religious} sad: ${match.metadata.sad}
+            <br>
+            vio: ${match.metadata.violent}
+            <audio controls crossorigin="anonymous">
             <source src="${match.metadata.url}" type="audio/mpeg">
             </audio>
               <br>
@@ -120,6 +183,20 @@ export class SongSearchApp {
                         otherAudio.pause();
                     }
                 });
+                if (this.motionVisualizer) {
+                    this.motionVisualizer.connectInput(audio);
+                } else {
+                    this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer,
+                        {
+                            width: 800,
+                            height: 400,
+                            source: audio,
+                            bgColor: "#ffffff",
+                            overlay: true,
+                            bgAlpha: 0,
+                        });
+                }
+
             });
         });
 
@@ -171,5 +248,39 @@ export class SongSearchApp {
 
                 return match;
             });
+    }
+    hydrateFromLocalStorage() {
+        const lastPrompt = localStorage.getItem("song_lastPrompt");
+        if (lastPrompt) this.analyze_prompt_textarea.value = lastPrompt;
+        this.analyze_prompt_textarea.setSelectionRange(0, this.analyze_prompt_textarea.value.length);
+        const filters = localStorage.getItem("song_filters");
+        if (filters) this.selectedFilters = JSON.parse(filters);
+        this.renderFilters();
+    }
+    selectedFilterTemplate(filter: any, filterIndex: number): string {
+        const title = filter.metaField;
+        const lessThan = filter.operator === "$lte" ? "selected" : "";
+        const greaterThan = filter.operator === "$gte" ? "selected" : "";
+        return `<div>
+       <div style="padding:4px;display: inline-block;">
+         <span class="metric_filter_title">${title}</span>
+       </div>
+       <div style="padding:4px;display: inline-block;">
+         <select class="form-select" name="" data-filterindex="${filterIndex}">
+           <option value="$lte" ${lessThan}>less than</option>
+           <option value="$gte" ${greaterThan}>greater than</option>
+         </select>
+       </div>
+       <button style="float: right;" data-filterindex="${filterIndex}">
+         <i class="material-icons">delete</i>
+       </button>
+       <br>
+       <div style="padding:4px;display: inline-block;width: 340px;">
+         <input type="range" class="form-range" min="0" max="10" step="1" value="${filter.value}" data-filterindex="${filterIndex}">
+       </div>
+     </div>`
+    }
+    titleCase(title: string): string {
+        return title[0].toUpperCase() + title.slice(1).toLowerCase();
     }
 }
