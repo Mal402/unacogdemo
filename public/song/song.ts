@@ -194,6 +194,15 @@ export class SongSearchApp {
                             bgColor: "#ffffff",
                             overlay: true,
                             bgAlpha: 0,
+                            radial: true,
+                            ledBars: true,
+                            showScaleX: false,
+                            showScaleY: false,
+                            colorMode: "bar-level",
+                            barSpace: 0,
+                            radius: 0,
+                            lineWidth: 0.5,
+                            frequencyScale: "log",                          
                         });
                 }
 
