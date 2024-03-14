@@ -357,24 +357,29 @@ export class SongSearchApp {
         const title = filter.metaField;
         const lessThan = filter.operator === "$lte" ? "selected" : "";
         const greaterThan = filter.operator === "$gte" ? "selected" : "";
-        return `<div>
-       <div style="padding:4px;display: inline-block;">
-         <span class="metric_filter_title">${title}</span>
-       </div>
-       <div style="padding:4px;display: inline-block;">
-         <select class="form-select" name="" data-filterindex="${filterIndex}">
-           <option value="$lte" ${lessThan}>less than</option>
-           <option value="$gte" ${greaterThan}>greater than</option>
-         </select>
-       </div>
-       <button style="float: right;" data-filterindex="${filterIndex}">
-         <i class="material-icons">delete</i>
-       </button>
-       <br>
-       <div style="padding:4px;display: inline-block;width: 340px;">
-         <input type="range" class="form-range" min="0" max="10" step="1" value="${filter.value}" data-filterindex="${filterIndex}">
-       </div>
-     </div>`
+        return `<div class="filter_modal">
+        <div class="filter-element">
+          <div class="filter-header">
+            <span class="metric-filter-title">${title}</span>
+          </div>
+          <div class="filter-body">
+            <div class="filter-select">
+              <select class="form-select" data-filterindex="${filterIndex}">
+                <option value="$lte" ${lessThan}>&#8804;</option>
+                <option value="$gte" ${greaterThan}>&#8805;</option>
+              </select>
+            </div>
+            <div class="filter-value">
+              <select class="form-select" data-filterindex="${filterIndex}">
+                ${Array.from({ length: 11 }, (_, i) => `<option value="${i}" ${filter.value === i ? 'selected' : ''}>${i}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <button class="delete-button" data-filterindex="${filterIndex}">
+              <i class="material-icons">delete</i>
+            </button>
+        </div>
+      </div>`
     }
     titleCase(title: string): string {
         return title[0].toUpperCase() + title.slice(1).toLowerCase();
