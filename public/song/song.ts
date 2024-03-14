@@ -95,24 +95,24 @@ export class SongSearchApp {
         this.metric_filter_select.selectedIndex = 0;
     }
     resizeVisualizer(reason: string = "") { 
-        let canvasWidth = this.motionVisualizer.canvas.scrollWidth;
-        let canvasHeight = this.motionVisualizer.canvas.scrollHeight;
+        let canvasWidth = this.motionVisualizer.canvas.width;
+        let canvasHeight = this.motionVisualizer.canvas.height;
 
         if (canvasHeight > canvasWidth) {
             const scale = canvasHeight / canvasWidth;
             if (this.motionVisualizer.isFullscreen) {
-                const offset = canvasHeight - canvasWidth;
-                this.motionVisualizer.canvasCtx.scale(1, scale);
+                const offset = (canvasHeight * scale - canvasHeight) / 2;
                 this.motionVisualizer.canvasCtx.translate(0, -offset);
+                this.motionVisualizer.canvasCtx.scale(1, scale);
             } else {
                 this.motionVisualizer.canvas.style.transform = `scaleY(${scale})`;
             }
         } else {
             const scale = canvasWidth / canvasHeight;
             if (this.motionVisualizer.isFullscreen) {
-                const offset = canvasWidth - canvasHeight;
-                this.motionVisualizer.canvasCtx.scale(scale, 1);
+                const offset = (canvasWidth * scale - canvasWidth) / 2;
                 this.motionVisualizer.canvasCtx.translate(-offset, 0);
+                this.motionVisualizer.canvasCtx.scale(scale, 1);
             } else {
                 this.motionVisualizer.canvas.style.transform = `scaleX(${scale})`;
             }
