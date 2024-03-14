@@ -101,18 +101,16 @@ export class SongSearchApp {
         if (canvasHeight > canvasWidth) {
             const scale = canvasHeight / canvasWidth;
             if (this.motionVisualizer.isFullscreen) {
-                const offset = canvasHeight * (scale - 1) - (canvasHeight - canvasWidth) / 2;
+                const offset = canvasHeight - canvasWidth;
                 this.motionVisualizer.canvasCtx.scale(1, scale);
                 this.motionVisualizer.canvasCtx.translate(0, -offset);
             } else {
                 this.motionVisualizer.canvas.style.transform = `scaleY(${scale})`;
             }
-
-
         } else {
             const scale = canvasWidth / canvasHeight;
             if (this.motionVisualizer.isFullscreen) {
-                const offset = canvasWidth * (scale - 1) - (canvasWidth - canvasHeight) / 2;
+                const offset = canvasWidth - canvasHeight;
                 this.motionVisualizer.canvasCtx.scale(scale, 1);
                 this.motionVisualizer.canvasCtx.translate(-offset, 0);
             } else {
