@@ -100,10 +100,17 @@ export class SongSearchApp {
 
         if (canvasHeight > canvasWidth) {
             const scale = canvasHeight / canvasWidth;
-            this.motionVisualizer.canvas.style.transform = `scaleY(${scale})`;
+            if (this.motionVisualizer.isFullscreen) {
+                const offset = canvasHeight * (scale - 1) - (canvasHeight - canvasWidth) / 2;
+                this.motionVisualizer.canvasCtx.scale(1, scale);
+                this.motionVisualizer.canvasCtx.translate(0, -offset);
+            } else {
+                this.motionVisualizer.canvas.style.transform = `scaleY(${scale})`;
+            }
+
+
         } else {
             const scale = canvasWidth / canvasHeight;
-            console.log("SCALE", scale, canvasHeight, canvasWidth);
             if (this.motionVisualizer.isFullscreen) {
                 const offset = canvasWidth * (scale - 1) - (canvasWidth - canvasHeight) / 2;
                 this.motionVisualizer.canvasCtx.scale(scale, 1);
