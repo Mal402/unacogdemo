@@ -49,45 +49,97 @@
 </head>
 
 <body class="initial">
-  <div class="audio_visualizer" style="position:fixed; z-index: -1; pointer-events: none;"></div>
+  <nav class="navbar navbar-dark bg-dark navbar-expand-lg" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  border-bottom: 1px solid rgba(127, 127, 127, .4);" aria-label="Main navigation">
+    <div class="container-xxl">
+      <div class="dropdown">
+        <button class="btn navbar-brand dropdown-toggle text-light" type="button" id="dropdownMenuButton"
+          data-bs-toggle="dropdown" aria-expanded="false" style="margin-right:0;font-size:1.25em;">
+          AI Research Papers
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li class="dropdown-item active">AI Research Papers</li>
+          <li><a class="dropdown-item" href="/covid">Covid Research Papers</a></li>
+          <li><a class="dropdown-item" href="/bible">Semantic Bible Search</a></li>
+          <li>
+            <hr>
+          </li>
+          <li><a class="dropdown-item" href="https://unacog.com/embedding">Augmenting with Unacog</a></li>
+        </ul>
+      </div>
+      <div class="d-flex flex-column flex-lg-row">
+        <ul class="navbar-nav nav d-flex justify-content-between w-100">
+          <li class="nav-item">
+            <a class="nav-link text-light" id="augmented_template_button" href="template" role="button"
+              data-bs-toggle="modal" data-bs-target="#templateModal">
+              <span class="material-icons nav-icon" style="font-size:30px">settings</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;
-    height:100%;display:flex;flex-direction: column;"
-    aria-labelledby="full_augmented_response_button">
-    <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
-    <div>
-      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-        aria-controls="offcanvasExample">
-        Filter
+    height:100%;display:flex;flex-direction: column;">
+    <div class="row">
+      <div class="audio_visualizer"></div>
+      <div>
+        <audio controls crossorigin="anonymous" class="audio_player">
+          <source src="" type="audio/mpeg">
+        </audio>
+        <button class="play_next btn btn-primary">
+          <i class="material-icon">play_next</i>
+        </button>
+      </div>
+      <div>
+        <ol class="song_playlist"></ol>
+      </div>
+      <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#songModal">
+        <i class="material-icons">add</i>
       </button>
     </div>
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filter</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <div class="filter_container"></div>
-        <div>
+  </div>
+  <div class="modal modal-dialog-scrollable" tabindex="-1" id="songModal" aria-labelledby="songModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
           <div>
-            <div style="padding:4px;display: inline-block;">
-              <select class="form-select metric_filter_select"></select>
+            <h5>Filter</h5>
+            <div>
+              <div class="filter_container"></div>
+              <div>
+                <div>
+                  <div style="padding:4px;display: inline-block;">
+                    <select class="form-select metric_filter_select"></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
+          <div class="w-100 d-flex flex-row rounded">
+            <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
+              <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
+              <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
+                style="padding-right: 70px; padding-left: 38px;height: 5em;resize: none;border-color: rgb(100,100,255);"
+                placeholder="song lyrics like..." type="text"></textarea>
+              <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
+                style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
+                <span class="material-icons-outlined mt-1">
+                  send
+                </span>
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="w-100 d-flex flex-row rounded">
-      <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
-        <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
-        <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
-          style="padding-right: 70px; padding-left: 38px;height: 5em;resize: none;border-color: rgb(100,100,255);"
-          placeholder="song lyrics like..." type="text"></textarea>
-        <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
-          style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
-          <span class="material-icons-outlined mt-1">
-            send
-          </span>
-        </button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -113,6 +165,32 @@
     .onboarding_text {
       display: inline-block;
       animation: fade-in-left 1s ease-out;
+    }
+
+    .audio_visualizer {
+      width: 100%;
+      height: 300px;
+      background-color: #f0f0f0;
+    }
+
+    .song_playlist {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+
+    .song_playlist li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .song_playlist li:last-child {
+      border-bottom: none;
+    }
+
+    .song_playlist li:hover {
+      background-color: #f0f0f0;
     }
   </style>
 </body>

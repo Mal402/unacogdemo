@@ -9,11 +9,33 @@ export class SongSearchApp {
     metric_filter_select = document.body.querySelector(".metric_filter_select") as HTMLSelectElement;
     filter_container = document.body.querySelector(".filter_container") as HTMLDivElement;
     audio_visualizer = document.body.querySelector(".audio_visualizer") as HTMLDivElement;
+    song_playlist = document.body.querySelector(".song_playlist") as HTMLOListElement;
+    audio_player = document.body.querySelector(".audio_player") as HTMLAudioElement;
+    play_song = document.body.querySelector(".play_song") as HTMLButtonElement;
+    add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
+    play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
+    visualizerSettings: any = {
+        source: this.audio_player,
+        bgColor: "#ffffff",
+        bgAlpha: 0,
+        radial: true,
+        ledBars: true,
+        showScaleX: false,
+        showScaleY: false,
+        colorMode: "bar-level",
+        barSpace: 0,
+        radius: 0,
+        lineWidth: 0.5,
+        frequencyScale: "log",
+    };
+    songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
     lookupData: any = {};
+    songMatchLookup: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
     selectedFilters: any[] = [];
+    playlistIndex = -1;
     chunkNormalAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
     chunkNormalSessionId = "8umxl4rdt32x";
     chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
@@ -52,7 +74,17 @@ export class SongSearchApp {
         this.analyze_prompt_textarea.addEventListener("input", () => {
             localStorage.setItem("song_lastPrompt", this.analyze_prompt_textarea.value);
         });
+        this.play_next.addEventListener("click", () => this.playNext());
         this.metric_filter_select.addEventListener("input", () => this.addMetricFilter());
+        this.audio_player.addEventListener("ended", () => {
+            this.playNext();
+        });
+        this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, this.visualizerSettings);
+        this.audio_visualizer.addEventListener("click", () => { this.motionVisualizer.toggleFullscreen(); });
+        this.motionVisualizer.onCanvasResize = (reason: string) => {
+            this.resizeVisualizer(reason);    
+        };
+        this.resizeVisualizer(); 
         this.load();
     }
     addMetricFilter() {
@@ -61,6 +93,25 @@ export class SongSearchApp {
         this.renderFilters();
         this.saveFiltersToLocalStorage();
         this.metric_filter_select.selectedIndex = 0;
+    }
+    resizeVisualizer(reason: string = "") { 
+        let canvasWidth = this.motionVisualizer.canvas.scrollWidth;
+        let canvasHeight = this.motionVisualizer.canvas.scrollHeight;
+
+        if (canvasHeight > canvasWidth) {
+            const scale = canvasHeight / canvasWidth;
+            this.motionVisualizer.canvas.style.transform = `scaleY(${scale})`;
+        } else {
+            const scale = canvasWidth / canvasHeight;
+            console.log("SCALE", scale, canvasHeight, canvasWidth);
+            if (this.motionVisualizer.isFullscreen) {
+                const offset = canvasWidth * (scale - 1) - (canvasWidth - canvasHeight) / 2;
+                this.motionVisualizer.canvasCtx.scale(scale, 1);
+                this.motionVisualizer.canvasCtx.translate(-offset, 0);
+            } else {
+                this.motionVisualizer.canvas.style.transform = `scaleX(${scale})`;
+            }
+        }
     }
     renderFilters() {
         this.filter_container.innerHTML = "";
@@ -130,6 +181,21 @@ export class SongSearchApp {
     saveFiltersToLocalStorage() {
         localStorage.setItem("song_filters", JSON.stringify(this.selectedFilters));
     }
+    savePlaylistToLocalStorage() {
+        const songExport = this.songsInPlaylist.map((song: string) => this.songMatchLookup[song]);
+        localStorage.setItem("song_playlist", JSON.stringify(songExport));
+    }
+    loadPlaylistFromLocalStorage() {
+        const playlistRaw = localStorage.getItem("song_playlist");
+        let playlistMap: any = [];
+        if (playlistRaw) playlistMap = JSON.parse(playlistRaw);
+        this.songsInPlaylist = playlistMap.map((songData: any) => songData.id);
+        this.songMatchLookup = {};
+        playlistMap.forEach((song: any) => {
+            this.songMatchLookup[song.id] = song;
+        });
+        this.renderPlaylist();
+    }
     load() {
         this.metricPrompts = prompts;
         this.loaded = true;
@@ -145,6 +211,7 @@ export class SongSearchApp {
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match: any) => {
             const textFrag = this.lookupData[match.id];
+            this.songMatchLookup[match.id] = match;
             if (!textFrag) {
                 console.log(match.id, this.lookupData)
             }
@@ -165,51 +232,39 @@ export class SongSearchApp {
             pol: ${match.metadata.political} reli: ${match.metadata.religious} sad: ${match.metadata.sad}
             <br>
             vio: ${match.metadata.violent}
-            <audio controls crossorigin="anonymous">
-            <source src="${match.metadata.url}" type="audio/mpeg">
-            </audio>
+            <button class="btn btn-primary play_song" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn btn-primary add_song" data-song="${match.id}"><i class="material-icons">add</i></button>
               <br>
               <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
               </div>`;
             html += block;
         });
 
-        this.full_augmented_response.innerHTML = html;
-        let audioControls = this.full_augmented_response.querySelectorAll("audio");
-        audioControls.forEach((audio: HTMLAudioElement) => {
-            audio.addEventListener("play", () => {
-                audioControls.forEach((otherAudio: HTMLAudioElement) => {
-                    if (otherAudio !== audio) {
-                        otherAudio.pause();
-                    }
-                });
-                if (this.motionVisualizer) {
-                    this.motionVisualizer.connectInput(audio);
-                } else {
-                    this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer,
-                        {
-                            width: 800,
-                            height: 400,
-                            source: audio,
-                            bgColor: "#ffffff",
-                            overlay: true,
-                            bgAlpha: 0,
-                            radial: true,
-                            ledBars: true,
-                            showScaleX: false,
-                            showScaleY: false,
-                            colorMode: "bar-level",
-                            barSpace: 0,
-                            radius: 0,
-                            lineWidth: 0.5,
-                            frequencyScale: "log",                          
-                        });
-                }
 
+        this.full_augmented_response.innerHTML = html;
+        let addButtons = this.full_augmented_response.querySelectorAll(".add_song");
+        addButtons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                let songId = button.getAttribute("data-song");
+                this.addSongToPlaylist(songId);
             });
         });
 
         return result.matches;
+    }
+    addSongToPlaylist(song: string) {
+        this.songsInPlaylist.push(song);
+        this.renderPlaylist();
+        this.savePlaylistToLocalStorage();
+    }
+    renderPlaylist() {
+        this.song_playlist.innerHTML = "";
+        this.songsInPlaylist.forEach((song: string) => {
+            const data = this.songMatchLookup[song];
+            let li = document.createElement("li");
+            li.innerHTML = `<span>${data.metadata.title}</span>`;
+            this.song_playlist.appendChild(li);
+        });
     }
     async fetchDocumentsLookup(idList: string[]) {
         const promises: any[] = [];
@@ -265,6 +320,21 @@ export class SongSearchApp {
         const filters = localStorage.getItem("song_filters");
         if (filters) this.selectedFilters = JSON.parse(filters);
         this.renderFilters();
+        this.loadPlaylistFromLocalStorage();
+        this.renderPlaylist();
+        this.playNext();
+    }
+    playNext() {
+        if (this.songsInPlaylist.length === 0) return;
+        this.playlistIndex++;
+        const songId = this.songsInPlaylist[this.playlistIndex % this.songsInPlaylist.length];
+        const songData = this.songMatchLookup[songId];
+        this.audio_player.src = songData.metadata.url;
+        try {
+            this.audio_player.play();
+        } catch (error: any) {
+            console.log("FAILED TO PLAY", error);
+        }
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = filter.metaField;
