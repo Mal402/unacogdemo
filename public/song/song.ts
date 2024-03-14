@@ -14,12 +14,15 @@ export class SongSearchApp {
     play_song = document.body.querySelector(".play_song") as HTMLButtonElement;
     add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
+    fs_toolbar = document.body.querySelector(".fs_toolbar") as HTMLDivElement;
+    fs_close_button = document.body.querySelector(".fs_close_button") as HTMLButtonElement;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
         bgAlpha: 0,
         radial: true,
         ledBars: true,
+        // fsElement: this.audio_visualizer,  messes up the horizontal scaling
         showScaleX: false,
         showScaleY: false,
         colorMode: "bar-level",
@@ -85,6 +88,10 @@ export class SongSearchApp {
             this.resizeVisualizer(reason);    
         };
         this.resizeVisualizer(); 
+
+        this.fs_close_button.addEventListener("click", () => {
+            this.motionVisualizer.toggleFullscreen();
+        });
         this.load();
     }
     addMetricFilter() {
@@ -98,6 +105,11 @@ export class SongSearchApp {
         let canvasWidth = this.motionVisualizer.canvas.scrollWidth;
         let canvasHeight = this.motionVisualizer.canvas.scrollHeight;
 
+        if (this.motionVisualizer.isFullscreen) {
+            document.body.classList.add("fullscreen");
+        } else {
+            document.body.classList.remove("fullscreen");
+        }
         if (canvasHeight > canvasWidth) {
             const scale = canvasHeight / canvasWidth;
             if (this.motionVisualizer.isFullscreen) {

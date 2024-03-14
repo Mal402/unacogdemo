@@ -82,7 +82,13 @@
   <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;
     height:100%;display:flex;flex-direction: column;">
     <div class="row">
-      <div class="audio_visualizer"></div>
+      <div class="audio_visualizer">
+        <div class="fs_toolbar">
+          <button class="fs_close_button">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+      </div>
       <div>
         <audio controls crossorigin="anonymous" class="audio_player">
           <source src="" type="audio/mpeg">
@@ -171,6 +177,7 @@
       width: 100%;
       height: 300px;
       background-color: #f0f0f0;
+      position: relative;
     }
 
     .song_playlist {
@@ -191,6 +198,22 @@
 
     .song_playlist li:hover {
       background-color: #f0f0f0;
+    }
+
+    .fs_toolbar {
+      display: none;
+      position: absolute;
+      background: white;
+      color: blue;
+      padding: 10px;
+      top: 10px;
+      left: 10px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    .fullscreen .fs_toolbar {
+      display: block;
     }
   </style>
 </body>
