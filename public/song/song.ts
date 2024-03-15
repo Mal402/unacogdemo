@@ -11,7 +11,8 @@ export class SongSearchApp {
     audio_visualizer = document.body.querySelector(".audio_visualizer") as HTMLDivElement;
     song_playlist = document.body.querySelector(".song_playlist") as HTMLOListElement;
     audio_player = document.body.querySelector(".audio_player") as HTMLAudioElement;
-    play_song = document.body.querySelector(".play_song") as HTMLButtonElement;
+    play_song_search = document.body.querySelector(".play_song_search") as HTMLButtonElement;
+    play_song_playlist = document.body.querySelector(".play_song_playlist") as HTMLButtonElement;
     add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
     fs_toolbar = document.body.querySelector(".fs_toolbar") as HTMLDivElement;
@@ -85,9 +86,9 @@ export class SongSearchApp {
         this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, this.visualizerSettings);
         this.audio_visualizer.addEventListener("click", () => { this.motionVisualizer.toggleFullscreen(); });
         this.motionVisualizer.onCanvasResize = (reason: string) => {
-            this.resizeVisualizer(reason);    
+            this.resizeVisualizer(reason);
         };
-        this.resizeVisualizer(); 
+        this.resizeVisualizer();
 
         this.fs_close_button.addEventListener("click", () => {
             this.motionVisualizer.toggleFullscreen();
@@ -101,7 +102,7 @@ export class SongSearchApp {
         this.saveFiltersToLocalStorage();
         this.metric_filter_select.selectedIndex = 0;
     }
-    resizeVisualizer(reason: string = "") { 
+    resizeVisualizer(reason: string = "") {
         let canvasWidth = this.motionVisualizer.canvas.width;
         let canvasHeight = this.motionVisualizer.canvas.height;
 
@@ -249,7 +250,7 @@ export class SongSearchApp {
             pol: ${match.metadata.political} reli: ${match.metadata.religious} sad: ${match.metadata.sad}
             <br>
             vio: ${match.metadata.violent}
-            <button class="btn btn-primary play_song" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn btn-primary play_song_search" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
             <button class="btn btn-primary add_song" data-song="${match.id}"><i class="material-icons">add</i></button>
               <br>
               <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
@@ -266,31 +267,65 @@ export class SongSearchApp {
                 this.addSongToPlaylist(songId);
             });
         });
-        let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
-
-
+        let playButtons = this.full_augmented_response.querySelectorAll(".play_song_search");
+        playButtons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                this.addPlayNow(button.getAttribute("data-song"));
+            }
+            );
+        });
         return result.matches;
+    }
+    addPlayNow(song: string) {
+        if (this.songsInPlaylist.includes(song) === false) this.songsInPlaylist.unshift(song);
+        this.playlistIndex = this.songsInPlaylist.indexOf(song);
+        this.audio_player.src = this.songMatchLookup[song].metadata.url;
+        this.audio_player.play();
+        this.renderPlaylist();
+        this.savePlaylistToLocalStorage();
     }
     addSongToPlaylist(song: string) {
         this.songsInPlaylist.push(song);
         this.renderPlaylist();
         this.savePlaylistToLocalStorage();
     }
-    removeSongFromPlaylist(song: string) {
-        this.songsInPlaylist = this.songsInPlaylist.filter((songId: string) => songId !== song);
+    removeSongFromPlaylist(songIndex: string) {
+        let songIndexNum = Number(songIndex);
+        this.songsInPlaylist.splice(songIndexNum, 1);
+        if (this.playlistIndex === songIndexNum) {
+            this.playlistIndex--;
+            if (this.playlistIndex < 0) this.playlistIndex = 0;
+            this.playNext(this.playlistIndex);
+        }
+        if (this.playlistIndex > songIndexNum) this.playlistIndex--;
         this.renderPlaylist();
         this.savePlaylistToLocalStorage();
     }
     renderPlaylist() {
         this.song_playlist.innerHTML = "";
-        this.songsInPlaylist.forEach((song: string) => {
+        this.songsInPlaylist.forEach((song: string, songIndex: number) => {
             const data = this.songMatchLookup[song];
             let li = document.createElement("li");
+            li.classList.add("song_playlist_item");
+            li.classList.add("list-group-item");
+            if (this.playlistIndex === songIndex) li.classList.add("selected");
             li.innerHTML = `<span>${data.metadata.title}</span>
-            <button class="btn btn-primary play_song" data-song="${song}"><i class="material-icons">play_arrow</i></button>
-            <button class="btn btn-primary remove_song" data-song="${song}"><i class="material-icons">delete</i></button>
+            <button class="btn btn-primary play_song_playlist" data-songindex="${songIndex}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn btn-primary remove_song" data-songindex="${songIndex}"><i class="material-icons">delete</i></button>
             `;
             this.song_playlist.appendChild(li);
+        });
+        let remove_buttons = this.song_playlist.querySelectorAll(".remove_song");
+        remove_buttons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                this.removeSongFromPlaylist(button.getAttribute("data-songindex"));
+            });
+        });
+        let play_buttons = this.song_playlist.querySelectorAll(".play_song_playlist");
+        play_buttons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                this.playNext(Number(button.getAttribute("data-songindex")));
+            });
         });
     }
     async fetchDocumentsLookup(idList: string[]) {
@@ -351,9 +386,12 @@ export class SongSearchApp {
         this.renderPlaylist();
         this.playNext();
     }
-    playNext() {
+    playNext(songIndex: number = -1) {
         if (this.songsInPlaylist.length === 0) return;
-        this.playlistIndex++;
+        if (songIndex !== -1)
+            this.playlistIndex = songIndex
+        else
+            this.playlistIndex++;
         const songId = this.songsInPlaylist[this.playlistIndex % this.songsInPlaylist.length];
         const songData = this.songMatchLookup[songId];
         this.audio_player.src = songData.metadata.url;
@@ -362,6 +400,7 @@ export class SongSearchApp {
         } catch (error: any) {
             console.log("FAILED TO PLAY", error);
         }
+        this.renderPlaylist();
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = filter.metaField;
