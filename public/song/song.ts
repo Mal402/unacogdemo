@@ -266,6 +266,8 @@ export class SongSearchApp {
                 this.addSongToPlaylist(songId);
             });
         });
+        let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
+
 
         return result.matches;
     }
@@ -274,12 +276,20 @@ export class SongSearchApp {
         this.renderPlaylist();
         this.savePlaylistToLocalStorage();
     }
+    removeSongFromPlaylist(song: string) {
+        this.songsInPlaylist = this.songsInPlaylist.filter((songId: string) => songId !== song);
+        this.renderPlaylist();
+        this.savePlaylistToLocalStorage();
+    }
     renderPlaylist() {
         this.song_playlist.innerHTML = "";
         this.songsInPlaylist.forEach((song: string) => {
             const data = this.songMatchLookup[song];
             let li = document.createElement("li");
-            li.innerHTML = `<span>${data.metadata.title}</span>`;
+            li.innerHTML = `<span>${data.metadata.title}</span>
+            <button class="btn btn-primary play_song" data-song="${song}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn btn-primary remove_song" data-song="${song}"><i class="material-icons">delete</i></button>
+            `;
             this.song_playlist.appendChild(li);
         });
     }
