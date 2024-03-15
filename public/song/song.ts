@@ -95,6 +95,11 @@ export class SongSearchApp {
         this.fs_close_button.addEventListener("click", () => {
             this.motionVisualizer.toggleFullscreen();
         });
+        this.chunk_select.addEventListener("input", () => {
+            this.saveFiltersToLocalStorage();
+            this.load();
+        });
+
         this.load();
     }
     addMetricFilter() {
@@ -219,7 +224,8 @@ export class SongSearchApp {
     load() {
         this.metricPrompts = prompts;
         this.loaded = true;
-
+        this.lookupData = {};
+        this.lookedUpIds = {};
         this.hydrateFromLocalStorage();
     }
     getChunkSizeMeta(): any {
@@ -241,28 +247,42 @@ export class SongSearchApp {
             if (!textFrag) {
                 console.log(match.id, this.lookupData)
             }
-            const dstring = match.metadata.coverDate;
             const parts = match.id.split("_");
             const docID = parts[0];
             const chunkIndex = Number(parts[2]);
             const chunkCount = parts[3];
-            const block = `<div class="verse_card">
-            <span style="float:right;font-size:.9em;border:solid 1px silver;padding:.2em;">Match: <b>${(match.score * 100).toFixed()}%</b><br>
-            </span>
-            ${match.metadata.artist} - ${match.metadata.title}
-            <br>
-            rom: ${match.metadata.romantic} com: ${match.metadata.comedic} lang: ${match.metadata.inappropriatelanguage} 
-            <br>
-            mat: ${match.metadata.mature} sea: ${match.metadata.seasonal} mot: ${match.metadata.motivational} 
-            <br>
-            pol: ${match.metadata.political} reli: ${match.metadata.religious} sad: ${match.metadata.sad}
-            <br>
-            vio: ${match.metadata.violent}
-            <button class="btn btn-primary play_song" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
-            <button class="btn btn-primary add_song" data-song="${match.id}"><i class="material-icons">add</i></button>
-              <br>
-              <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
-              </div>`;
+            const generateSongCard = (match: any, textFrag: string) => {
+                const categories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
+                let catString = "";
+                categories.forEach(category => {
+                    if (match.metadata[category] !== 0) {
+                        catString += `
+                      <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
+                    }
+                });
+                return `
+                  <div class="card mb-4 shadow">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">${match.metadata.artist} - ${match.metadata.title}</h5>
+                        <span class="badge bg-success">Match: <b>${(match.score * 100).toFixed()}%</b></span>
+                      </div>
+                      <div class="mb-3">${catString}</div>
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                          <button class="btn btn-primary play_song me-2" data-song="${match.id}">
+                            <i class="material-icons">play_arrow</i> Play
+                          </button>
+                          <button class="btn btn-secondary add_song" data-song="${match.id}">
+                            <i class="material-icons">add</i> Add
+                          </button>
+                        </div>
+                      </div>
+                      <div class="song_card_text" style="white-space:pre-wrap">${textFrag}</div>
+                    </div>
+                  </div>`;
+            }
+            let block = generateSongCard(match, textFrag);
             html += block;
         });
 

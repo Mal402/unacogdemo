@@ -114,25 +114,19 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div>
-            <div>
-              <h5>Metric</h5>
-                <div>
-                  <div class="chunk_select_container">
-                    <select class="chunk_select">
-                      <option value="verse">Verse</option>
-                      <option value="stanza">Stanza</option>
-                      <option value="song">Song</option>
-                    </select>
-                  </div>
-                  <div style="padding:4px;display: inline-block;">
-                    <select class="form-select metric_filter_select w-100"></select>
-                  </div>
-                  <div class="filter_container"></div>
-              </div>
-            </div>
+          <h5>Metric</h5>
+          <div class="chunk_select_container">
+            <select class="chunk_select form-select">
+              <option value="song" selected>Song</option>
+              <option value="stanza">Stanza</option>
+              <option value="verse">Verse</option>
+            </select>
           </div>
-          <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
+          <div style="padding:4px;display: inline-block;">
+            <select class="form-select metric_filter_select w-100"></select>
+          </div>
+          <div class="filter_container"></div>
+
           <h5 class="mt-3">Semantic Search</h5>
           <div class="w-100 d-flex flex-row rounded">
             <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
@@ -148,6 +142,7 @@
               </button>
             </div>
           </div>
+          <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
