@@ -17,6 +17,7 @@ export class SongSearchApp {
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
     fs_toolbar = document.body.querySelector(".fs_toolbar") as HTMLDivElement;
     fs_close_button = document.body.querySelector(".fs_close_button") as HTMLButtonElement;
+    chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
@@ -40,23 +41,24 @@ export class SongSearchApp {
     semanticResults: any[] = [];
     selectedFilters: any[] = [];
     playlistIndex = -1;
-    chunkNormalAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
-    chunkNormalSessionId = "8umxl4rdt32x";
-    chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    chunkNormaltopK = 25;
-    chunkNormalincludeK = 5;
-
-    chunkRecursiveAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
-    chunkRecursiveSessionId = "8umxl4rdt32x";
-    chunkRecursiveLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    chunkRecursivetopK = 25;
-    chunkRecursiveincludeK = 5;
-
-    sentenceChunkAPIToken = "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16";
-    sentenceChunkSessionId = "8umxl4rdt32x";
-    sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    sentenceChunktopK = 15;
-    sentenceChunkincludeK = 3;
+    songChunkMeta = {
+        apiToken: "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16",
+        sessionId: "8umxl4rdt32x",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        topK: 25,
+    }
+    stanzaChunkMeta = {
+        apiToken: "b0a5f137-b5ff-4b78-8074-79a3f775a212",
+        sessionId: "prg66uadseer",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-4-1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        topK: 25,
+    }
+    verseChunkMeta = {
+        apiToken: "6b71e856-1dee-4f9d-bd53-64b6adafc592",
+        sessionId: "bsec9cwrpl72",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-verse%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        topK: 50,
+    }
     metricPrompts: any[] = [];
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
@@ -220,11 +222,17 @@ export class SongSearchApp {
 
         this.hydrateFromLocalStorage();
     }
+    getChunkSizeMeta(): any {
+        const chunkSize = this.chunk_select.value;
+        if (chunkSize === "verse") return this.verseChunkMeta;
+        if (chunkSize === "stanza") return this.stanzaChunkMeta;
+        return this.songChunkMeta;
+    }
     async lookupAIDocumentChunks(): Promise<any[]> {
         this.full_augmented_response.innerHTML = "";
         const message = this.analyze_prompt_textarea.value.trim();
-        let result = await this.getMatchingVectors(message, 10, this.chunkNormalAPIToken, this.chunkNormalSessionId);
-
+        const chunkSizeMeta = this.getChunkSizeMeta();
+        let result = await this.getMatchingVectors(message, chunkSizeMeta.topK, chunkSizeMeta.apiToken, chunkSizeMeta.sessionId);
         let html = "";
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match: any) => {
@@ -250,14 +258,13 @@ export class SongSearchApp {
             pol: ${match.metadata.political} reli: ${match.metadata.religious} sad: ${match.metadata.sad}
             <br>
             vio: ${match.metadata.violent}
-            <button class="btn btn-primary play_song_search" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn btn-primary play_song" data-song="${match.id}"><i class="material-icons">play_arrow</i></button>
             <button class="btn btn-primary add_song" data-song="${match.id}"><i class="material-icons">add</i></button>
               <br>
               <div class="verse_card_text">${this.escapeHTML(textFrag)}</div>
               </div>`;
             html += block;
         });
-
 
         this.full_augmented_response.innerHTML = html;
         let addButtons = this.full_augmented_response.querySelectorAll(".add_song");
@@ -267,13 +274,9 @@ export class SongSearchApp {
                 this.addSongToPlaylist(songId);
             });
         });
-        let playButtons = this.full_augmented_response.querySelectorAll(".play_song_search");
-        playButtons.forEach((button: any) => {
-            button.addEventListener("click", () => {
-                this.addPlayNow(button.getAttribute("data-song"));
-            }
-            );
-        });
+        let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
+
+
         return result.matches;
     }
     addPlayNow(song: string) {
@@ -349,7 +352,7 @@ export class SongSearchApp {
     }
     async loadDocumentLookup(docId: string): Promise<any> {
         try {
-            let lookupPath = this.chunkNormalLookupPath;
+            let lookupPath = this.getChunkSizeMeta().lookupPath;
             lookupPath = lookupPath.replace("DOC_ID_URIENCODED", docId);
             console.log(lookupPath);
             const r = await fetch(lookupPath);
@@ -381,6 +384,9 @@ export class SongSearchApp {
         this.analyze_prompt_textarea.setSelectionRange(0, this.analyze_prompt_textarea.value.length);
         const filters = localStorage.getItem("song_filters");
         if (filters) this.selectedFilters = JSON.parse(filters);
+        const songFilterSize = localStorage.getItem("song_filterSize");
+        if (songFilterSize) this.chunk_select.value = songFilterSize;
+        if (this.chunk_select.selectedIndex === -1) this.chunk_select.selectedIndex = 0;
         this.renderFilters();
         this.loadPlaylistFromLocalStorage();
         this.renderPlaylist();
