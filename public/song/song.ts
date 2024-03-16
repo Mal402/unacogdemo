@@ -15,11 +15,10 @@ export class SongSearchApp {
     play_song_playlist = document.body.querySelector(".play_song_playlist") as HTMLButtonElement;
     add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
-    fs_toolbar = document.body.querySelector(".fs_toolbar") as HTMLDivElement;
-    fs_close_button = document.body.querySelector(".fs_close_button") as HTMLButtonElement;
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
     show_playlist = document.body.querySelector(".show_playlist") as HTMLButtonElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
+    intro_modal_close = document.body.querySelector(".intro_modal_close") as HTMLButtonElement;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
@@ -28,10 +27,10 @@ export class SongSearchApp {
         ledBars: true,
         showScaleX: false,
         showScaleY: false,
-        colorMode: "bar-level",
         barSpace: 0,
         radius: 0,
-        lineWidth: 0.5,
+        lineWidth: 2,
+        spinSpeed: 3,
         frequencyScale: "log",
     };
     songsInPlaylist: any[] = [];
@@ -100,8 +99,16 @@ export class SongSearchApp {
         this.show_search_overlay.addEventListener("click", () => {
             this.showOverlay("search", true);
         });
+        this.intro_modal_close.addEventListener("click", () => {
+            this.load();
+        });
 
-        this.load();
+        window.addEventListener("resize", () => {
+            this.resizeVisualizer();
+        });
+
+        const introModal = new (window as any).bootstrap.Modal(document.getElementById('hello_modal'));
+        introModal.show();
     }
     showOverlay(overlayName: string = "none", toggle = false) {
         const overlays = ["none", "playlist", "search", "lyrics", "about"];
@@ -109,7 +116,7 @@ export class SongSearchApp {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
                     document.body.classList.add(overlay);
-                }  else if (toggle === true) {
+                } else if (toggle === true) {
                     document.body.classList.remove(overlay);
                 }
             } else {

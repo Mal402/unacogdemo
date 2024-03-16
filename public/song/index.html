@@ -50,23 +50,28 @@
 
 <body class="initial">
   <div class="audio_visualizer"></div>
-  <div class="container-xxl" style="background-image: var(--bs-gradient);text-align: left;font-size:1.25em;
-    height:100%;display:flex;flex-direction: column;position:relative">
+  <div class="container-xxl" style="height:100%;display:flex;flex-direction:column;position:relative">
     <div class="player_bar">
-      <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload">
+      <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">
         <source src="" type="audio/mpeg">
       </audio>
-      <button class="play_next btn btn-primary">
-        <i class="material-icon">play_next</i>
-      </button>
-      <button type="button" class="btn btn-primary rounded show_search_overlay">
-        <i class="material-icons">add</i>
-      </button>
-      <button class="show_playlist btn btn-primary rounded">
-        <span class="material-icons-outlined">
-          format_list_numbered
-        </span>
-      </button>
+      <div>
+        <button class="play_next btn">
+          <span class="material-icons-outlined">
+            skip_next
+          </span>
+        </button>
+        <button type="button" class="btn show_search_overlay">
+          <span class="material-icons-outlined">
+            playlist_add
+          </span>
+        </button>
+        <button class="show_playlist btn">
+          <span class="material-icons-outlined">
+            format_list_numbered
+          </span>
+        </button>
+      </div>
     </div>
     <ol class="song_playlist"></ol>
     <div class="search_overlay">
@@ -99,6 +104,22 @@
         </div>
       </div>
       <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="hello_modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Welcome!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This is a limited distribution demonstration, please do not redistribute!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary intro_modal_close" data-bs-dismiss="modal">Ok</button>
+        </div>
+      </div>
     </div>
   </div>
   <style>
@@ -239,6 +260,51 @@
 
     .filter_modal .form-value-select {
       width: 100%;
+    }
+
+    .btn {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    audio::-webkit-media-controls-enclosure,
+    audio::-webkit-media-controls-panel {
+      background-color: transparent;
+    }
+
+    audio::-webkit-media-controls-panel {
+      color: white;
+    }
+
+    audio::-webkit-media-controls-play-button,
+    audio::-webkit-media-controls-mute-button {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+    }
+
+    audio::-webkit-media-controls-timeline {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 25px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    audio::-webkit-media-controls-volume-slider {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 25px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    audio::-webkit-media-controls-current-time-display {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    audio::-webkit-media-controls-time-remaining-display {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    audio::-webkit-media-controls-fullscreen-button {
+      color: rgba(255, 255, 255, .75);
     }
   </style>
 </body>
