@@ -18,13 +18,14 @@ export class SongSearchApp {
     fs_toolbar = document.body.querySelector(".fs_toolbar") as HTMLDivElement;
     fs_close_button = document.body.querySelector(".fs_close_button") as HTMLButtonElement;
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
+    show_playlist = document.body.querySelector(".show_playlist") as HTMLButtonElement;
+    show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
         bgAlpha: 0,
         radial: true,
         ledBars: true,
-        // fsElement: this.audio_visualizer,  messes up the horizontal scaling
         showScaleX: false,
         showScaleY: false,
         colorMode: "bar-level",
@@ -86,21 +87,35 @@ export class SongSearchApp {
             this.playNext();
         });
         this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, this.visualizerSettings);
-        this.audio_visualizer.addEventListener("click", () => { this.motionVisualizer.toggleFullscreen(); });
-        this.motionVisualizer.onCanvasResize = (reason: string) => {
-            this.resizeVisualizer(reason);
-        };
+
         this.resizeVisualizer();
 
-        this.fs_close_button.addEventListener("click", () => {
-            this.motionVisualizer.toggleFullscreen();
-        });
         this.chunk_select.addEventListener("input", () => {
             this.saveFiltersToLocalStorage();
             this.load();
         });
+        this.show_playlist.addEventListener("click", () => {
+            this.showOverlay("playlist", true);
+        });
+        this.show_search_overlay.addEventListener("click", () => {
+            this.showOverlay("search", true);
+        });
 
         this.load();
+    }
+    showOverlay(overlayName: string = "none", toggle = false) {
+        const overlays = ["none", "playlist", "search", "lyrics", "about"];
+        overlays.forEach((overlay: string) => {
+            if (overlay === overlayName) {
+                if (document.body.classList.contains(overlay) === false) {
+                    document.body.classList.add(overlay);
+                }  else if (toggle === true) {
+                    document.body.classList.remove(overlay);
+                }
+            } else {
+                document.body.classList.remove(overlay);
+            }
+        });
     }
     addMetricFilter() {
         const metaField = this.metric_filter_select.value;
