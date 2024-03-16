@@ -50,27 +50,24 @@
 
 <body class="initial">
   <div class="audio_visualizer"></div>
-  <div class="container-xxl" style="height:100%;display:flex;flex-direction:column;position:relative">
+  <div class="container-xxl ui_container" style="height:100%;display:flex;flex-direction:column;position:relative">
+    <a class="homepageicon" href="https://unacog.com" target="unacog">
+      <img src="https://unacog.com/images/logo64.png">
+    </a>
     <div class="player_bar">
-      <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">
-        <source src="" type="audio/mpeg">
-      </audio>
-      <div>
-        <button class="play_next btn">
-          <span class="material-icons-outlined">
-            skip_next
-          </span>
-        </button>
-        <button type="button" class="btn show_search_overlay">
-          <span class="material-icons-outlined">
-            playlist_add
-          </span>
-        </button>
-        <button class="show_playlist btn">
-          <span class="material-icons-outlined">
-            format_list_numbered
-          </span>
-        </button>
+      <div class="song_title_container"></div>
+      <div style="display:flex;flex-direction:row">
+        <div>
+          <button class="play_next btn">
+            ⏭️
+          </button>
+          <button type="button" class="btn show_search_overlay">
+            🔎
+          </button>
+        </div>
+        <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">
+          <source src="" type="audio/mpeg">
+        </audio>
       </div>
     </div>
     <ol class="song_playlist"></ol>
@@ -151,7 +148,7 @@
       width: 100%;
       height: 100%;
       top: 0;
-      z-index: -1;
+      z-index: -500;
       pointer-events: none;
     }
 
@@ -159,11 +156,6 @@
       position: absolute;
       bottom: 0;
       width: inherit;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
       z-index: 1000;
     }
 
@@ -305,6 +297,24 @@
 
     audio::-webkit-media-controls-fullscreen-button {
       color: rgba(255, 255, 255, .75);
+    }
+
+    .song_title_container {
+      color: rgba(255, 255, 255, .75);
+      cursor: pointer;
+    }
+
+    .homepageicon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
+
+    .homepageicon img {
+      max-width: 5vw;
+      max-height: 6vh;
+      z-index: 10;
+      transform: translate(-50%, -50%);
     }
   </style>
 </body>

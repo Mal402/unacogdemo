@@ -16,9 +16,11 @@ export class SongSearchApp {
     add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
-    show_playlist = document.body.querySelector(".show_playlist") as HTMLButtonElement;
+    song_title_container = document.body.querySelector(".song_title_container") as HTMLDivElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
     intro_modal_close = document.body.querySelector(".intro_modal_close") as HTMLButtonElement;
+    ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
+    visualizerShowing = true;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
@@ -27,10 +29,12 @@ export class SongSearchApp {
         ledBars: true,
         showScaleX: false,
         showScaleY: false,
+        linearBoost: 1,
+        minFreq: 1000,
+        maxFreq: 8000,
         barSpace: 0,
-        radius: 0,
-        lineWidth: 2,
-        spinSpeed: 3,
+        radius: 0.1,
+        spinSpeed: 1.5,
         frequencyScale: "log",
     };
     songsInPlaylist: any[] = [];
@@ -93,7 +97,7 @@ export class SongSearchApp {
             this.saveFiltersToLocalStorage();
             this.load();
         });
-        this.show_playlist.addEventListener("click", () => {
+        this.song_title_container.addEventListener("click", () => {
             this.showOverlay("playlist", true);
         });
         this.show_search_overlay.addEventListener("click", () => {
@@ -105,6 +109,34 @@ export class SongSearchApp {
 
         window.addEventListener("resize", () => {
             this.resizeVisualizer();
+        });
+
+        window.addEventListener("keydown", (e: any) => {
+            if (this.visualizerShowing === false) return;
+            if (e.key === "ArrowRight") {
+                this.playNext();
+            }
+            if (e.key === "ArrowLeft") {
+                this.playNext(this.playlistIndex - 2);
+            }
+            if (e.key === "ArrowDown") {
+                this.audio_player.currentTime -= 5;
+            }
+            if (e.key === "ArrowUp") {
+                this.audio_player.currentTime += 5;
+            }
+            if (e.key === " ") {
+                if (this.audio_player.paused) this.audio_player.play();
+                else this.audio_player.pause();
+            }
+        });
+
+        window.document.addEventListener("click", (e: Event) => {
+            if (e.target !== window.document.body &&
+                e.target !== this.ui_container) return;
+            if (this.visualizerShowing === false) return;
+            if (this.audio_player.paused) this.audio_player.play();
+            else this.audio_player.pause();
         });
 
         const introModal = new (window as any).bootstrap.Modal(document.getElementById('hello_modal'));
@@ -449,6 +481,7 @@ export class SongSearchApp {
             console.log("FAILED TO PLAY", error);
         }
         this.renderPlaylist();
+        this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} 🔽`;
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = filter.metaField;
