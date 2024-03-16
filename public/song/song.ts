@@ -472,7 +472,8 @@ export class SongSearchApp {
             this.playlistIndex = songIndex
         else
             this.playlistIndex++;
-        const songId = this.songsInPlaylist[this.playlistIndex % this.songsInPlaylist.length];
+        this.playlistIndex = this.playlistIndex % this.songsInPlaylist.length;
+        const songId = this.songsInPlaylist[this.playlistIndex];
         const songData = this.songMatchLookup[songId];
         this.audio_player.src = songData.metadata.url;
         try {
@@ -481,7 +482,7 @@ export class SongSearchApp {
             console.log("FAILED TO PLAY", error);
         }
         this.renderPlaylist();
-        this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} 🔽`;
+        this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} <i class="material-icons">expand_more</i>`;
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = filter.metaField;

@@ -59,10 +59,10 @@
       <div style="display:flex;flex-direction:row">
         <div>
           <button class="play_next btn">
-            ⏭️
+            <i class="material-icons">skip_next</i>
           </button>
           <button type="button" class="btn show_search_overlay">
-            🔎
+            <i class="material-icons">search</i>
           </button>
         </div>
         <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">
@@ -315,6 +315,23 @@
       max-height: 6vh;
       z-index: 10;
       transform: translate(-50%, -50%);
+    }
+
+    .btn.play_next, .btn.show_search_overlay {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+      margin-right: 10px;
+      height: 30px;
+      width: 30px;
+      padding: 0;
+    }
+
+    .btn.play_next i, .btn.show_search_overlay i {
+      color: black;
+    }
+    
+    .song_title_container i {
+      color: white;
     }
   </style>
 </body>
