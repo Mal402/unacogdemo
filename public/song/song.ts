@@ -33,14 +33,15 @@ export class SongSearchApp {
         minFreq: 1000,
         maxFreq: 8000,
         barSpace: 0,
-        radius: 0.2,
+        radius: 0,
         spinSpeed: 1.5,
-        frequencyScale: "mel",
+        frequencyScale: "log",
         channelLayout: "dual-horizontal",
         mode: 10,
-        gradient: "prism",
-        maxDecibels: -30,
-        minDecibels: -70,
+        gradientLeft: "prism",
+        gradientRight: "classic",
+        maxDecibels: -25,
+        minDecibels: -90,
     };
     songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
@@ -74,6 +75,7 @@ export class SongSearchApp {
     loaded = false;
     lookUpKeys: string[] = [];
     verboseDebugging = false;
+    runningQuery = false;
 
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
@@ -106,7 +108,13 @@ export class SongSearchApp {
             this.showOverlay("playlist", true);
         });
         this.show_search_overlay.addEventListener("click", () => {
-            this.showOverlay("search", true);
+            const searchModalDom = document.getElementById('search_modal') as HTMLElement;
+            const searchModal = new (window as any).bootstrap.Modal(searchModalDom);
+            searchModal.show();
+            this.visualizerShowing = false;
+            searchModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
+                this.visualizerShowing = true;
+              });
         });
         this.intro_modal_close.addEventListener("click", () => {
             this.load();
@@ -212,17 +220,17 @@ export class SongSearchApp {
                 this.saveFiltersToLocalStorage();
             });
         });
-        this.filter_container.querySelectorAll("select").forEach((select: HTMLSelectElement) => {
+        this.filter_container.querySelectorAll(".filter-select select").forEach((select: Element) => {
             select.addEventListener("input", () => {
                 let filterIndex = Number(select.getAttribute("data-filterindex"));
-                this.selectedFilters[filterIndex].operator = select.value;
+                this.selectedFilters[filterIndex].operator = (select as any).value;
                 this.saveFiltersToLocalStorage();
             });
         });
-        this.filter_container.querySelectorAll("input").forEach((input: HTMLInputElement) => {
-            input.addEventListener("input", () => {
-                let filterIndex = Number(input.getAttribute("data-filterindex"));
-                this.selectedFilters[filterIndex].value = input.value;
+        this.filter_container.querySelectorAll(".filter-value select").forEach((select: Element) => {
+            select.addEventListener("input", () => {
+                let filterIndex = Number(select.getAttribute("data-filterindex"));
+                this.selectedFilters[filterIndex].value = (select as any).value;
                 this.saveFiltersToLocalStorage();
             });
         });
@@ -293,11 +301,20 @@ export class SongSearchApp {
         if (chunkSize === "stanza") return this.stanzaChunkMeta;
         return this.songChunkMeta;
     }
-    async lookupAIDocumentChunks(): Promise<any[]> {
-        this.full_augmented_response.innerHTML = "";
+    async lookupAIDocumentChunks() {
+        if (this.runningQuery === true) return;
+        this.full_augmented_response.innerHTML = "Search running...";
+        this.runningQuery = true;
         const message = this.analyze_prompt_textarea.value.trim();
         const chunkSizeMeta = this.getChunkSizeMeta();
         let result = await this.getMatchingVectors(message, chunkSizeMeta.topK, chunkSizeMeta.apiToken, chunkSizeMeta.sessionId);
+        if (result.success === false) {
+            console.log("FAILED TO FETCH", result);
+            this.full_augmented_response.innerHTML = "Error fetching results. Please refer to console for details.";
+            this.runningQuery = false;
+            return;
+        }
+
         let html = "";
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match: any) => {
@@ -356,7 +373,8 @@ export class SongSearchApp {
         let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
 
 
-        return result.matches;
+        this.runningQuery = false;
+        return;
     }
     addPlayNow(song: string) {
         if (this.songsInPlaylist.includes(song) === false) this.songsInPlaylist.unshift(song);

@@ -51,9 +51,6 @@
 <body class="initial">
   <div class="audio_visualizer"></div>
   <div class="container-xxl ui_container" style="height:100%;display:flex;flex-direction:column;position:relative">
-    <a class="homepageicon" href="https://unacog.com" target="unacog">
-      <img src="https://unacog.com/images/logo64.png">
-    </a>
     <div class="player_bar">
       <div class="song_title_container"></div>
       <div style="display:flex;flex-direction:row">
@@ -71,37 +68,6 @@
       </div>
     </div>
     <ol class="song_playlist"></ol>
-    <div class="search_overlay">
-      <h5>Metric</h5>
-      <div class="chunk_select_container">
-        <select class="chunk_select form-select">
-          <option value="song" selected>Song</option>
-          <option value="stanza">Stanza</option>
-          <option value="verse">Verse</option>
-        </select>
-      </div>
-      <div style="padding:4px;display: inline-block;">
-        <select class="form-select metric_filter_select w-100"></select>
-      </div>
-      <div class="filter_container"></div>
-
-      <h5 class="mt-3">Semantic Search</h5>
-      <div class="w-100 d-flex flex-row rounded">
-        <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
-          <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
-          <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
-            style="padding-right: 70px; padding-left: 38px;height: 5em;resize: none;border-color: rgb(100,100,255);"
-            placeholder="song lyrics like..." type="text"></textarea>
-          <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
-            style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
-            <span class="material-icons-outlined mt-1">
-              send
-            </span>
-          </button>
-        </div>
-      </div>
-      <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
-    </div>
   </div>
   <div class="modal" tabindex="-1" id="hello_modal">
     <div class="modal-dialog">
@@ -119,221 +85,253 @@
       </div>
     </div>
   </div>
-  <style>
-    html,
-    body {
-      height: 100%;
-      overflow: hidden;
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+  <div class="modal" tabindex="-1" id="search_modal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Search</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h5>Metric</h5>
+          <div class="chunk_select_container">
+            <select class="chunk_select form-select">
+              <option value="song" selected>Song</option>
+              <option value="stanza">Stanza</option>
+              <option value="verse">Verse</option>
+            </select>
+          </div>
+          <div style="padding:4px;display: inline-block;">
+            <select class="form-select metric_filter_select w-100"></select>
+          </div>
+          <div class="filter_container"></div>
 
-    .initial .initial_user_message {
-      display: block;
-      text-align: start;
-    }
+          <h5 class="mt-3">Semantic Search</h5>
+          <div class="w-100 d-flex flex-row rounded">
+            <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
+              <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
+              <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
+                style="padding-right: 70px; padding-left: 38px;height: 5em;resize: none;border-color: rgb(100,100,255);"
+                placeholder="song lyrics like..." type="text"></textarea>
+              <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
+                style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
+                <span class="material-icons-outlined mt-1">
+                  send
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary search_modal_close" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    <style>
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-    .initial_user_message {
-      display: none;
-    }
+      .initial .initial_user_message {
+        display: block;
+        text-align: start;
+      }
 
-    .onboarding_text {
-      display: inline-block;
-      animation: fade-in-left 1s ease-out;
-    }
+      .initial_user_message {
+        display: none;
+      }
 
-    .audio_visualizer {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      z-index: -500;
-      pointer-events: none;
-    }
+      .onboarding_text {
+        display: inline-block;
+        animation: fade-in-left 1s ease-out;
+      }
 
-    .player_bar {
-      position: absolute;
-      bottom: 0;
-      width: inherit;
-      z-index: 1000;
-    }
+      .audio_visualizer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        z-index: -500;
+        pointer-events: none;
+      }
 
-    .player_bar audio {
-      flex: 1;
-    }
+      .player_bar {
+        position: absolute;
+        bottom: 0;
+        width: inherit;
+        z-index: 1000;
+      }
 
-    .song_playlist {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      height: 100%;
-      overflow: auto;
-      display: none;
-    }
+      .player_bar audio {
+        flex: 1;
+      }
 
-    .playlist .song_playlist {
-      display: block;
-    }
+      .song_playlist {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        height: 100%;
+        overflow: auto;
+        display: none;
+      }
 
-    .song_playlist li {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
+      .playlist .song_playlist {
+        display: block;
+      }
 
-    .song_playlist li:last-child {
-      border-bottom: none;
-    }
+      .song_playlist li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
 
-    .song_playlist li:hover {
-      background-color: #f0f0f0;
-    }
+      .song_playlist li:last-child {
+        border-bottom: none;
+      }
 
-    .search_overlay {
-      position: absolute;
-      top: 12px;
-      left: 0;
-      width: 100%;
-      height: 80%;
-      background-color: white;
-      z-index: 1000;
-      display: none;
-      padding: 10px;
-      overflow: auto;
-      display: none;
-    }
+      .song_playlist li:hover {
+        background-color: #f0f0f0;
+      }
 
-    .search .search_overlay {
-      display: block;
-    }
+      .search_overlay {
+        position: absolute;
+        top: 12px;
+        left: 0;
+        width: 100%;
+        height: 80%;
+        background-color: white;
+        z-index: 1000;
+        display: none;
+        padding: 10px;
+        overflow: auto;
+        display: none;
+      }
 
-    .selected {
-      background-color: #c9fff9;
-    }
+      .search .search_overlay {
+        display: block;
+      }
 
-    .filter_modal .filter-element {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #dee2e6;
-      padding: 10px;
-    }
+      .selected {
+        background-color: #c9fff9;
+      }
 
-    .filter_modal .filter-header {
-      display: flex;
-      align-items: center;
-      margin-right: 10px;
-    }
+      .filter_modal .filter-element {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #dee2e6;
+        padding: 10px;
+      }
 
-    .filter_modal .delete-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #dc3545;
-    }
+      .filter_modal .filter-header {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+      }
 
-    .filter_modal .filter-body {
-      display: flex;
-      align-items: center;
-      flex-grow: 1;
-    }
+      .filter_modal .delete-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #dc3545;
+      }
 
-    .filter_modal .filter-select {
-      margin-right: 10px;
-    }
+      .filter_modal .filter-body {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+      }
 
-    .filter_modal .form-select {
-      width: 120px;
-    }
+      .filter_modal .filter-select {
+        margin-right: 10px;
+      }
 
-    .filter_modal .form-value-select {
-      width: 100%;
-    }
+      .filter_modal .form-select {
+        width: 120px;
+      }
 
-    .btn {
-      color: rgba(255, 255, 255, .75);
-    }
+      .filter_modal .form-value-select {
+        width: 100%;
+      }
 
-    audio::-webkit-media-controls-enclosure,
-    audio::-webkit-media-controls-panel {
-      background-color: transparent;
-    }
+      .btn {
+        color: rgba(255, 255, 255, .75);
+      }
 
-    audio::-webkit-media-controls-panel {
-      color: white;
-    }
+      audio::-webkit-media-controls-enclosure,
+      audio::-webkit-media-controls-panel {
+        background-color: transparent;
+      }
 
-    audio::-webkit-media-controls-play-button,
-    audio::-webkit-media-controls-mute-button {
-      background-color: rgba(255, 255, 255, .5);
-      border-radius: 50%;
-    }
+      audio::-webkit-media-controls-panel {
+        color: white;
+      }
 
-    audio::-webkit-media-controls-timeline {
-      background-color: rgba(255, 255, 255, .5);
-      border-radius: 25px;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
+      audio::-webkit-media-controls-play-button,
+      audio::-webkit-media-controls-mute-button {
+        background-color: rgba(255, 255, 255, .5);
+        border-radius: 50%;
+      }
 
-    audio::-webkit-media-controls-volume-slider {
-      background-color: rgba(255, 255, 255, .5);
-      border-radius: 25px;
-      padding-left: 8px;
-      padding-right: 8px;
-    }
+      audio::-webkit-media-controls-timeline {
+        background-color: rgba(255, 255, 255, .5);
+        border-radius: 25px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
 
-    audio::-webkit-media-controls-current-time-display {
-      color: rgba(255, 255, 255, .75);
-    }
+      audio::-webkit-media-controls-volume-slider {
+        background-color: rgba(255, 255, 255, .5);
+        border-radius: 25px;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
 
-    audio::-webkit-media-controls-time-remaining-display {
-      color: rgba(255, 255, 255, .75);
-    }
+      audio::-webkit-media-controls-current-time-display {
+        color: rgba(255, 255, 255, .75);
+      }
 
-    audio::-webkit-media-controls-fullscreen-button {
-      color: rgba(255, 255, 255, .75);
-    }
+      audio::-webkit-media-controls-time-remaining-display {
+        color: rgba(255, 255, 255, .75);
+      }
 
-    .song_title_container {
-      color: rgba(255, 255, 255, .75);
-      cursor: pointer;
-    }
+      audio::-webkit-media-controls-fullscreen-button {
+        color: rgba(255, 255, 255, .75);
+      }
 
-    .homepageicon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-    }
+      .song_title_container {
+        color: rgba(255, 255, 255, .75);
+        cursor: pointer;
+      }
 
-    .homepageicon img {
-      max-width: 5vw;
-      max-height: 6vh;
-      z-index: 10;
-      transform: translate(-50%, -50%);
-    }
+      .btn.play_next,
+      .btn.show_search_overlay {
+        background-color: rgba(255, 255, 255, .5);
+        border-radius: 50%;
+        margin-right: 10px;
+        height: 30px;
+        width: 30px;
+        padding: 0;
+      }
 
-    .btn.play_next, .btn.show_search_overlay {
-      background-color: rgba(255, 255, 255, .5);
-      border-radius: 50%;
-      margin-right: 10px;
-      height: 30px;
-      width: 30px;
-      padding: 0;
-    }
+      .btn.play_next i,
+      .btn.show_search_overlay i {
+        color: black;
+      }
 
-    .btn.play_next i, .btn.show_search_overlay i {
-      color: black;
-    }
-    
-    .song_title_container i {
-      color: white;
-    }
-  </style>
+      .song_title_container i {
+        color: white;
+      }
+    </style>
 </body>
 
 </html>
