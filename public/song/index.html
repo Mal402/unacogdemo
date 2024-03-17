@@ -85,308 +85,321 @@
       </div>
     </div>
   </div>
-  <div class="modal" tabindex="-1" id="search_modal">
+  <div class="modal" tabindex="-1" id="search_modal" style="position: relative;">
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
+      <div class="modal-content text-white">
         <div class="modal-header">
-          <h5 class="modal-title">
-            Search by
-          </h5>
-          <select class="chunk_select form-select" style="width: auto;margin-left: 24px;">
-            <option value="song" selected>Song</option>
-            <option value="stanza">Stanza</option>
-            <option value="verse">Verse</option>
-          </select>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="filter_container"></div>
-          <div style="padding:4px;display: inline-block;">
-            <select class="form-select metric_filter_select w-100"></select>
+          <div class="row align-items-center mb-3">
+            <div class="col-auto">
+              <label class="form-label text-light">Search</label>
+              <select class="chunk_select form-select bg-dark text-white" style="width: auto;">
+                <option value="song" selected>Song</option>
+                <option value="stanza">Stanza</option>
+                <option value="verse">Verse</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <label class="form-label text-light">Filter</label>
+              <select class="form-select metric_filter_select bg-dark text-white"></select>
+            </div>
           </div>
-          <div class="w-100 d-flex flex-row rounded">
-            <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
-              <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
-              <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
-                style="padding-right: 70px; padding-left: 38px;height: 5em;resize: none;border-color: rgb(100,100,255);"
-                placeholder="song lyrics like..." type="text"></textarea>
-              <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
-                style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
-                <span class="material-icons-outlined mt-1">
-                  send
-                </span>
+          <div class="w-100 d-flex flex-row rounded mb-3">
+            <div class="textarea-wrapper position-relative w-100">
+              <i class="material-icons position-absolute text-muted"
+                style="left: 12px; top: 50%; transform: translateY(-50%);">search</i>
+              <textarea class="analyze_prompt_textarea form-control bg-dark text-white border-0 rounded-pill ps-5 pe-4"
+                style="height: 2.5em; resize: none;" placeholder="Enter song lyrics..." type="text"></textarea>
+              <button class="analyze_prompt_button btn btn-secondary rounded-pill position-absolute"
+                style="right: 6px; top: 50%; transform: translateY(-50%); width: 60px;">
+                <span class="material-icons-outlined">send</span>
               </button>
             </div>
           </div>
+          <div class="filter_container"></div>
           <div class="full_augmented_response"></div>
         </div>
       </div>
     </div>
-    <style>
-      html,
-      body {
-        height: 100%;
-        overflow: hidden;
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
+  </div>
+  <style>
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-      .initial .initial_user_message {
-        display: block;
-        text-align: start;
-      }
+    .initial .initial_user_message {
+      display: block;
+      text-align: start;
+    }
 
-      .initial_user_message {
-        display: none;
-      }
+    .initial_user_message {
+      display: none;
+    }
 
-      .onboarding_text {
-        display: inline-block;
-        animation: fade-in-left 1s ease-out;
-      }
+    .onboarding_text {
+      display: inline-block;
+      animation: fade-in-left 1s ease-out;
+    }
 
-      .audio_visualizer {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        z-index: -500;
-        pointer-events: none;
-      }
+    .audio_visualizer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      z-index: -500;
+      pointer-events: none;
+    }
 
-      .player_bar {
-        position: absolute;
-        bottom: 0;
-        width: inherit;
-        z-index: 1000;
-      }
+    .player_bar {
+      position: absolute;
+      bottom: 0;
+      width: inherit;
+      z-index: 1000;
+    }
 
-      .player_bar audio {
-        flex: 1;
-      }
+    .player_bar audio {
+      flex: 1;
+    }
 
-      .song_playlist {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        position: absolute;
-        z-index: 1;
-        top: 0;
-        left: 0;
-        height: 100%;
-        overflow: auto;
-        display: none;
-        height: 90vh;
-      }
+    .song_playlist {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      height: 100%;
+      overflow: auto;
+      display: none;
+      height: 90vh;
+    }
 
-      .playlist .song_playlist {
-        display: block;
-      }
+    .playlist .song_playlist {
+      display: block;
+    }
 
-      .song_playlist li {
-        padding: 10px;
-        border-bottom: 1px solid rgba(125, 125, 125, .1);
-      }
+    .song_playlist li {
+      padding: 10px;
+      border-bottom: 1px solid rgba(125, 125, 125, .1);
+    }
 
-      .song_playlist li:last-child {
-        border-bottom: none;
-      }
+    .song_playlist li:last-child {
+      border-bottom: none;
+    }
 
-      .song_playlist li:hover {
-        background-color: rgba(25, 25, 25, .5);
-      }
+    .song_playlist li:hover {
+      background-color: rgba(25, 25, 25, .5);
+    }
 
-      .search_overlay {
-        position: absolute;
-        top: 12px;
-        left: 0;
-        width: 100%;
-        height: 80%;
-        background-color: white;
-        z-index: 1000;
-        display: none;
-        padding: 10px;
-        overflow: auto;
-        display: none;
-      }
+    .search_overlay {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      width: 100%;
+      height: 80%;
+      background-color: white;
+      z-index: 1000;
+      display: none;
+      padding: 10px;
+      overflow: auto;
+      display: none;
+    }
 
-      .search .search_overlay {
-        display: block;
-      }
+    .search .search_overlay {
+      display: block;
+    }
 
-      .selected {
-        background-color: rgba(75, 75, 75, .5);
-      }
+    .selected {
+      background-color: rgba(75, 75, 75, .5);
+    }
 
-      .filter-element {
-        display: inline-flex;
-        align-items: center;
-        padding: 2px;
-        border-radius: 10px;
-        border: solid 1px silver;
-        margin: 2px;
-        background-color: rgba(255, 255, 255, .5);
-      }
+    .filter-body select::-ms-expand {
+      display: none;
+    }
 
-      .filter-element .filter-header {
-        font-size: 0.5em;
-      }
+    .filter-element {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: solid 1px #ccc;
+      margin: 4px;
+      background-color: rgb(25, 25, 25);
+    }
 
-      .filter-element .delete-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-      }
+    .filter-element .filter-header {
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
 
-      .filter-element .filter-body {
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-      }
+    .filter-element .delete-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      margin-left: 10px;
+      transition: color 0.3s;
+    }
 
-      .filter-element .filter-select {
-        margin-right: 10px;
-      }
 
-      .filter-element .form-select {
-        width: 25px;
-        background: white;
-        padding: 0 2px 0 0;
-        text-align: center;
-      }
+    .filter-element .delete-button:hover {
+      color: #ff4d4d;
+    }
 
-      .filter-element .form-value-select {
-        width: 100%;
-      }
+    .filter-element .filter-body {
+      display: flex;
+      align-items: center;
+    }
 
-      .btn {
-        color: rgba(255, 255, 255, .75);
-      }
+    .filter-element .filter-select {
+      margin-right: 10px;
+    }
 
-      audio::-webkit-media-controls-enclosure,
-      audio::-webkit-media-controls-panel {
-        background-color: transparent;
-      }
+    .filter-element .form-select {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
 
-      audio::-webkit-media-controls-panel {
-        color: white;
-      }
+    .btn {
+      color: rgba(255, 255, 255, .75);
+    }
 
-      audio::-webkit-media-controls-play-button,
-      audio::-webkit-media-controls-mute-button {
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 50%;
-      }
+    audio::-webkit-media-controls-enclosure,
+    audio::-webkit-media-controls-panel {
+      background-color: transparent;
+    }
 
-      audio::-webkit-media-controls-timeline {
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 25px;
-        margin-left: 10px;
-        margin-right: 10px;
-      }
+    audio::-webkit-media-controls-panel {
+      color: white;
+    }
 
-      audio::-webkit-media-controls-volume-slider {
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 25px;
-        padding-left: 8px;
-        padding-right: 8px;
-      }
+    audio::-webkit-media-controls-play-button,
+    audio::-webkit-media-controls-mute-button {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+    }
 
-      audio::-webkit-media-controls-current-time-display {
-        color: rgba(255, 255, 255, .75);
-      }
+    audio::-webkit-media-controls-timeline {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 25px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
 
-      audio::-webkit-media-controls-time-remaining-display {
-        color: rgba(255, 255, 255, .75);
-      }
+    audio::-webkit-media-controls-volume-slider {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 25px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
 
-      audio::-webkit-media-controls-fullscreen-button {
-        color: rgba(255, 255, 255, .75);
-      }
+    audio::-webkit-media-controls-current-time-display {
+      color: rgba(255, 255, 255, .75);
+    }
 
-      .song_title_container {
-        color: rgba(255, 255, 255, .75);
-        cursor: pointer;
-      }
+    audio::-webkit-media-controls-time-remaining-display {
+      color: rgba(255, 255, 255, .75);
+    }
 
-      .btn.play_next,
-      .btn.show_search_overlay {
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 50%;
-        margin-right: 10px;
-        height: 30px;
-        width: 30px;
-        padding: 0;
-      }
+    audio::-webkit-media-controls-fullscreen-button {
+      color: rgba(255, 255, 255, .75);
+    }
 
-      .btn.play_next i,
-      .btn.show_search_overlay i {
-        color: black;
-      }
+    .song_title_container {
+      color: rgba(255, 255, 255, .75);
+      cursor: pointer;
+    }
 
-      .song_title_container i {
-        color: white;
-      }
+    .btn.play_next,
+    .btn.show_search_overlay {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+      margin-right: 10px;
+      height: 30px;
+      width: 30px;
+      padding: 0;
+    }
 
-      .btn .playlist_buttons {
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 50%;
-      }
+    .btn.play_next i,
+    .btn.show_search_overlay i {
+      color: black;
+    }
 
-      .song_card_text {
-        max-height: 10em;
-        overflow: auto;
-      }
+    .song_title_container i {
+      color: white;
+    }
 
-      #search_modal .modal-content {
-        display: flex;
-        height: calc(100vh - 70px);
-        background:rgba(255,255,255,.25);
-      }
+    .btn .playlist_buttons {
+      background-color: rgba(255, 255, 255, .5);
+      border-radius: 50%;
+    }
 
-      #search_modal .modal-content .modal-body {
-        flex-direction: column;
-        flex: 1;
-        display: flex;
-        overflow: hidden;
-      }
+    .song_card_text {
+      max-height: 10em;
+      overflow: auto;
+    }
 
-      .full_augmented_response {
-        flex: 1;
-        overflow: auto;
-      }
+    #search_modal .modal-content {
+      display: flex;
+      height: calc(100vh - 120px);
+      background: rgba(75, 75, 75, .25);
+    }
 
-      .match-card .btn {
-        background-color: transparent;
-        border: none;
-        color: black;
-        padding: 0;
-      }
+    #search_modal .modal-content .modal-body {
+      flex-direction: column;
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      padding: 20px;
+    }
 
-      .song_card_text {
-        height: 0;
-        transition: height 0.5s;
-        overflow: hidden;
-      }
+    .full_augmented_response {
+      flex: 1;
+      overflow: auto;
+      margin-top: 20px;
+    }
 
-      .show-lyrics .song_card_text {
-        height: 10em;
-        overflow: auto;
-      }
+    .match-card .btn {
+      background-color: transparent;
+      border: none;
+      color: black;
+      padding: 0;
+    }
 
-      .toggle_lyrics.btn i {
-        transition: transform 0.5s;
-        transform: rotate(0deg);
-      }
+    .song_card_text {
+      height: 0;
+      transition: height 0.5s;
+      overflow: hidden;
+    }
 
-      .show-lyrics .toggle_lyrics.btn i {
-        transition: transform 0.5s;
-        transform: rotate(180deg);
-      }
+    .show-lyrics .song_card_text {
+      height: 10em;
+      overflow: auto;
+    }
 
-    </style>
+    .toggle_lyrics.btn i {
+      transition: transform 0.5s;
+      transform: rotate(0deg);
+    }
+
+    .show-lyrics .toggle_lyrics.btn i {
+      transition: transform 0.5s;
+      transform: rotate(180deg);
+    }
+  </style>
 </body>
 
 </html>

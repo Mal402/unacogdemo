@@ -11,8 +11,6 @@ export class SongSearchApp {
     audio_visualizer = document.body.querySelector(".audio_visualizer") as HTMLDivElement;
     song_playlist = document.body.querySelector(".song_playlist") as HTMLOListElement;
     audio_player = document.body.querySelector(".audio_player") as HTMLAudioElement;
-    play_song_search = document.body.querySelector(".play_song_search") as HTMLButtonElement;
-    play_song_playlist = document.body.querySelector(".play_song_playlist") as HTMLButtonElement;
     add_song = document.body.querySelector(".add_song") as HTMLButtonElement;
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
@@ -79,7 +77,11 @@ export class SongSearchApp {
 
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
+            this.analyze_prompt_button.disabled = true;
+            this.analyze_prompt_button.textContent = "...";
             await this.lookupAIDocumentChunks();
+            this.analyze_prompt_button.disabled = false;
+            this.analyze_prompt_button.innerHTML = `<span class="material-icons-outlined">send</span>`;
         });
         this.analyze_prompt_textarea.addEventListener("keydown", (e: any) => {
             if (e.key === "Enter" && e.shiftKey === false) {
@@ -217,8 +219,8 @@ export class SongSearchApp {
             filterDiv.innerHTML = this.selectedFilterTemplate(filter, filterIndex);
             this.filter_container.appendChild(filterDiv);
         });
-        this.filter_container.querySelectorAll("button").forEach((button: HTMLButtonElement) => {
-            button.addEventListener("click", () => {
+        this.filter_container.querySelectorAll(".delete-button").forEach((button) => {
+            (button as HTMLButtonElement).addEventListener("click", () => {
                 let filterIndex = Number(button.getAttribute("data-filterindex"));
                 this.selectedFilters.splice(filterIndex, 1);
                 this.renderFilters();
@@ -239,8 +241,7 @@ export class SongSearchApp {
                 this.saveFiltersToLocalStorage();
             });
         });
-
-        let html = "<option>Filter by metric</option>";
+        let html = "<option>metric...</option>";
         this.metricPrompts.forEach((prompt: any) => {
             let promptUsed = false;
             this.selectedFilters.forEach((filter: any) => {
@@ -311,7 +312,7 @@ export class SongSearchApp {
     }
     async lookupAIDocumentChunks() {
         if (this.runningQuery === true) return;
-        this.full_augmented_response.innerHTML = "Search running...";
+        this.full_augmented_response.innerHTML = `<span class="text-light">Search running...</span>`;
         this.runningQuery = true;
         const message = this.analyze_prompt_textarea.value.trim();
         const chunkSizeMeta = this.getChunkSizeMeta();
@@ -341,30 +342,30 @@ export class SongSearchApp {
                 categories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
-                      <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
+                          <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
                     }
                 });
                 return `
-                  <div class="card mb-1 shadow" data-songcardid="${match.id}">
+                  <div class="song_card card mb-1 text-white" data-songcardid="${match.id}" style="background:rgba(50, 50, 50, .25);">
                     <div class="card-body match-card">
                       <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title" style="flex:1">${match.metadata.artist} - ${match.metadata.title}</h5>
-                        <button class="btn play_song me-2" data-song="${match.id}">
+                        <button class="btn play_song me-2 text-white" data-song="${match.id}">
                         <i class="material-icons">play_arrow</i>
                       </button>
-                      <button class="btn add_song" data-song="${match.id}">
+                      <button class="btn add_song text-white" data-song="${match.id}">
                         <i class="material-icons">playlist_add</i>
                       </button>
                     </div>
                     <div style="display:flex; flex-direction:row;">
                         <div style="flex:1">${catString}</div>
                         <div>
-                            <button class="btn toggle_lyrics" data-song="${match.id}">
+                            <button class="btn toggle_lyrics text-white" data-song="${match.id}">
                                 <i class="material-icons">expand_more</i>
                             </button>
                         </div>
                     </div>
-                    <div class="song_card_text" style="white-space:pre-wrap;">${textFrag}</div>
+                    <div class="song_card_text text-white" style="white-space:pre-wrap;">${textFrag}</div>
                     </div>
                 </div>`;
             }
@@ -381,6 +382,12 @@ export class SongSearchApp {
             });
         });
         let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
+        playButtons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                let songId = button.getAttribute("data-song");
+                this.addPlayNow(songId);
+            });
+        });
 
 
         let lyricButtons = this.full_augmented_response.querySelectorAll(".toggle_lyrics");
@@ -535,24 +542,24 @@ export class SongSearchApp {
         const lessThan = filter.operator === "$lte" ? "selected" : "";
         const greaterThan = filter.operator === "$gte" ? "selected" : "";
         return `<div class="filter-header">
-            <span class="metric-filter-title">${title}</span>
-          </div>
-          <div class="filter-body">
-            <div class="filter-select">
-              <select class="form-select" data-filterindex="${filterIndex}">
-                <option value="$lte" ${lessThan}>&#8804;</option>
-                <option value="$gte" ${greaterThan}>&#8805;</option>
-              </select>
-            </div>
-            <div class="filter-value">
-              <select class="form-select" data-filterindex="${filterIndex}">
-                ${Array.from({ length: 11 }, (_, i) => `<option value="${i}" ${Number(filter.value) === i ? 'selected' : ''}>${i}</option>`).join('')}
-              </select>
-            </div>
-          </div>
-          <button class="delete-button" data-filterindex="${filterIndex}">
-              <i class="material-icons">delete</i>
-            </button>`;
+                    <span class="metric-filter-title">${title}</span>
+                    </div>
+                    <div class="filter-body">
+                    <div class="filter-select">
+                        <select class="bg-dark text-white" data-filterindex="${filterIndex}">
+                        <option value="$lte" ${lessThan}>≤</option>
+                        <option value="$gte" ${greaterThan}>≥</option>
+                        </select>
+                    </div>
+                    <div class="filter-value">
+                        <select class="bg-dark text-white" data-filterindex="${filterIndex}">
+                        ${Array.from({ length: 11 }, (_, i) => `<option value="${i}" ${Number(filter.value) === i ? 'selected' : ''}>${i}</option>`).join('')}
+                        </select>
+                    </div>
+                    </div>
+                    <button class="delete-button bg-dark text-white" data-filterindex="${filterIndex}">
+                    <i class="material-icons">close</i>
+                    </button>`;
     }
     titleCase(title: string): string {
         return title[0].toUpperCase() + title.slice(1).toLowerCase();
