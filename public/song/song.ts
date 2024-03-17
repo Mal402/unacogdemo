@@ -29,13 +29,18 @@ export class SongSearchApp {
         ledBars: true,
         showScaleX: false,
         showScaleY: false,
-        linearBoost: 1,
+        linearBoost: 3,
         minFreq: 1000,
         maxFreq: 8000,
         barSpace: 0,
-        radius: 0.1,
+        radius: 0.2,
         spinSpeed: 1.5,
-        frequencyScale: "log",
+        frequencyScale: "mel",
+        channelLayout: "dual-horizontal",
+        mode: 10,
+        gradient: "prism",
+        maxDecibels: -30,
+        minDecibels: -70,
     };
     songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
