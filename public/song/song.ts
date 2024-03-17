@@ -1,4 +1,4 @@
-import { prompts } from "./prompts";
+import { prompts } from "./metrics";
 
 export class SongSearchApp {
     running = false;
@@ -18,7 +18,6 @@ export class SongSearchApp {
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
     song_title_container = document.body.querySelector(".song_title_container") as HTMLDivElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
-    intro_modal_close = document.body.querySelector(".intro_modal_close") as HTMLButtonElement;
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
     visualizerShowing = true;
     visualizerSettings: any = {
@@ -70,6 +69,7 @@ export class SongSearchApp {
         topK: 50,
     }
     metricPrompts: any[] = [];
+    metricPromptMap: any = {};
     promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
     queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
@@ -116,9 +116,6 @@ export class SongSearchApp {
                 this.visualizerShowing = true;
               });
         });
-        this.intro_modal_close.addEventListener("click", () => {
-            this.load();
-        });
 
         window.addEventListener("resize", () => {
             this.resizeVisualizer();
@@ -142,6 +139,9 @@ export class SongSearchApp {
                 if (this.audio_player.paused) this.audio_player.play();
                 else this.audio_player.pause();
             }
+            if (e.key === "s") {
+                this.show_search_overlay.click();
+            }
         });
 
         window.document.addEventListener("click", (e: Event) => {
@@ -152,11 +152,15 @@ export class SongSearchApp {
             else this.audio_player.pause();
         });
 
-        const introModal = new (window as any).bootstrap.Modal(document.getElementById('hello_modal'));
+        const introModalDom = document.getElementById('hello_modal') as HTMLElement;
+        const introModal = new (window as any).bootstrap.Modal(introModalDom);
+        introModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
+            this.load();
+          });
         introModal.show();
     }
     showOverlay(overlayName: string = "none", toggle = false) {
-        const overlays = ["none", "playlist", "search", "lyrics", "about"];
+        const overlays = ["none", "playlist", "lyrics", "about"];
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
@@ -209,6 +213,7 @@ export class SongSearchApp {
         this.filter_container.innerHTML = "";
         this.selectedFilters.forEach((filter: any, filterIndex: number) => {
             let filterDiv = document.createElement("div");
+            filterDiv.classList.add("filter-element");
             filterDiv.innerHTML = this.selectedFilterTemplate(filter, filterIndex);
             this.filter_container.appendChild(filterDiv);
         });
@@ -235,14 +240,13 @@ export class SongSearchApp {
             });
         });
 
-        let html = "<option>Choose a metric</option>";
+        let html = "<option>Filter by metric</option>";
         this.metricPrompts.forEach((prompt: any) => {
             let promptUsed = false;
             this.selectedFilters.forEach((filter: any) => {
                 if (filter.metaField === prompt.id) promptUsed = true;
             });
-
-            if (promptUsed === false) html += `<option>${prompt.id}</option>`;
+            if (promptUsed === false) html += `<option value="${prompt.id}">${prompt.title}</option>`;
         });
         this.metric_filter_select.innerHTML = html;
     }
@@ -293,6 +297,10 @@ export class SongSearchApp {
         this.loaded = true;
         this.lookupData = {};
         this.lookedUpIds = {};
+        this.metricPromptMap = {};
+        this.metricPrompts.forEach((prompt: any) => {
+            this.metricPromptMap[prompt.id] = prompt;
+        });
         this.hydrateFromLocalStorage();
     }
     getChunkSizeMeta(): any {
@@ -508,12 +516,10 @@ export class SongSearchApp {
         this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} <i class="material-icons">expand_more</i>`;
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
-        const title = filter.metaField;
+        const title = this.metricPromptMap[filter.metaField].title;
         const lessThan = filter.operator === "$lte" ? "selected" : "";
         const greaterThan = filter.operator === "$gte" ? "selected" : "";
-        return `<div class="filter_modal">
-        <div class="filter-element">
-          <div class="filter-header">
+        return `<div class="filter-header">
             <span class="metric-filter-title">${title}</span>
           </div>
           <div class="filter-body">
@@ -531,9 +537,7 @@ export class SongSearchApp {
           </div>
           <button class="delete-button" data-filterindex="${filterIndex}">
               <i class="material-icons">delete</i>
-            </button>
-        </div>
-      </div>`
+            </button>`;
     }
     titleCase(title: string): string {
         return title[0].toUpperCase() + title.slice(1).toLowerCase();

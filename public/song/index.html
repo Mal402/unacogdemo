@@ -87,26 +87,23 @@
   </div>
   <div class="modal" tabindex="-1" id="search_modal">
     <div class="modal-dialog modal-xl">
-      <div class="modal-content">
+      <div class="modal-content" style="background:rgba(255,255,255,.5)">
         <div class="modal-header">
-          <h5 class="modal-title">Search</h5>
+          <h5 class="modal-title">
+            Search by
+          </h5>
+          <select class="chunk_select form-select" style="width: auto;margin-left: 24px;">
+            <option value="song" selected>Song</option>
+            <option value="stanza">Stanza</option>
+            <option value="verse">Verse</option>
+          </select>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <h5>Metric</h5>
-          <div class="chunk_select_container">
-            <select class="chunk_select form-select">
-              <option value="song" selected>Song</option>
-              <option value="stanza">Stanza</option>
-              <option value="verse">Verse</option>
-            </select>
-          </div>
+          <div class="filter_container"></div>
           <div style="padding:4px;display: inline-block;">
             <select class="form-select metric_filter_select w-100"></select>
           </div>
-          <div class="filter_container"></div>
-
-          <h5 class="mt-3">Semantic Search</h5>
           <div class="w-100 d-flex flex-row rounded">
             <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
               <i class="material-icons" style="position: absolute;left:12px;top:8px;">search</i>
@@ -122,9 +119,6 @@
             </div>
           </div>
           <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary search_modal_close" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -226,41 +220,44 @@
         background-color: rgba(75, 75, 75, .5);
       }
 
-      .filter_modal .filter-element {
-        display: flex;
+      .filter-element {
+        display: inline-flex;
         align-items: center;
-        border-bottom: 1px solid #dee2e6;
-        padding: 10px;
+        padding: 2px;
+        border-radius: 10px;
+        border: solid 1px silver;
+        margin: 2px;
+        background-color: rgba(255, 255, 255, .5);
       }
 
-      .filter_modal .filter-header {
-        display: flex;
-        align-items: center;
-        margin-right: 10px;
+      .filter-element .filter-header {
+        font-size: 0.5em;
       }
 
-      .filter_modal .delete-button {
+      .filter-element .delete-button {
         background: none;
         border: none;
         cursor: pointer;
-        color: #dc3545;
       }
 
-      .filter_modal .filter-body {
+      .filter-element .filter-body {
         display: flex;
         align-items: center;
         flex-grow: 1;
       }
 
-      .filter_modal .filter-select {
+      .filter-element .filter-select {
         margin-right: 10px;
       }
 
-      .filter_modal .form-select {
-        width: 120px;
+      .filter-element .form-select {
+        width: 25px;
+        background: white;
+        padding: 0 2px 0 0;
+        text-align: center;
       }
 
-      .filter_modal .form-value-select {
+      .filter-element .form-value-select {
         width: 100%;
       }
 
