@@ -525,7 +525,7 @@ export class SongSearchApp {
             </div>
             <div class="filter-value">
               <select class="form-select" data-filterindex="${filterIndex}">
-                ${Array.from({ length: 11 }, (_, i) => `<option value="${i}" ${filter.value === i ? 'selected' : ''}>${i}</option>`).join('')}
+                ${Array.from({ length: 11 }, (_, i) => `<option value="${i}" ${Number(filter.value) === i ? 'selected' : ''}>${i}</option>`).join('')}
               </select>
             </div>
           </div>
