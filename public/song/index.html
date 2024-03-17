@@ -87,7 +87,7 @@
   </div>
   <div class="modal" tabindex="-1" id="search_modal">
     <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background:rgba(255,255,255,.5)">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">
             Search by
@@ -118,7 +118,7 @@
               </button>
             </div>
           </div>
-          <div class="full_augmented_response" style="flex:1;overflow:auto;"></div>
+          <div class="full_augmented_response"></div>
         </div>
       </div>
     </div>
@@ -339,6 +339,53 @@
         max-height: 10em;
         overflow: auto;
       }
+
+      #search_modal .modal-content {
+        display: flex;
+        height: calc(100vh - 70px);
+        background:rgba(255,255,255,.25);
+      }
+
+      #search_modal .modal-content .modal-body {
+        flex-direction: column;
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+
+      .full_augmented_response {
+        flex: 1;
+        overflow: auto;
+      }
+
+      .match-card .btn {
+        background-color: transparent;
+        border: none;
+        color: black;
+        padding: 0;
+      }
+
+      .song_card_text {
+        height: 0;
+        transition: height 0.5s;
+        overflow: hidden;
+      }
+
+      .show-lyrics .song_card_text {
+        height: 10em;
+        overflow: auto;
+      }
+
+      .toggle_lyrics.btn i {
+        transition: transform 0.5s;
+        transform: rotate(0deg);
+      }
+
+      .show-lyrics .toggle_lyrics.btn i {
+        transition: transform 0.5s;
+        transform: rotate(180deg);
+      }
+
     </style>
 </body>
 

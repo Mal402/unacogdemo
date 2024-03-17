@@ -114,7 +114,7 @@ export class SongSearchApp {
             this.visualizerShowing = false;
             searchModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
                 this.visualizerShowing = true;
-              });
+            });
         });
 
         window.addEventListener("resize", () => {
@@ -156,7 +156,7 @@ export class SongSearchApp {
         const introModal = new (window as any).bootstrap.Modal(introModalDom);
         introModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
             this.load();
-          });
+        });
         introModal.show();
     }
     showOverlay(overlayName: string = "none", toggle = false) {
@@ -337,7 +337,7 @@ export class SongSearchApp {
             const chunkCount = parts[3];
             const generateSongCard = (match: any, textFrag: string) => {
                 const categories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
-                let catString = "";
+                let catString = `<span class="badge bg-success">Match: <b>${(match.score * 100).toFixed()}%</b></span>`;
                 categories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
@@ -345,26 +345,28 @@ export class SongSearchApp {
                     }
                 });
                 return `
-                  <div class="card mb-4 shadow">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">${match.metadata.artist} - ${match.metadata.title}</h5>
-                        <span class="badge bg-success">Match: <b>${(match.score * 100).toFixed()}%</b></span>
-                      </div>
-                      <div class="mb-3">${catString}</div>
-                      <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                          <button class="btn btn-primary play_song me-2" data-song="${match.id}">
-                            <i class="material-icons">play_arrow</i> Play
-                          </button>
-                          <button class="btn btn-secondary add_song" data-song="${match.id}">
-                            <i class="material-icons">add</i> Add
-                          </button>
-                        </div>
-                      </div>
-                      <div class="song_card_text" style="white-space:pre-wrap">${textFrag}</div>
+                  <div class="card mb-1 shadow" data-songcardid="${match.id}">
+                    <div class="card-body match-card">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title" style="flex:1">${match.metadata.artist} - ${match.metadata.title}</h5>
+                        <button class="btn play_song me-2" data-song="${match.id}">
+                        <i class="material-icons">play_arrow</i>
+                      </button>
+                      <button class="btn add_song" data-song="${match.id}">
+                        <i class="material-icons">playlist_add</i>
+                      </button>
                     </div>
-                  </div>`;
+                    <div style="display:flex; flex-direction:row;">
+                        <div style="flex:1">${catString}</div>
+                        <div>
+                            <button class="btn toggle_lyrics" data-song="${match.id}">
+                                <i class="material-icons">expand_more</i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="song_card_text" style="white-space:pre-wrap;">${textFrag}</div>
+                    </div>
+                </div>`;
             }
             let block = generateSongCard(match, textFrag);
             html += block;
@@ -380,6 +382,19 @@ export class SongSearchApp {
         });
         let playButtons = this.full_augmented_response.querySelectorAll(".play_song");
 
+
+        let lyricButtons = this.full_augmented_response.querySelectorAll(".toggle_lyrics");
+        lyricButtons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                let songId = button.getAttribute("data-song");
+                let card = this.full_augmented_response.querySelector(`[data-songcardid="${songId}"]`) as HTMLElement;
+                if (card.classList.contains("show-lyrics")) {
+                    card.classList.remove("show-lyrics");
+                } else {
+                    card.classList.add("show-lyrics");
+                }
+            });
+        });
 
         this.runningQuery = false;
         return;
