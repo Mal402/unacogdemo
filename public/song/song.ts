@@ -409,10 +409,10 @@ export class SongSearchApp {
             li.classList.add("song_playlist_item");
             li.classList.add("list-group-item");
             if (this.playlistIndex === songIndex) li.classList.add("selected");
-            li.innerHTML = `<span>${data.metadata.title}</span>
-            <button class="btn btn-primary play_song_playlist" data-songindex="${songIndex}"><i class="material-icons">play_arrow</i></button>
-            <button class="btn btn-primary remove_song" data-songindex="${songIndex}"><i class="material-icons">delete</i></button>
-            `;
+            li.innerHTML = `<div style="display:flex; flex-direction:row;color:#fff"><div style="flex:1;">${data.metadata.title}</div>
+            <button class="btn playlist_buttons play_song_playlist" data-songindex="${songIndex}"><i class="material-icons">play_arrow</i></button>
+            <button class="btn playlist_buttons remove_song" data-songindex="${songIndex}"><i class="material-icons">delete</i></button>
+            <div>`;
             this.song_playlist.appendChild(li);
         });
         let remove_buttons = this.song_playlist.querySelectorAll(".remove_song");
