@@ -103,8 +103,9 @@ export class SongSearchApp {
         this.resizeVisualizer();
 
         this.chunk_select.addEventListener("input", () => {
-            this.saveFiltersToLocalStorage();
-            this.load();
+            localStorage.setItem("song_filterSize", this.chunk_select.value);
+            this.lookupData = {};
+            this.lookedUpIds = {};
         });
         this.song_title_container.addEventListener("click", () => {
             this.showOverlay("playlist", true);
@@ -514,6 +515,8 @@ export class SongSearchApp {
         const songFilterSize = localStorage.getItem("song_filterSize");
         if (songFilterSize) this.chunk_select.value = songFilterSize;
         if (this.chunk_select.selectedIndex === -1) this.chunk_select.selectedIndex = 0;
+        const listIndex = localStorage.getItem("song_listIndex");
+        if (listIndex) this.playlistIndex = Number(listIndex) - 1;
         this.renderFilters();
         this.loadPlaylistFromLocalStorage();
         this.renderPlaylist();
@@ -536,6 +539,7 @@ export class SongSearchApp {
         }
         this.renderPlaylist();
         this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} <i class="material-icons">expand_more</i>`;
+        localStorage.setItem("song_listIndex", this.playlistIndex.toString());
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = this.metricPromptMap[filter.metaField].title;
