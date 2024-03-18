@@ -16,7 +16,9 @@ export class SongSearchApp {
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
     song_title_container = document.body.querySelector(".song_title_container") as HTMLDivElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
+    closed_caption_btn = document.body.querySelector(".closed_caption_btn") as HTMLButtonElement;
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
+    full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
     visualizerShowing = true;
     visualizerSettings: any = {
         source: this.audio_player,
@@ -109,6 +111,9 @@ export class SongSearchApp {
         });
         this.song_title_container.addEventListener("click", () => {
             this.showOverlay("playlist", true);
+        });
+        this.closed_caption_btn.addEventListener("click", () => {
+            this.showOverlay("lyrics", true);
         });
         this.show_search_overlay.addEventListener("click", () => {
             const searchModalDom = document.getElementById('search_modal') as HTMLElement;
@@ -311,8 +316,7 @@ export class SongSearchApp {
         if (chunkSize === "stanza") return this.stanzaChunkMeta;
         return this.songChunkMeta;
     }
-    generateDisplayText(matchId: string): string {
-        const displayDocHTML = this.lookupData[matchId];
+    generateDisplayText(matchId: string, highlight = false): string {
         const chunkSize = this.chunk_select.value;
         if (chunkSize === "verse") {
             const parts = matchId.split("_");
@@ -325,7 +329,7 @@ export class SongSearchApp {
                 const chunkId = `${docID}_${paddedChunkIndex}_${chunkCount}`;
                 const chunkHTML = this.lookupData[chunkId];
                 if (chunkHTML) {
-                    if (i === chunkIndex) html += `<span class="verse_chunk_highlight">${chunkHTML}</span>\n`;
+                    if (i === chunkIndex && highlight) html += `<span class="verse_chunk_highlight">${chunkHTML}</span>\n`;
                     else html += chunkHTML + "\n";
                 }
             }
@@ -347,46 +351,27 @@ export class SongSearchApp {
                 });
                 if (i !== 0) {
                     chunkLines.splice(0, 1);
-                    if (i === chunkIndex + 1) {
+                    if (i === chunkIndex + 1 && highlight) {
                         chunkLines[0] = `<span class="stanza_chunk_overlap">${chunkLines[0]}</span>`;
                     }
                 }
                 if (i !== chunkCount - 1) {
                     chunkLines.splice(-1, 1);
-                    if (i === chunkIndex - 1) {
+                    if (i === chunkIndex - 1 && highlight) {
                         let lastIndex = chunkLines.length - 1;
                         chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex]}</span>`;
                     } 
                 }
                 const chunkHTML = chunkLines.join("\n");
                 if (chunkHTML) {
-                    if (i === chunkIndex) html += `<span class="stanza_chunk_highlight">${chunkHTML}</span>\n`;
+                    if (i === chunkIndex && highlight) html += `<span class="stanza_chunk_highlight">${chunkHTML}</span>\n`;
                     else html += chunkHTML + "\n";
                 }
             }
             return html;
         }
+        const displayDocHTML = this.lookupData[matchId];
         return displayDocHTML;
-    }
-    annexChunkWithoutOverlap(text: string, chunkText: string, searchDepth = 500): string {
-        let startPos = -1;
-        const l = Math.min(chunkText.length - 1, searchDepth);
-        for (let nextPos = 1; nextPos < l; nextPos++) {
-            const existingOverlap = text.slice(-1 * nextPos);
-            const nextOverlap = chunkText.slice(0, nextPos);
-            if (existingOverlap === nextOverlap) {
-                startPos = nextPos;
-                // break;
-            }
-        }
-        if (startPos > 0) {
-            if (this.verboseDebugging)
-                console.log("overlap", chunkText.slice(0, startPos), startPos);
-            return text + chunkText.slice(startPos) + " ";
-        }
-        if (this.verboseDebugging)
-            console.log("no overlap");
-        return text + chunkText + " ";
     }
     async lookupAIDocumentChunks() {
         if (this.runningQuery === true) return;
@@ -406,7 +391,8 @@ export class SongSearchApp {
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match: any) => {
             this.songMatchLookup[match.id] = match;
-            let displayDocHTML = this.generateDisplayText(match.id);
+            let displayDocHTML = this.generateDisplayText(match.id, true);
+            match.fullText = this.generateDisplayText(match.id);
             if (!displayDocHTML) {
                 console.log(match.id, this.lookupData)
             }
@@ -613,6 +599,8 @@ export class SongSearchApp {
         }
         this.renderPlaylist();
         this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} <i class="material-icons">expand_more</i>`;
+
+        this.full_display_lyrics.innerHTML = songData.fullText;
         localStorage.setItem("song_listIndex", this.playlistIndex.toString());
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {

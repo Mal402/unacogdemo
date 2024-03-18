@@ -50,7 +50,12 @@
 
 <body class="initial">
   <div class="audio_visualizer"></div>
-  <div class="container-xxl ui_container" style="height:100%;display:flex;flex-direction:column;position:relative">
+  <div class="container-xxl ui_container" style="height:100%;display:flex;flex-direction:column;position:relative;padding:0;">
+    <ol class="song_playlist"></ol>
+    <div class="lyric_overlay">
+      <div class="full_display_lyrics"></div>
+    </div>
+    <div class="spacer_list"></div>
     <div class="player_bar">
       <div class="song_title_container"></div>
       <div style="display:flex;flex-direction:row">
@@ -62,13 +67,16 @@
           <button type="button" class="btn show_search_overlay">
             <i class="material-icons">search</i>
           </button>
+          &nbsp;
+          <button type="button" class="btn closed_caption_btn">
+            <i class="material-icons">closed_caption_disabled</i>
+          </button>
         </div>
         <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">
           <source src="" type="audio/mpeg">
         </audio>
       </div>
     </div>
-    <ol class="song_playlist"></ol>
   </div>
   <div class="modal" tabindex="-1" id="hello_modal">
     <div class="modal-dialog">
@@ -156,29 +164,23 @@
     }
 
     .player_bar {
-      position: absolute;
-      bottom: 0;
-      width: inherit;
-      z-index: 1000;
+      padding-left: 12px;
     }
 
     .player_bar audio {
       flex: 1;
     }
 
-    .song_playlist {
+    .song_playlist,
+    .lyric_overlay {
       list-style-type: none;
       padding: 0;
       margin: 0;
       width: 100%;
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      height: 100%;
+      flex: 1;
       overflow: auto;
       display: none;
-      height: 90vh;
+      color: rgba(255, 255, 255, .75);
     }
 
     .playlist .song_playlist {
@@ -196,6 +198,23 @@
 
     .song_playlist li:hover {
       background-color: rgba(25, 25, 25, .5);
+    }
+
+    .lyric_overlay {
+      display: none;
+    }
+
+    .spacer_list {
+      flex: 1;
+    }
+
+    .lyrics .spacer_list,
+    .playlist .spacer_list {
+      display: none;
+    }
+
+    .lyrics .lyric_overlay {
+      display: block;
     }
 
     .search_overlay {
@@ -248,7 +267,6 @@
       margin-left: 10px;
       transition: color 0.3s;
     }
-
 
     .filter-element .delete-button:hover {
       color: #ff4d4d;
@@ -322,7 +340,8 @@
     }
 
     .btn.play_next,
-    .btn.show_search_overlay {
+    .btn.show_search_overlay,
+    .btn.closed_caption_btn {
       background-color: rgba(255, 255, 255, .5);
       border-radius: 50%;
       margin-right: 10px;
@@ -332,8 +351,11 @@
     }
 
     .btn.play_next i,
-    .btn.show_search_overlay i {
+    .btn.show_search_overlay i,
+    .btn.closed_caption_btn i {
       color: black;
+      top: 2px;
+      position: relative;
     }
 
     .song_title_container i {
@@ -399,12 +421,16 @@
     }
 
     .verse_chunk_highlight,
-    .stanza_chunk_highlight{
+    .stanza_chunk_highlight {
       color: red;
     }
 
     .stanza_chunk_overlap {
       color: green;
+    }
+
+    .full_display_lyrics {
+      white-space: pre-wrap;
     }
   </style>
 </body>
