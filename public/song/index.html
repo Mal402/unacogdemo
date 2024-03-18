@@ -54,10 +54,11 @@
     <div class="player_bar">
       <div class="song_title_container"></div>
       <div style="display:flex;flex-direction:row">
-        <div>
+        <div style="padding-top:12px;">
           <button class="play_next btn">
             <i class="material-icons">skip_next</i>
           </button>
+          &nbsp;
           <button type="button" class="btn show_search_overlay">
             <i class="material-icons">search</i>
           </button>
@@ -91,7 +92,6 @@
         <div class="modal-body">
           <div class="row align-items-center mb-3">
             <div class="col-auto">
-              <label class="form-label text-light">Search</label>
               <select class="chunk_select form-select bg-dark text-white" style="width: auto;">
                 <option value="song" selected>Song</option>
                 <option value="stanza">Stanza</option>
@@ -99,7 +99,6 @@
               </select>
             </div>
             <div class="col-auto">
-              <label class="form-label text-light">Filter</label>
               <select class="form-select metric_filter_select bg-dark text-white"></select>
             </div>
             <div style="flex: 1;"></div>
@@ -397,6 +396,15 @@
     .show-lyrics .toggle_lyrics.btn i {
       transition: transform 0.5s;
       transform: rotate(180deg);
+    }
+
+    .verse_chunk_highlight,
+    .stanza_chunk_highlight{
+      color: red;
+    }
+
+    .stanza_chunk_overlap {
+      color: green;
     }
   </style>
 </body>

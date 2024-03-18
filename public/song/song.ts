@@ -311,6 +311,83 @@ export class SongSearchApp {
         if (chunkSize === "stanza") return this.stanzaChunkMeta;
         return this.songChunkMeta;
     }
+    generateDisplayText(matchId: string): string {
+        const displayDocHTML = this.lookupData[matchId];
+        const chunkSize = this.chunk_select.value;
+        if (chunkSize === "verse") {
+            const parts = matchId.split("_");
+            const docID = parts[0];
+            const chunkIndex = Number(parts[parts.length - 2]) - 1;
+            const chunkCount = Number(parts[parts.length - 1]);
+            let html = "";
+            for (let i = 0; i < chunkCount; i++) {
+                const paddedChunkIndex = (i + 1).toString().padStart(5, "0");
+                const chunkId = `${docID}_${paddedChunkIndex}_${chunkCount}`;
+                const chunkHTML = this.lookupData[chunkId];
+                if (chunkHTML) {
+                    if (i === chunkIndex) html += `<span class="verse_chunk_highlight">${chunkHTML}</span>\n`;
+                    else html += chunkHTML + "\n";
+                }
+            }
+            return html;
+        }
+        if (chunkSize === "stanza") {
+            const parts = matchId.split("_");
+            const docID = parts[0];
+            const chunkIndex = Number(parts[parts.length - 2]) - 1;
+            const chunkCount = Number(parts[parts.length - 1]);
+            let html = "";
+            for (let i = 0; i < chunkCount; i++) {
+                const paddedChunkIndex = (i + 1).toString().padStart(5, "0");
+                const chunkId = `${docID}_${paddedChunkIndex}_${chunkCount}`;
+                const rawText = this.lookupData[chunkId];
+                let chunkLines = rawText.split("\n");
+                chunkLines.forEach((line: string, lineIndex: number) => {
+                    chunkLines[lineIndex] = line.trim();
+                });
+                if (i !== 0) {
+                    chunkLines.splice(0, 1);
+                    if (i === chunkIndex + 1) {
+                        chunkLines[0] = `<span class="stanza_chunk_overlap">${chunkLines[0]}</span>`;
+                    }
+                }
+                if (i !== chunkCount - 1) {
+                    chunkLines.splice(-1, 1);
+                    if (i === chunkIndex - 1) {
+                        let lastIndex = chunkLines.length - 1;
+                        chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex]}</span>`;
+                    } 
+                }
+                const chunkHTML = chunkLines.join("\n");
+                if (chunkHTML) {
+                    if (i === chunkIndex) html += `<span class="stanza_chunk_highlight">${chunkHTML}</span>\n`;
+                    else html += chunkHTML + "\n";
+                }
+            }
+            return html;
+        }
+        return displayDocHTML;
+    }
+    annexChunkWithoutOverlap(text: string, chunkText: string, searchDepth = 500): string {
+        let startPos = -1;
+        const l = Math.min(chunkText.length - 1, searchDepth);
+        for (let nextPos = 1; nextPos < l; nextPos++) {
+            const existingOverlap = text.slice(-1 * nextPos);
+            const nextOverlap = chunkText.slice(0, nextPos);
+            if (existingOverlap === nextOverlap) {
+                startPos = nextPos;
+                // break;
+            }
+        }
+        if (startPos > 0) {
+            if (this.verboseDebugging)
+                console.log("overlap", chunkText.slice(0, startPos), startPos);
+            return text + chunkText.slice(startPos) + " ";
+        }
+        if (this.verboseDebugging)
+            console.log("no overlap");
+        return text + chunkText + " ";
+    }
     async lookupAIDocumentChunks() {
         if (this.runningQuery === true) return;
         this.full_augmented_response.innerHTML = `<span class="text-light">Search running...</span>`;
@@ -328,18 +405,15 @@ export class SongSearchApp {
         let html = "";
         await this.fetchDocumentsLookup(result.matches.map((match: any) => match.id));
         result.matches.forEach((match: any) => {
-            const textFrag = this.lookupData[match.id];
             this.songMatchLookup[match.id] = match;
-            if (!textFrag) {
+            let displayDocHTML = this.generateDisplayText(match.id);
+            if (!displayDocHTML) {
                 console.log(match.id, this.lookupData)
             }
-            const parts = match.id.split("_");
-            const docID = parts[0];
-            const chunkIndex = Number(parts[2]);
-            const chunkCount = parts[3];
-            const generateSongCard = (match: any, textFrag: string) => {
+
+            const generateSongCard = (match: any, displayDocHTML: string) => {
                 const categories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
-                let catString = `<span class="badge bg-success">Match: <b>${(match.score * 100).toFixed()}%</b></span>`;
+                let catString = `<span class="badge bg-success"><b>${(match.score * 100).toFixed()}%</b></span>`;
                 categories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
@@ -366,11 +440,11 @@ export class SongSearchApp {
                             </button>
                         </div>
                     </div>
-                    <div class="song_card_text text-white" style="white-space:pre-wrap;">${textFrag}</div>
+                    <div class="song_card_text text-white" style="white-space:pre-wrap;">${displayDocHTML}</div>
                     </div>
                 </div>`;
             }
-            let block = generateSongCard(match, textFrag);
+            let block = generateSongCard(match, displayDocHTML);
             html += block;
         });
 
