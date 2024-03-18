@@ -19,6 +19,7 @@ export class SongSearchApp {
     closed_caption_btn = document.body.querySelector(".closed_caption_btn") as HTMLButtonElement;
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
     full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
+    lyric_overlay = document.body.querySelector(".lyric_overlay") as HTMLDivElement;
     visualizerShowing = true;
     visualizerSettings: any = {
         source: this.audio_player,
@@ -166,6 +167,18 @@ export class SongSearchApp {
             this.load();
         });
         introModal.show();
+
+        setInterval(() => {
+            this.polledUpdateStatus();
+        }, 10);
+    }
+    polledUpdateStatus() {
+        if (this.audio_player.paused) return;
+        const playedAmt = this.audio_player.currentTime / this.audio_player.duration;
+        const fullHeight = this.full_display_lyrics.scrollHeight;
+        const containerHeight = this.lyric_overlay.clientHeight;
+        const scrollAmt = (fullHeight - containerHeight) * playedAmt;
+        this.lyric_overlay.scrollTo(0, scrollAmt);
     }
     showOverlay(overlayName: string = "none", toggle = false) {
         const overlays = ["none", "playlist", "lyrics", "about"];
