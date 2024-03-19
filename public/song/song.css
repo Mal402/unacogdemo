@@ -265,7 +265,6 @@ audio::-webkit-media-controls-fullscreen-button {
 #search_modal .modal-content {
     display: flex;
     height: calc(100vh - 120px);
-    background: rgba(75, 75, 75, .25);
 }
 
 #search_modal .modal-content .modal-body {
@@ -302,11 +301,14 @@ audio::-webkit-media-controls-fullscreen-button {
 
 .verse_chunk_highlight,
 .stanza_chunk_highlight {
-    color: red;
+    color: orange;
+    font-weight: bold;
+    font-style:italic;
 }
 
 .stanza_chunk_overlap {
-    color: green;
+    color: gold;
+    font-weight: bold;
 }
 
 .full_display_lyrics {
@@ -388,3 +390,8 @@ audio::-webkit-media-controls-fullscreen-button {
   .visualizer_select {
     background: rgba(255, 255, 255, .5);
   }
+
+  .modal-content {
+    background: rgba(25, 25, 25, .65);
+    color: white;
+}
