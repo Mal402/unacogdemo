@@ -144,6 +144,22 @@ export class SongSearchApp {
             if (e.key === "s") {
                 this.show_search_overlay.click();
             }
+            if (e.key === "l") {
+                this.closed_caption_btn.click();
+            }
+            if (e.key === "p") {
+                this.song_title_click_wrapper.click();
+            }
+            if (e.key === ".") {
+                this.visualizer_select.selectedIndex += 1;
+                if (this.visualizer_select.selectedIndex === -1) this.visualizer_select.selectedIndex = 0;
+                this.visualizer_select.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            if (e.key === ",") {
+                this.visualizer_select.selectedIndex -= 1;
+                if (this.visualizer_select.selectedIndex === -1) this.visualizer_select.selectedIndex = this.visualizer_select.options.length - 1;
+                this.visualizer_select.dispatchEvent(new Event('input', { bubbles: true }));
+            }
         });
 
         const introModalDom = document.getElementById('hello_modal') as HTMLElement;
@@ -165,6 +181,7 @@ export class SongSearchApp {
         if (!this.motionVisualizer) {
             this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, config);
         } else {
+            this.motionVisualizer.setOptions(undefined);
             this.motionVisualizer.setOptions(config);
         }
 
@@ -375,7 +392,7 @@ export class SongSearchApp {
                     if (i === chunkIndex - 1 && highlight) {
                         let lastIndex = chunkLines.length - 1;
                         chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex]}</span>`;
-                    } 
+                    }
                 }
                 const chunkHTML = chunkLines.join("\n");
                 if (chunkHTML) {
@@ -410,7 +427,7 @@ export class SongSearchApp {
                     if (i === chunkIndex - 1 && highlight) {
                         let lastIndex = chunkLines.length - 1;
                         chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex - 1]}\n${chunkLines[lastIndex]}</span>`;
-                    } 
+                    }
                 }
                 const chunkHTML = chunkLines.join("\n");
                 if (chunkHTML) {
