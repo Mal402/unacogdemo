@@ -68,7 +68,13 @@ export class SongSearchApp {
         apiToken: "6b71e856-1dee-4f9d-bd53-64b6adafc592",
         sessionId: "bsec9cwrpl72",
         lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-verse%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
-        topK: 50,
+        topK: 25,
+    }
+    doubleStanzaChunkMeta = {
+        apiToken: "3b09a640-7f63-4776-becc-7deab9b9507c",
+        sessionId: "ux4odeb8jqu7",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3-double-stanze%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        topK: 25,
     }
     metricPrompts: any[] = [];
     metricPromptMap: any = {};
@@ -324,6 +330,7 @@ export class SongSearchApp {
         const chunkSize = this.chunk_select.value;
         if (chunkSize === "verse") return this.verseChunkMeta;
         if (chunkSize === "stanza") return this.stanzaChunkMeta;
+        if (chunkSize === "doublestanza") return this.doubleStanzaChunkMeta;
         return this.songChunkMeta;
     }
     generateDisplayText(matchId: string, highlight = false): string {
@@ -370,6 +377,41 @@ export class SongSearchApp {
                     if (i === chunkIndex - 1 && highlight) {
                         let lastIndex = chunkLines.length - 1;
                         chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex]}</span>`;
+                    } 
+                }
+                const chunkHTML = chunkLines.join("\n");
+                if (chunkHTML) {
+                    if (i === chunkIndex && highlight) html += `<span class="stanza_chunk_highlight">${chunkHTML}</span>\n`;
+                    else html += chunkHTML + "\n";
+                }
+            }
+            return html;
+        }
+        if (chunkSize === "doublestanza") {
+            const parts = matchId.split("_");
+            const docID = parts[0];
+            const chunkIndex = Number(parts[parts.length - 2]) - 1;
+            const chunkCount = Number(parts[parts.length - 1]);
+            let html = "";
+            for (let i = 0; i < chunkCount; i++) {
+                const paddedChunkIndex = (i + 1).toString().padStart(5, "0");
+                const chunkId = `${docID}_${paddedChunkIndex}_${chunkCount}`;
+                const rawText = this.lookupData[chunkId];
+                let chunkLines = rawText.split("\n");
+                chunkLines.forEach((line: string, lineIndex: number) => {
+                    chunkLines[lineIndex] = line.trim();
+                });
+                if (i !== 0) {
+                    chunkLines.splice(0, 2);
+                    if (i === chunkIndex + 1 && highlight) {
+                        chunkLines[0] = `<span class="stanza_chunk_overlap">${chunkLines[0]}\n${chunkLines[1]}</span>`;
+                    }
+                }
+                if (i !== chunkCount - 1) {
+                    chunkLines.splice(-2, 2);
+                    if (i === chunkIndex - 1 && highlight) {
+                        let lastIndex = chunkLines.length - 1;
+                        chunkLines[lastIndex] = `<span class="stanza_chunk_overlap">${chunkLines[lastIndex - 1]}\n${chunkLines[lastIndex]}</span>`;
                     } 
                 }
                 const chunkHTML = chunkLines.join("\n");
