@@ -23,6 +23,7 @@ export class SongSearchApp {
     full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
     lyric_overlay = document.body.querySelector(".lyric_overlay") as HTMLDivElement;
     visualizer_select = document.body.querySelector(".visualizer_select") as HTMLSelectElement;
+    close_search_overlay = document.body.querySelector(".close_search_overlay") as HTMLButtonElement;
     searchShowing = false;
     songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
@@ -118,6 +119,9 @@ export class SongSearchApp {
         this.show_search_overlay.addEventListener("click", () => {
             this.showOverlay("search", true);
         });
+        this.close_search_overlay.addEventListener("click", () => {
+            this.showOverlay("none");
+        });
 
         window.addEventListener("resize", () => {
             this.resizeVisualizer();
@@ -204,11 +208,9 @@ export class SongSearchApp {
                     document.body.classList.add(overlay);
                 } else if (toggle === true) {
                     document.body.classList.remove(overlay);
-                    if (overlayName === "search") this.searchShowing = false;
                 }
             } else {
                 document.body.classList.remove(overlay);
-                if (overlayName === "search") this.searchShowing = false;
             }
         });
     }

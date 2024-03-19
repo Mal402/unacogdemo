@@ -360,7 +360,8 @@ audio::-webkit-media-controls-fullscreen-button {
 
 .search_button,
 .play_all_button,
-.about_btn {
+.about_btn,
+.playlist_search_song {
     background-color: #333;
     border: none;
     color: #fff;
