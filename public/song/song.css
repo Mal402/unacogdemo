@@ -39,7 +39,8 @@ body {
 }
 
 .song_playlist,
-.lyric_overlay {
+.lyric_overlay,
+.search_overlay {
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -59,6 +60,10 @@ body {
 }
 
 .playlist .song_playlist {
+    display: block;
+}
+
+.search .search_overlay {
     display: block;
 }
 
@@ -85,7 +90,8 @@ body {
 }
 
 .lyrics .spacer_list,
-.playlist .spacer_list {
+.playlist .spacer_list,
+.search .spacer_list {
     display: none;
 }
 
@@ -94,21 +100,13 @@ body {
 }
 
 .search_overlay {
-    position: absolute;
-    top: 12px;
-    left: 0;
-    width: 100%;
-    height: 80%;
-    background-color: white;
-    z-index: 1000;
-    display: none;
-    padding: 10px;
-    overflow: auto;
     display: none;
 }
 
 .search .search_overlay {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .selected {
@@ -212,7 +210,27 @@ audio::-webkit-media-controls-fullscreen-button {
 
 .song_title_container {
     color: rgba(255, 255, 255, .75);
+    display: inline-block;
+    font-size: 1.25em;
+}
+
+.song_title_click_wrapper {
+    padding: 3px;
+    display: inline-block;
     cursor: pointer;
+}
+
+.song_title_click_wrapper i {
+    color: white;
+    position: relative;
+    top: 4px;
+    transition: transform 0.5s;
+    transform: rotate(0deg);
+}
+
+.playlist .song_title_click_wrapper i {
+    transition: transform 0.5s;
+    transform: rotate(180deg);
 }
 
 .btn.play_next,
@@ -232,10 +250,6 @@ audio::-webkit-media-controls-fullscreen-button {
     color: black;
     top: 2px;
     position: relative;
-}
-
-.song_title_container i {
-    color: white;
 }
 
 .btn .playlist_buttons {
@@ -286,16 +300,6 @@ audio::-webkit-media-controls-fullscreen-button {
     overflow: auto;
 }
 
-.toggle_lyrics.btn i {
-    transition: transform 0.5s;
-    transform: rotate(0deg);
-}
-
-.show-lyrics .toggle_lyrics.btn i {
-    transition: transform 0.5s;
-    transform: rotate(180deg);
-}
-
 .verse_chunk_highlight,
 .stanza_chunk_highlight {
     color: red;
@@ -318,4 +322,8 @@ audio::-webkit-media-controls-fullscreen-button {
 
 .lyric_overlay {
     overflow: hidden;
+}
+
+.search_header {
+    line-height: 4em;
 }

@@ -51,14 +51,46 @@
 
 <body class="initial">
   <div class="audio_visualizer"></div>
-  <div class="container-xxl ui_container" style="height:100%;display:flex;flex-direction:column;position:relative;padding:0;">
+  <div class="container ui_container"
+    style="height:100%;display:flex;flex-direction:column;position:relative;padding:0;">
     <ol class="song_playlist"></ol>
+    <div class="search_overlay">
+      <div class="search_header">
+        <div style="display:inline-block">
+          <select class="chunk_select form-select bg-dark text-white" style="width: auto;">
+            <option value="song" selected>Song</option>
+            <option value="stanza">Stanza</option>
+            <option value="verse">Verse</option>
+          </select>
+        </div>
+        <div style="display:inline-block">
+          <select class="form-select metric_filter_select bg-dark text-white"></select>
+        </div>
+      </div>
+      <div class="filter_container"></div>
+      <div class="w-100 d-flex flex-row rounded mb-3">
+        <div class="textarea-wrapper position-relative w-100">
+          <i class="material-icons position-absolute text-muted"
+            style="left: 12px; top: 50%; transform: translateY(-50%);">search</i>
+          <textarea class="analyze_prompt_textarea form-control bg-dark text-white border-0 rounded-pill ps-5 pe-4"
+            style="height: 2.5em; resize: none;" placeholder="Enter song lyrics..." type="text"></textarea>
+          <button class="analyze_prompt_button btn btn-secondary rounded-pill position-absolute"
+            style="right: 6px; top: 50%; transform: translateY(-50%); width: 60px;">
+            <span class="material-icons-outlined">send</span>
+          </button>
+        </div>
+      </div>
+      <div class="full_augmented_response"></div>
+    </div>
     <div class="lyric_overlay">
       <div class="full_display_lyrics"></div>
     </div>
     <div class="spacer_list"></div>
     <div class="player_bar">
-      <div class="song_title_container"></div>
+      <div class="song_title_click_wrapper">
+        <div class="song_title_container"></div>
+        <i class="material-icons">expand_more</i>
+      </div>
       <div style="display:flex;flex-direction:row">
         <div style="padding-top:12px;">
           <button class="play_next btn">
@@ -95,38 +127,18 @@
       </div>
     </div>
   </div>
-  <div class="modal" tabindex="-1" id="search_modal" style="position: relative;">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content text-white">
+  <div class="modal" tabindex="-1" id="lyrics_modal">
+    <div class="modal-dialog" style="z-index: 400;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Lyrics</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
         <div class="modal-body">
-          <div class="row align-items-center mb-3">
-            <div class="col-auto">
-              <select class="chunk_select form-select bg-dark text-white" style="width: auto;">
-                <option value="song" selected>Song</option>
-                <option value="stanza">Stanza</option>
-                <option value="verse">Verse</option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <select class="form-select metric_filter_select bg-dark text-white"></select>
-            </div>
-            <div style="flex: 1;"></div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="w-100 d-flex flex-row rounded mb-3">
-            <div class="textarea-wrapper position-relative w-100">
-              <i class="material-icons position-absolute text-muted"
-                style="left: 12px; top: 50%; transform: translateY(-50%);">search</i>
-              <textarea class="analyze_prompt_textarea form-control bg-dark text-white border-0 rounded-pill ps-5 pe-4"
-                style="height: 2.5em; resize: none;" placeholder="Enter song lyrics..." type="text"></textarea>
-              <button class="analyze_prompt_button btn btn-secondary rounded-pill position-absolute"
-                style="right: 6px; top: 50%; transform: translateY(-50%); width: 60px;">
-                <span class="material-icons-outlined">send</span>
-              </button>
-            </div>
-          </div>
-          <div class="filter_container"></div>
-          <div class="full_augmented_response"></div>
+          <div class="lyrics_modal_content"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary intro_modal_close" data-bs-dismiss="modal">Ok</button>
         </div>
       </div>
     </div>

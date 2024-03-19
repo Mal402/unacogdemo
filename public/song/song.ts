@@ -15,12 +15,13 @@ export class SongSearchApp {
     play_next = document.body.querySelector(".play_next") as HTMLButtonElement;
     chunk_select = document.body.querySelector(".chunk_select") as HTMLSelectElement;
     song_title_container = document.body.querySelector(".song_title_container") as HTMLDivElement;
+    song_title_click_wrapper = document.body.querySelector(".song_title_click_wrapper") as HTMLDivElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
     closed_caption_btn = document.body.querySelector(".closed_caption_btn") as HTMLButtonElement;
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
     full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
     lyric_overlay = document.body.querySelector(".lyric_overlay") as HTMLDivElement;
-    visualizerShowing = true;
+    searchShowing = false;
     visualizerSettings: any = {
         source: this.audio_player,
         bgColor: "#ffffff",
@@ -77,7 +78,7 @@ export class SongSearchApp {
     lookUpKeys: string[] = [];
     verboseDebugging = false;
     runningQuery = false;
-
+    displayDocHtmlDoc: any = {};
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
             this.analyze_prompt_button.disabled = true;
@@ -110,20 +111,14 @@ export class SongSearchApp {
             this.lookupData = {};
             this.lookedUpIds = {};
         });
-        this.song_title_container.addEventListener("click", () => {
+        this.song_title_click_wrapper.addEventListener("click", () => {
             this.showOverlay("playlist", true);
         });
         this.closed_caption_btn.addEventListener("click", () => {
             this.showOverlay("lyrics", true);
         });
         this.show_search_overlay.addEventListener("click", () => {
-            const searchModalDom = document.getElementById('search_modal') as HTMLElement;
-            const searchModal = new (window as any).bootstrap.Modal(searchModalDom);
-            searchModal.show();
-            this.visualizerShowing = false;
-            searchModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
-                this.visualizerShowing = true;
-            });
+            this.showOverlay("search", true);
         });
 
         window.addEventListener("resize", () => {
@@ -131,7 +126,7 @@ export class SongSearchApp {
         });
 
         window.addEventListener("keydown", (e: any) => {
-            if (this.visualizerShowing === false) return;
+            if (this.searchShowing === true) return;
             if (e.key === "ArrowRight") {
                 this.playNext();
             }
@@ -156,7 +151,6 @@ export class SongSearchApp {
         window.document.addEventListener("click", (e: Event) => {
             if (e.target !== window.document.body &&
                 e.target !== this.ui_container) return;
-            if (this.visualizerShowing === false) return;
             if (this.audio_player.paused) this.audio_player.play();
             else this.audio_player.pause();
         });
@@ -181,16 +175,19 @@ export class SongSearchApp {
         this.lyric_overlay.scrollTo(0, scrollAmt);
     }
     showOverlay(overlayName: string = "none", toggle = false) {
-        const overlays = ["none", "playlist", "lyrics", "about"];
+        const overlays = ["none", "playlist", "lyrics", "search"];
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
+                    if (overlayName === "search") this.searchShowing = true;
                     document.body.classList.add(overlay);
                 } else if (toggle === true) {
                     document.body.classList.remove(overlay);
+                    if (overlayName === "search") this.searchShowing = false;
                 }
             } else {
                 document.body.classList.remove(overlay);
+                if (overlayName === "search") this.searchShowing = false;
             }
         });
     }
@@ -410,7 +407,7 @@ export class SongSearchApp {
                 console.log(match.id, this.lookupData)
             }
 
-            const generateSongCard = (match: any, displayDocHTML: string) => {
+            const generateSongCard = (match: any) => {
                 const categories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
                 let catString = `<span class="badge bg-success"><b>${(match.score * 100).toFixed()}%</b></span>`;
                 categories.forEach(category => {
@@ -434,16 +431,16 @@ export class SongSearchApp {
                     <div style="display:flex; flex-direction:row;">
                         <div style="flex:1">${catString}</div>
                         <div>
-                            <button class="btn toggle_lyrics text-white" data-song="${match.id}">
-                                <i class="material-icons">expand_more</i>
+                            <button class="btn show_lyrics_modal text-white" data-song="${match.id}">
+                               <i class="material-icons">lyrics</i>
                             </button>
                         </div>
                     </div>
-                    <div class="song_card_text text-white" style="white-space:pre-wrap;">${displayDocHTML}</div>
                     </div>
                 </div>`;
             }
-            let block = generateSongCard(match, displayDocHTML);
+            let block = generateSongCard(match);
+            this.displayDocHtmlDoc[match.id] = displayDocHTML;
             html += block;
         });
 
@@ -463,22 +460,26 @@ export class SongSearchApp {
             });
         });
 
-
-        let lyricButtons = this.full_augmented_response.querySelectorAll(".toggle_lyrics");
+        let lyricButtons = this.full_augmented_response.querySelectorAll(".show_lyrics_modal");
         lyricButtons.forEach((button: any) => {
             button.addEventListener("click", () => {
                 let songId = button.getAttribute("data-song");
-                let card = this.full_augmented_response.querySelector(`[data-songcardid="${songId}"]`) as HTMLElement;
-                if (card.classList.contains("show-lyrics")) {
-                    card.classList.remove("show-lyrics");
-                } else {
-                    card.classList.add("show-lyrics");
-                }
+                let displayHTML = this.displayDocHtmlDoc[songId];
+                this.showLyricsModal(songId, displayHTML);
             });
         });
 
+
         this.runningQuery = false;
         return;
+    }
+    showLyricsModal(songId: string, displayHTML: string) {
+        if (displayHTML === "") displayHTML = this.generateDisplayText(songId);
+        const modalDom = document.getElementById('lyrics_modal') as HTMLElement;
+        const modal = new (window as any).bootstrap.Modal(modalDom);
+        let contentDiv = modalDom.querySelector(".lyrics_modal_content") as HTMLDivElement;
+        contentDiv.innerHTML = displayHTML;
+        modal.show();
     }
     addPlayNow(song: string) {
         if (this.songsInPlaylist.includes(song) === false) this.songsInPlaylist.unshift(song);
@@ -611,7 +612,7 @@ export class SongSearchApp {
             console.log("FAILED TO PLAY", error);
         }
         this.renderPlaylist();
-        this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist} <i class="material-icons">expand_more</i>`;
+        this.song_title_container.innerHTML = `${songData.metadata.title} - ${songData.metadata.artist}`;
 
         this.full_display_lyrics.innerHTML = songData.fullText;
         localStorage.setItem("song_listIndex", this.playlistIndex.toString());
