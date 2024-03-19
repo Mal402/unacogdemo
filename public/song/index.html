@@ -89,19 +89,23 @@
       <div class="song_title_click_wrapper">
         <div class="song_title_container"></div>
         <i class="material-icons">expand_more</i>
+        &nbsp;
+      </div>
+      <div style="display:inline-block">
+        <select class="visualizer_select form-select"></select>
       </div>
       <div style="display:flex;flex-direction:row">
         <div style="padding-top:12px;">
-          <button class="play_next btn">
-            <i class="material-icons">skip_next</i>
-          </button>
-          &nbsp;
           <button type="button" class="btn show_search_overlay">
             <i class="material-icons">search</i>
           </button>
           &nbsp;
           <button type="button" class="btn closed_caption_btn">
             <i class="material-icons-outlined">lyrics</i>
+          </button>
+          &nbsp;
+          <button class="play_next btn">
+            <i class="material-icons">skip_next</i>
           </button>
         </div>
         <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">

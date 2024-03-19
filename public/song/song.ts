@@ -1,4 +1,5 @@
 import { prompts } from "./metrics";
+import { configs as visualizers } from "./visualizers";
 
 export class SongSearchApp {
     running = false;
@@ -21,29 +22,8 @@ export class SongSearchApp {
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
     full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
     lyric_overlay = document.body.querySelector(".lyric_overlay") as HTMLDivElement;
+    visualizer_select = document.body.querySelector(".visualizer_select") as HTMLSelectElement;
     searchShowing = false;
-    visualizerSettings: any = {
-        source: this.audio_player,
-        bgColor: "#ffffff",
-        bgAlpha: 0,
-        radial: true,
-        ledBars: true,
-        showScaleX: false,
-        showScaleY: false,
-        linearBoost: 3,
-        minFreq: 1000,
-        maxFreq: 8000,
-        barSpace: 0,
-        radius: 0,
-        spinSpeed: 1.5,
-        frequencyScale: "log",
-        channelLayout: "dual-horizontal",
-        mode: 10,
-        gradientLeft: "prism",
-        gradientRight: "classic",
-        maxDecibels: -25,
-        minDecibels: -90,
-    };
     songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
     lookupData: any = {};
@@ -108,10 +88,22 @@ export class SongSearchApp {
         this.audio_player.addEventListener("ended", () => {
             this.playNext();
         });
-        this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, this.visualizerSettings);
 
-        this.resizeVisualizer();
+        let vOptionList = "";
+        visualizers.forEach((config: any, index: number) => {
+            vOptionList += `<option value="${index}">${config.name}</option>`;
+        });
+        this.visualizer_select.innerHTML = vOptionList;
+        let vIndex = Number(localStorage.getItem("song_visualizer"));
+        if (!vIndex) vIndex = 0;
+        this.visualizer_select.selectedIndex = vIndex;
+        this.visualizer_select.addEventListener("input", () => {
+            const vIndex = this.visualizer_select.selectedIndex;
+            localStorage.setItem("song_visualizer", vIndex.toString());
+            this.updateMotionVisualizer();
+        });
 
+        this.updateMotionVisualizer();
         this.chunk_select.addEventListener("input", () => {
             localStorage.setItem("song_filterSize", this.chunk_select.value);
             this.lookupData = {};
@@ -154,13 +146,6 @@ export class SongSearchApp {
             }
         });
 
-        window.document.addEventListener("click", (e: Event) => {
-            if (e.target !== window.document.body &&
-                e.target !== this.ui_container) return;
-            if (this.audio_player.paused) this.audio_player.play();
-            else this.audio_player.pause();
-        });
-
         const introModalDom = document.getElementById('hello_modal') as HTMLElement;
         const introModal = new (window as any).bootstrap.Modal(introModalDom);
         introModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
@@ -171,6 +156,19 @@ export class SongSearchApp {
         setInterval(() => {
             this.polledUpdateStatus();
         }, 10);
+    }
+    updateMotionVisualizer() {
+        let vIndex = Number(localStorage.getItem("song_visualizer"));
+        if (!vIndex) vIndex = 0;
+        const config: any = visualizers[vIndex];
+        config.source = this.audio_player;
+        if (!this.motionVisualizer) {
+            this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, config);
+        } else {
+            this.motionVisualizer.setOptions(config);
+        }
+
+        this.resizeVisualizer();
     }
     polledUpdateStatus() {
         if (this.audio_player.paused) return;

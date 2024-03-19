@@ -384,3 +384,7 @@ audio::-webkit-media-controls-fullscreen-button {
   .play_all_button {
     font-size: 14px;
   }
+
+  .visualizer_select {
+    background: rgba(255, 255, 255, .5);
+  }
