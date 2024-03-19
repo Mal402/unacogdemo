@@ -333,3 +333,54 @@ audio::-webkit-media-controls-fullscreen-button {
     max-height: calc(70vh - 100px);
     overflow: auto;
 }
+
+.search_container {
+    display: flex;
+    align-items: center;
+    background-color: #1f1f1f;
+    border-radius: 4px;
+    padding: 8px;
+  }
+  
+  .search_input {
+    flex: 1;
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    font-size: 16px;
+    padding: 8px;
+    outline: none;
+  }
+  
+  .search_input::placeholder {
+    color: #888;
+  }
+  
+  .search_button,
+  .play_all_button {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search_button:hover,
+  .play_all_button:hover {
+    background-color: #555;
+  }
+  
+  .search_button i,
+  .play_all_button i {
+    font-size: 18px;
+    margin-right: 4px;
+  }
+  
+  .play_all_button {
+    font-size: 14px;
+  }

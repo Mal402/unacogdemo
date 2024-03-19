@@ -69,17 +69,15 @@
         </div>
       </div>
       <div class="filter_container"></div>
-      <div class="w-100 d-flex flex-row rounded mb-3">
-        <div class="textarea-wrapper position-relative w-100">
-          <i class="material-icons position-absolute text-muted"
-            style="left: 12px; top: 50%; transform: translateY(-50%);">search</i>
-          <textarea class="analyze_prompt_textarea form-control bg-dark text-white border-0 rounded-pill ps-5 pe-4"
-            style="height: 2.5em; resize: none;" placeholder="Enter song lyrics..." type="text"></textarea>
-          <button class="analyze_prompt_button btn btn-secondary rounded-pill position-absolute"
-            style="right: 6px; top: 50%; transform: translateY(-50%); width: 60px;">
-            <span class="material-icons-outlined">send</span>
-          </button>
-        </div>
+      <div class="search_container mt-1">
+        <input type="text" class="search_input analyze_prompt_textarea" placeholder="Song lyrics like...">
+        <button class="search_button analyze_prompt_button">
+          <i class="material-icons">search</i>
+        </button>
+        <button class="play_all_button" disabled>
+          <i class="material-icons">play_arrow</i>
+          Play All
+        </button>
       </div>
       <div class="full_augmented_response"></div>
     </div>
@@ -103,7 +101,7 @@
           </button>
           &nbsp;
           <button type="button" class="btn closed_caption_btn">
-            <i class="material-icons">closed_caption_disabled</i>
+            <i class="material-icons-outlined">lyrics</i>
           </button>
         </div>
         <audio controls crossorigin="anonymous" class="audio_player" controlslist="nodownload noplaybackrate">

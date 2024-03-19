@@ -88,10 +88,10 @@ export class SongSearchApp {
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
             this.analyze_prompt_button.disabled = true;
-            this.analyze_prompt_button.textContent = "...";
+            this.analyze_prompt_button.innerHTML = "...";
             await this.lookupAIDocumentChunks();
             this.analyze_prompt_button.disabled = false;
-            this.analyze_prompt_button.innerHTML = `<span class="material-icons-outlined">send</span>`;
+            this.analyze_prompt_button.innerHTML = `<i class="material-icons">search</i>`;
         });
         this.analyze_prompt_textarea.addEventListener("keydown", (e: any) => {
             if (e.key === "Enter" && e.shiftKey === false) {
