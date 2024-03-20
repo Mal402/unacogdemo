@@ -1,5 +1,6 @@
 import { prompts } from "./metrics";
 import { configs as visualizers } from "./visualizers";
+const metricCategories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
 
 export class SongSearchApp {
     running = false;
@@ -24,6 +25,9 @@ export class SongSearchApp {
     lyric_overlay = document.body.querySelector(".lyric_overlay") as HTMLDivElement;
     visualizer_select = document.body.querySelector(".visualizer_select") as HTMLSelectElement;
     close_search_overlay = document.body.querySelector(".close_search_overlay") as HTMLButtonElement;
+    song_metrics_container = document.body.querySelector(".song_metrics_container") as HTMLDivElement;
+    metricDisplayIndex = 0;
+    scaleVisualizer = false;
     searchShowing = false;
     songsInPlaylist: any[] = [];
     motionVisualizer: any = null;
@@ -176,6 +180,21 @@ export class SongSearchApp {
         setInterval(() => {
             this.polledUpdateStatus();
         }, 10);
+        setInterval(() => {
+            this.updateMetricForCurrentSong();
+        }, 6000);
+    }
+    updateMetricForCurrentSong() {
+        this.metricDisplayIndex++;
+        let song = this.songsInPlaylist[this.playlistIndex];
+        let songData = this.songMatchLookup[song];
+        let metrics: string[] = [];
+        metricCategories.forEach(category => {
+            if (songData.metadata[category] !== 0) {
+                metrics.push(category);
+            }
+        });
+        this.song_metrics_container.innerHTML = metrics[this.metricDisplayIndex % metrics.length];
     }
     updateMotionVisualizer() {
         let vIndex = Number(localStorage.getItem("song_visualizer"));
@@ -188,7 +207,6 @@ export class SongSearchApp {
             this.motionVisualizer.setOptions(undefined);
             this.motionVisualizer.setOptions(config);
         }
-
         this.resizeVisualizer();
     }
     polledUpdateStatus() {
@@ -222,6 +240,13 @@ export class SongSearchApp {
         this.metric_filter_select.selectedIndex = 0;
     }
     resizeVisualizer(reason: string = "") {
+        let vIndex = Number(localStorage.getItem("song_visualizer"));
+        if (!vIndex) vIndex = 0;
+        const config: any = visualizers[vIndex];
+        this.scaleVisualizer = config.radial === true;
+
+        this.motionVisualizer.canvas.style.transform = ``;
+        if (!this.scaleVisualizer) return;
         let canvasWidth = this.motionVisualizer.canvas.width;
         let canvasHeight = this.motionVisualizer.canvas.height;
 
@@ -467,9 +492,8 @@ export class SongSearchApp {
             }
 
             const generateSongCard = (match: any) => {
-                const categories = ['romantic', 'comedic', 'inappropriatelanguage', 'mature', 'seasonal', 'motivational', 'political', 'religious', 'sad', 'violent'];
                 let catString = `<span class="badge bg-success"><b>${(match.score * 100).toFixed()}%</b></span>`;
-                categories.forEach(category => {
+                metricCategories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
                           <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
@@ -675,6 +699,7 @@ export class SongSearchApp {
 
         this.full_display_lyrics.innerHTML = songData.fullText;
         localStorage.setItem("song_listIndex", this.playlistIndex.toString());
+        this.updateMetricForCurrentSong();
     }
     selectedFilterTemplate(filter: any, filterIndex: number): string {
         const title = this.metricPromptMap[filter.metaField].title;
