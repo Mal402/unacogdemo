@@ -439,10 +439,5 @@ audio::-webkit-media-controls-fullscreen-button {
 }
 
 .song_metrics_container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px;
-    background-color: wheat;
-    border-radius: 12px;
+    color: rgba(255, 255, 255, .75);
 }

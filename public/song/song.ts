@@ -181,8 +181,9 @@ export class SongSearchApp {
             this.polledUpdateStatus();
         }, 10);
         setInterval(() => {
-            this.updateMetricForCurrentSong();
-        }, 6000);
+            if (this.audio_player.paused === false)
+                this.updateMetricForCurrentSong();
+        }, 15000);
     }
     updateMetricForCurrentSong() {
         this.metricDisplayIndex++;
@@ -194,7 +195,10 @@ export class SongSearchApp {
                 metrics.push(category);
             }
         });
-        this.song_metrics_container.innerHTML = metrics[this.metricDisplayIndex % metrics.length];
+        const metricIndex = this.metricDisplayIndex % metrics.length;
+        const metric = metrics[metricIndex];
+        const metricValue = songData.metadata[metric];
+        this.song_metrics_container.innerHTML = metric + ": " + metricValue;
     }
     updateMotionVisualizer() {
         let vIndex = Number(localStorage.getItem("song_visualizer"));
@@ -219,6 +223,7 @@ export class SongSearchApp {
     }
     showOverlay(overlayName: string = "none", toggle = false) {
         const overlays = ["none", "playlist", "lyrics", "search"];
+        this.searchShowing = false;
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
