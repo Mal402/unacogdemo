@@ -26,6 +26,7 @@ export class SongSearchApp {
     visualizer_select = document.body.querySelector(".visualizer_select") as HTMLSelectElement;
     close_search_overlay = document.body.querySelector(".close_search_overlay") as HTMLButtonElement;
     song_metrics_container = document.body.querySelector(".song_metrics_container") as HTMLDivElement;
+    play_all_button = document.body.querySelector(".play_all_button") as HTMLButtonElement;
     metricDisplayIndex = 0;
     scaleVisualizer = false;
     searchShowing = false;
@@ -36,6 +37,7 @@ export class SongSearchApp {
     lookedUpIds: any = {};
     semanticResults: any[] = [];
     selectedFilters: any[] = [];
+    lastSearchMatches: any[] = [];
     playlistIndex = -1;
     songChunkMeta = {
         apiToken: "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16",
@@ -74,7 +76,7 @@ export class SongSearchApp {
         this.analyze_prompt_button.addEventListener("click", async () => {
             this.analyze_prompt_button.disabled = true;
             this.analyze_prompt_button.innerHTML = "...";
-            await this.lookupAIDocumentChunks();
+            await this.renderSongSearchChunks();
             this.analyze_prompt_button.disabled = false;
             this.analyze_prompt_button.innerHTML = `<i class="material-icons">search</i>`;
         });
@@ -132,7 +134,9 @@ export class SongSearchApp {
         });
 
         window.addEventListener("keydown", (e: any) => {
-            if (this.searchShowing === true) return;
+            if (e.key === "Escape") {
+                this.showOverlay("none");
+            }
             if (e.key === "ArrowRight") {
                 this.playNext();
             }
@@ -176,6 +180,12 @@ export class SongSearchApp {
             this.load();
         });
         introModal.show();
+
+        this.play_all_button.addEventListener("click", () => {
+            this.lastSearchMatches.forEach((match: any) => {
+                this.addSongToPlaylist(match.id);
+            });
+        });
 
         setInterval(() => {
             this.polledUpdateStatus();
@@ -472,8 +482,9 @@ export class SongSearchApp {
         const displayDocHTML = this.lookupData[matchId];
         return displayDocHTML;
     }
-    async lookupAIDocumentChunks() {
+    async renderSongSearchChunks() {
         if (this.runningQuery === true) return;
+        this.play_all_button.style.display = "none";
         this.full_augmented_response.innerHTML = `<span class="text-light">Search running...</span>`;
         this.runningQuery = true;
         const message = this.analyze_prompt_textarea.value.trim();
@@ -532,6 +543,11 @@ export class SongSearchApp {
             html += block;
         });
 
+        this.lastSearchMatches = result.matches;
+        if (result.matches.length > 0) {
+            this.play_all_button.style.display = "block";
+        }
+
         this.full_augmented_response.innerHTML = html;
         let addButtons = this.full_augmented_response.querySelectorAll(".add_song");
         addButtons.forEach((button: any) => {
@@ -557,7 +573,6 @@ export class SongSearchApp {
             });
         });
 
-
         this.runningQuery = false;
         return;
     }
@@ -570,17 +585,25 @@ export class SongSearchApp {
         modal.show();
     }
     addPlayNow(song: string) {
-        if (this.songsInPlaylist.includes(song) === false) this.songsInPlaylist.unshift(song);
-        this.playlistIndex = this.songsInPlaylist.indexOf(song);
-        this.audio_player.src = this.songMatchLookup[song].metadata.url;
-        this.audio_player.play();
+        const songIndex = this.songsInPlaylist.indexOf(song);
+        if (songIndex === -1) {
+            this.songsInPlaylist.unshift(song);
+            this.playlistIndex = -1;
+        } else {
+            this.playlistIndex = songIndex - 1;
+        }
+        this.playNext();
         this.renderPlaylist();
         this.savePlaylistToLocalStorage();
     }
     addSongToPlaylist(song: string) {
-        this.songsInPlaylist.push(song);
-        this.renderPlaylist();
-        this.savePlaylistToLocalStorage();
+        const songIndex = this.songsInPlaylist.indexOf(song);
+        if (songIndex === -1) {
+            this.songsInPlaylist.push(song);
+            if (this.songsInPlaylist.length <= 1) this.playNext();
+            this.renderPlaylist();
+            this.savePlaylistToLocalStorage();
+        }
     }
     removeSongFromPlaylist(songIndex: string) {
         let songIndexNum = Number(songIndex);
@@ -589,8 +612,9 @@ export class SongSearchApp {
             this.playlistIndex--;
             if (this.playlistIndex < 0) this.playlistIndex = 0;
             this.playNext(this.playlistIndex);
+        } else if (this.playlistIndex > songIndexNum) {
+            this.playlistIndex--;
         }
-        if (this.playlistIndex > songIndexNum) this.playlistIndex--;
         this.renderPlaylist();
         this.savePlaylistToLocalStorage();
     }
@@ -685,7 +709,13 @@ export class SongSearchApp {
         this.playNext();
     }
     playNext(songIndex: number = -1) {
-        if (this.songsInPlaylist.length === 0) return;
+        if (this.songsInPlaylist.length === 0) {
+            this.audio_player.pause();
+            this.song_title_container.innerHTML = `Empty Play List`;
+            this.song_metrics_container.innerHTML = "";
+            this.audio_player.src = "";
+            return;
+        } 
         if (songIndex !== -1)
             this.playlistIndex = songIndex
         else
@@ -729,8 +759,5 @@ export class SongSearchApp {
                     <button class="delete-button bg-dark text-white" data-filterindex="${filterIndex}">
                     <i class="material-icons">close</i>
                     </button>`;
-    }
-    titleCase(title: string): string {
-        return title[0].toUpperCase() + title.slice(1).toLowerCase();
     }
 }
