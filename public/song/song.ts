@@ -261,11 +261,22 @@ export class SongSearchApp {
         }
         config.source = this.audio_player;
         if (!this.motionVisualizer) {
-            this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, config);
-        } else {
-            this.motionVisualizer.setOptions(undefined);
-            this.motionVisualizer.setOptions(config);
+            this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, {
+                source: this.audio_player
+            });
+            this.motionVisualizer.registerGradient('yellow', {
+                bgColor: '#011a35', // background color (optional) - defaults to '#111'
+                dir: 'h',           // add this property to create a horizontal gradient (optional)
+                colorStops: [       // list your gradient colors in this array (at least one color is required)
+                    'hsl( 0, 100%, 50% )',        // colors can be defined in any valid CSS format
+                    { color: '#85ffbd', pos: .6 }, // in an object, use `pos` to adjust the offset (0 to 1) of a colorStop
+                    { color: '#fffb7d', level: .5 }  // use `level` to set the max bar amplitude (0 to 1) to use this color
+                ]
+            });
         }
+
+        this.motionVisualizer.setOptions(undefined);
+        this.motionVisualizer.setOptions(config);
         this.resizeVisualizer();
     }
     polledUpdateStatus() {
