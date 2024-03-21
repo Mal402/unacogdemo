@@ -27,6 +27,7 @@ export class SongSearchApp {
     close_search_overlay = document.body.querySelector(".close_search_overlay") as HTMLButtonElement;
     song_metrics_container = document.body.querySelector(".song_metrics_container") as HTMLDivElement;
     play_all_button = document.body.querySelector(".play_all_button") as HTMLButtonElement;
+    gradient_select = document.body.querySelector(".gradient_select") as HTMLSelectElement;
     metricDisplayIndex = 0;
     scaleVisualizer = false;
     searchShowing = false;
@@ -109,6 +110,12 @@ export class SongSearchApp {
             localStorage.setItem("song_visualizer", vIndex.toString());
             this.updateMotionVisualizer();
         });
+        const gradient = localStorage.getItem("song_gradient");
+        this.gradient_select.value = gradient ? gradient : "classic";
+        this.gradient_select.addEventListener("input", () => {
+            localStorage.setItem("song_gradient", this.gradient_select.value);
+            this.updateMotionVisualizer();
+        });
 
         this.updateMotionVisualizer();
         this.chunk_select.addEventListener("input", () => {
@@ -137,41 +144,66 @@ export class SongSearchApp {
             if (e.key === "Escape") {
                 this.showOverlay("none");
             }
+            if (this.searchShowing === true) return;
+
             if (e.key === "ArrowRight") {
                 this.playNext();
+                e.preventDefault();
             }
             if (e.key === "ArrowLeft") {
                 this.playNext(this.playlistIndex - 2);
+                e.preventDefault();
             }
             if (e.key === "ArrowDown") {
                 this.audio_player.currentTime -= 5;
+                e.preventDefault();
             }
             if (e.key === "ArrowUp") {
                 this.audio_player.currentTime += 5;
+                e.preventDefault();
             }
             if (e.key === " ") {
                 if (this.audio_player.paused) this.audio_player.play();
                 else this.audio_player.pause();
+                e.preventDefault();
             }
             if (e.key === "s") {
                 this.show_search_overlay.click();
+                e.preventDefault();
             }
             if (e.key === "l") {
                 this.closed_caption_btn.click();
+                e.preventDefault();
             }
             if (e.key === "p") {
                 this.song_title_click_wrapper.click();
+                e.preventDefault();
             }
             if (e.key === ".") {
                 this.visualizer_select.selectedIndex += 1;
                 if (this.visualizer_select.selectedIndex === -1) this.visualizer_select.selectedIndex = 0;
                 this.visualizer_select.dispatchEvent(new Event('input', { bubbles: true }));
+                e.preventDefault();
             }
             if (e.key === ",") {
                 this.visualizer_select.selectedIndex -= 1;
                 if (this.visualizer_select.selectedIndex === -1) this.visualizer_select.selectedIndex = this.visualizer_select.options.length - 1;
                 this.visualizer_select.dispatchEvent(new Event('input', { bubbles: true }));
+                e.preventDefault();
             }
+            if (e.key === ";") {
+                this.gradient_select.selectedIndex += 1;
+                if (this.gradient_select.selectedIndex === -1) this.gradient_select.selectedIndex = 0;
+                this.gradient_select.dispatchEvent(new Event('input', { bubbles: true }));
+                e.preventDefault();
+            }
+            if (e.key === "'") {
+                this.gradient_select.selectedIndex -= 1;
+                if (this.gradient_select.selectedIndex === -1) this.gradient_select.selectedIndex = this.gradient_select.options.length - 1;
+                this.gradient_select.dispatchEvent(new Event('input', { bubbles: true }));
+                e.preventDefault();
+            }
+
         });
 
         const introModalDom = document.getElementById('hello_modal') as HTMLElement;
@@ -213,7 +245,20 @@ export class SongSearchApp {
     updateMotionVisualizer() {
         let vIndex = Number(localStorage.getItem("song_visualizer"));
         if (!vIndex) vIndex = 0;
+        let gradient = localStorage.getItem("song_gradient");
+        if (!gradient) gradient = "classic";
         const config: any = visualizers[vIndex];
+        const parts = gradient.split("|");
+        //config.gradient = parts[0];
+        delete config.gradient;
+        delete config.gradientLeft;
+        delete config.gradientRight;
+        if (parts.length > 1) {
+            config.gradientLeft = parts[0];
+            config.gradientRight = parts[1];
+        } else {
+            config.gradient = parts[0];
+        }
         config.source = this.audio_player;
         if (!this.motionVisualizer) {
             this.motionVisualizer = new (<any>window).AudioMotionAnalyzer(this.audio_visualizer, config);
@@ -237,8 +282,12 @@ export class SongSearchApp {
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
-                    if (overlayName === "search") this.searchShowing = true;
                     document.body.classList.add(overlay);
+                    if (overlayName === "search") {
+                        this.searchShowing = true;
+                        this.analyze_prompt_textarea.select();
+                        this.analyze_prompt_textarea.focus();
+                    }                    
                 } else if (toggle === true) {
                     document.body.classList.remove(overlay);
                 }

@@ -1,4 +1,4 @@
-export const configs =
+export const configs: any[] =
     [
         {
             name: "Pulse",
@@ -165,9 +165,9 @@ export const configs =
             name: "Sunset",
             "alphaBars": false,
             "ansiBands": false,
-            "barSpace": 0.1,
+            "barSpace": 1,
             "channelLayout": "single",
-            "fftSize": 2048,
+            "fftSize": 512,
             "fillAlpha": 1,
             "frequencyScale": "mel",
             "gradient": "prism",
@@ -179,7 +179,7 @@ export const configs =
             "lumiBars": false,
             "maxDecibels": -25,
             "maxFPS": 0,
-            "maxFreq": 12000,
+            "maxFreq": 8000,
             "minDecibels": -90,
             "minFreq": 20,
             "mirror": 1,

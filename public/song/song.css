@@ -388,7 +388,7 @@ audio::-webkit-media-controls-fullscreen-button {
     font-size: 14px;
 }
 
-.visualizer_select {
+.visualizer_select, .gradient_select {
     background: rgba(255, 255, 255, .5);
 }
 
