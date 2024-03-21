@@ -268,9 +268,17 @@ export class SongSearchApp {
                 bgColor: '#011a35', // background color (optional) - defaults to '#111'
                 dir: 'h',           // add this property to create a horizontal gradient (optional)
                 colorStops: [       // list your gradient colors in this array (at least one color is required)
-                    'hsl( 0, 100%, 50% )',        // colors can be defined in any valid CSS format
+                    'rgb(100,255,100)',        // colors can be defined in any valid CSS format
                     { color: '#85ffbd', pos: .6 }, // in an object, use `pos` to adjust the offset (0 to 1) of a colorStop
                     { color: '#fffb7d', level: .5 }  // use `level` to set the max bar amplitude (0 to 1) to use this color
+                ]
+            });
+            this.motionVisualizer.registerGradient('unacog', {
+                bgColor: '#111', // background color (optional) - defaults to '#111'
+                dir: 'h',           // add this property to create a horizontal gradient (optional)
+                colorStops: [       // list your gradient colors in this array (at least one color is required)    
+                { color: 'rgb(255, 255, 255)', pos: .3},  // use `level` to set the max bar amplitude (0 to 1) to use this color
+                { color: 'rgb(28, 227, 60)',  pos:.8 } // in an object, use `pos` to adjust the offset (0 to 1) of a colorStop
                 ]
             });
         }
