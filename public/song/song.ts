@@ -568,35 +568,43 @@ export class SongSearchApp {
             }
 
             const generateSongCard = (match: any) => {
-                let catString = `<span class="badge bg-success"><b>${(match.score * 100).toFixed()}%</b></span>`;
+                let similarityScore = `<span class="similarity_score_badge">${(match.score * 100).toFixed()}%</span>`;
+                let catString = ``;
                 metricCategories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
-                          <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
+                            <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
                     }
                 });
                 return `
-                  <div class="song_card card mb-1 text-white" data-songcardid="${match.id}" style="background:rgba(50, 50, 50, .25);">
-                    <div class="card-body match-card">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title" style="flex:1">${match.metadata.artist} - ${match.metadata.title}</h5>
-                        <button class="btn play_song me-2 text-white" data-song="${match.id}">
-                        <i class="material-icons">play_arrow</i>
-                      </button>
-                      <button class="btn add_song text-white" data-song="${match.id}">
-                        <i class="material-icons">playlist_add</i>
-                      </button>
-                    </div>
-                    <div style="display:flex; flex-direction:row;">
-                        <div style="flex:1">${catString}</div>
-                        <div>
-                            <button class="btn show_lyrics_modal text-white" data-song="${match.id}">
-                               <i class="material-icons">lyrics</i>
-                            </button>
+                    <div class="song_card card mb-1 text-white" data-songcardid="${match.id}" style="background:rgba(50, 50, 50, .25);">
+                        <div class="card-body match-card">
+                            <div class="d-flex">
+                                <div class="me-3" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                    ${similarityScore}
+                                </div>
+                                <div style="flex:1">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title" style="flex:1">${match.metadata.artist} - ${match.metadata.title}</h5>
+                                        <button class="btn play_song me-2 text-white" data-song="${match.id}">
+                                            <i class="material-icons">play_arrow</i>
+                                        </button>
+                                        <button class="btn add_song text-white" data-song="${match.id}">
+                                            <i class="material-icons">playlist_add</i>
+                                        </button>
+                                    </div>
+                                    <div style="display:flex; flex-direction:row;">
+                                        <div style="flex:1">${catString}</div>
+                                        <div>
+                                            <button class="btn show_lyrics_modal text-white" data-song="${match.id}">
+                                                <i class="material-icons">lyrics</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    </div>
-                </div>`;
+                    </div>`;
             }
             let block = generateSongCard(match);
             this.displayDocHtmlDoc[match.id] = displayDocHTML;
@@ -643,6 +651,14 @@ export class SongSearchApp {
         let contentDiv = modalDom.querySelector(".lyrics_modal_content") as HTMLDivElement;
         contentDiv.innerHTML = displayHTML;
         modal.show();
+        const verse_chunk_highlight = modalDom.querySelector(".verse_chunk_highlight") as HTMLDivElement;
+        if (verse_chunk_highlight) {
+            verse_chunk_highlight.scrollIntoView();
+        }
+        const stanza_chunk_overlap = modalDom.querySelector(".stanza_chunk_overlap") as HTMLDivElement;
+        if (stanza_chunk_overlap) {
+            stanza_chunk_overlap.scrollIntoView();
+        }
     }
     addPlayNow(song: string) {
         const songIndex = this.songsInPlaylist.indexOf(song);
