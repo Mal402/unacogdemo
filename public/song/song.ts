@@ -29,6 +29,8 @@ export class SongSearchApp {
     song_metrics_container = document.body.querySelector(".song_metrics_container") as HTMLDivElement;
     play_all_button = document.body.querySelector(".play_all_button") as HTMLButtonElement;
     gradient_select = document.body.querySelector(".gradient_select") as HTMLSelectElement;
+    passkey_modal_close = document.body.querySelector(".passkey_modal_close") as HTMLButtonElement;
+    password_input = document.body.querySelector(".password_input") as HTMLInputElement;
     metricDisplayIndex = 0;
     scaleVisualizer = false;
     searchShowing = false;
@@ -212,10 +214,21 @@ export class SongSearchApp {
 
         const introModalDom = document.getElementById('hello_modal') as HTMLElement;
         const introModal = new (window as any).bootstrap.Modal(introModalDom);
+        const passwordModalDom = document.getElementById('password_modal') as HTMLElement;
+        const passwordModal = new (window as any).bootstrap.Modal(passwordModalDom);
         introModalDom.addEventListener('hidden.bs.modal', (e: Event) => {
             this.load();
         });
-        introModal.show();
+        if (this.passwordTest()) {
+            document.body.classList.remove("nopassword");
+            introModal.show();
+        } else {
+            passwordModal.show();
+        }
+        this.passkey_modal_close.addEventListener("click", () => this.submitPassword(introModal, passwordModal));
+        this.password_input.addEventListener("keydown", (e: any) => {
+            if (e.key === "Enter") this.submitPassword(introModal, passwordModal);
+        });
 
         this.play_all_button.addEventListener("click", () => {
             this.lastSearchMatches.forEach((match: any) => {
@@ -230,6 +243,19 @@ export class SongSearchApp {
             if (this.audio_player.paused === false)
                 this.updateMetricForCurrentSong();
         }, 15000);
+    }
+    submitPassword(introModal: any, passwordModal: any) {
+        if (this.password_input.value === "unacog") {
+            localStorage.setItem("song_password", "unacog");
+            document.body.classList.remove("nopassword");
+            passwordModal.hide();
+            introModal.show();
+        } else {
+            alert("Incorrect password.");
+        }
+    }
+    passwordTest(): boolean {
+        return localStorage.getItem("song_password") === "unacog";
     }
     updateMetricForCurrentSong() {
         this.metricDisplayIndex++;
@@ -281,8 +307,8 @@ export class SongSearchApp {
                 bgColor: '#111', // background color (optional) - defaults to '#111'
                 dir: 'h',           // add this property to create a horizontal gradient (optional)
                 colorStops: [       // list your gradient colors in this array (at least one color is required)    
-                { color: 'rgb(255, 255, 255)', pos: .3},  // use `level` to set the max bar amplitude (0 to 1) to use this color
-                { color: 'rgb(28, 227, 60)',  pos:.8 } // in an object, use `pos` to adjust the offset (0 to 1) of a colorStop
+                    { color: 'rgb(255, 255, 255)', pos: .3 },  // use `level` to set the max bar amplitude (0 to 1) to use this color
+                    { color: 'rgb(28, 227, 60)', pos: .8 } // in an object, use `pos` to adjust the offset (0 to 1) of a colorStop
                 ]
             });
         }
@@ -310,7 +336,7 @@ export class SongSearchApp {
                         this.searchShowing = true;
                         this.analyze_prompt_textarea.select();
                         this.analyze_prompt_textarea.focus();
-                    }                    
+                    }
                 } else if (toggle === true) {
                     document.body.classList.remove(overlay);
                 }
@@ -803,7 +829,7 @@ export class SongSearchApp {
             this.song_metrics_container.innerHTML = "";
             this.audio_player.src = "";
             return;
-        } 
+        }
         if (songIndex !== -1)
             this.playlistIndex = songIndex
         else

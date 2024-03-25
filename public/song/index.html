@@ -49,10 +49,9 @@
   <link rel="stylesheet" href="song.css">
 </head>
 
-<body class="initial" style="background-color:rgb(0,0,0)">
+<body class="initial nopassword" style="background-color:rgb(0,0,0);">
   <div class="audio_visualizer"></div>
-  <div class="container ui_container"
-    style="height:100%;display:flex;flex-direction:column;position:relative;padding:0;">
+  <div class="container ui_container toolbar_container">
     <ol class="song_playlist"></ol>
     <div class="search_overlay">
       <div class="search_header">
@@ -165,6 +164,21 @@
           </div>
           <div style="flex:1"></div>
           <button type="button" class="btn btn-primary intro_modal_close" data-bs-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="password_modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="instructions">
+            <h3>Passkey required</h3>
+            <input type="text" class="password_input form-control" placeholder="Enter Passkey">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary passkey_modal_close">Submit</button>
         </div>
       </div>
     </div>
