@@ -49,7 +49,7 @@
   <link rel="stylesheet" href="song.css">
 </head>
 
-<body class="initial">
+<body class="initial" style="background-color:rgb(0,0,0)">
   <div class="audio_visualizer"></div>
   <div class="container ui_container"
     style="height:100%;display:flex;flex-direction:column;position:relative;padding:0;">
@@ -67,7 +67,8 @@
         <div style="display:inline-block">
           <select class="form-select metric_filter_select bg-dark text-white"></select>
         </div>
-        <button class="close_search_overlay btn-close btn-close-white" style="float:right;padding:20px;margin:8px;"></button>
+        <button class="close_search_overlay btn-close btn-close-white"
+          style="float:right;padding:20px;margin:8px;"></button>
         <button class="btn btn-primary play_all_button" style="float:right;margin:8px;display:none">Play All</button>
       </div>
       <div class="filter_container"></div>
@@ -82,13 +83,7 @@
     <div class="lyric_overlay">
       <div class="full_display_lyrics"></div>
     </div>
-    <div class="spacer_list"></div>
-    <div class="player_bar">
-      <div class="song_title_click_wrapper">
-        <div class="song_title_container"></div>
-        <i class="material-icons">expand_more</i>
-        &nbsp;
-      </div>
+    <div class="palette_overlay">
       <div style="display:inline-block">
         <select class="visualizer_select form-select"></select>
       </div>
@@ -107,17 +102,31 @@
           <option>rainbow|classic</option>
         </select>
       </div>
-      <div style="display:inline-block" class="song_metrics_container"></div>
+    </div>
+    <div class="spacer_list"></div>
+    <div class="player_bar">
+      <div style="padding:12px;">
+        <div class="song_title_click_wrapper">
+          <div class="song_title_container"></div>
+          <i class="material-icons">expand_more</i>
+          &nbsp;
+        </div>
+        <button type="button" class="btn show_search_overlay">
+          <i class="material-icons">search</i>
+        </button>
+        &nbsp;
+        <button type="button" class="btn show_palette_overlay">
+          <i class="material-icons">palette</i>
+        </button>
+        &nbsp;
+        <button type="button" class="btn closed_caption_btn">
+          <i class="material-icons-outlined">lyrics</i>
+        </button>
+        &nbsp;
+        <div style="display:inline-block" class="song_metrics_container"></div>
+      </div>
       <div style="display:flex;flex-direction:row">
         <div style="padding-top:12px;">
-          <button type="button" class="btn show_search_overlay">
-            <i class="material-icons">search</i>
-          </button>
-          &nbsp;
-          <button type="button" class="btn closed_caption_btn">
-            <i class="material-icons-outlined">lyrics</i>
-          </button>
-          &nbsp;
           <button class="play_next btn">
             <i class="material-icons">skip_next</i>
           </button>
@@ -145,7 +154,8 @@
               <li><span class="key">;</span><span class="key">'</span> Next/Previous gradient</li>
             </ul>
           </div>
-          This is a limited distribution demonstration, please do not redistribute!  Metric scores determined via gpt-3.5.
+          This is a limited distribution demonstration, please do not redistribute! Metric scores determined via
+          gpt-3.5.
         </div>
         <div class="modal-footer">
           <div>

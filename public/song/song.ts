@@ -19,6 +19,7 @@ export class SongSearchApp {
     song_title_container = document.body.querySelector(".song_title_container") as HTMLDivElement;
     song_title_click_wrapper = document.body.querySelector(".song_title_click_wrapper") as HTMLDivElement;
     show_search_overlay = document.body.querySelector(".show_search_overlay") as HTMLButtonElement;
+    show_palette_overlay = document.body.querySelector(".show_palette_overlay") as HTMLButtonElement;
     closed_caption_btn = document.body.querySelector(".closed_caption_btn") as HTMLButtonElement;
     ui_container = document.body.querySelector(".ui_container") as HTMLDivElement;
     full_display_lyrics = document.body.querySelector(".full_display_lyrics") as HTMLDivElement;
@@ -134,6 +135,9 @@ export class SongSearchApp {
         });
         this.close_search_overlay.addEventListener("click", () => {
             this.showOverlay("none");
+        });
+        this.show_palette_overlay.addEventListener("click", () => {
+            this.showOverlay("palette", true);
         });
 
         window.addEventListener("resize", () => {
@@ -296,7 +300,7 @@ export class SongSearchApp {
         this.lyric_overlay.scrollTo(0, scrollAmt);
     }
     showOverlay(overlayName: string = "none", toggle = false) {
-        const overlays = ["none", "playlist", "lyrics", "search"];
+        const overlays = ["none", "playlist", "lyrics", "search", "palette"];
         this.searchShowing = false;
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
