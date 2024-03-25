@@ -27,7 +27,6 @@ body {
     height: 100%;
     top: 0;
     pointer-events: none;
-    opacity: 0.3;
 }
 
 .player_bar {

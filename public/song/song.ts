@@ -31,6 +31,10 @@ export class SongSearchApp {
     gradient_select = document.body.querySelector(".gradient_select") as HTMLSelectElement;
     passkey_modal_close = document.body.querySelector(".passkey_modal_close") as HTMLButtonElement;
     password_input = document.body.querySelector(".password_input") as HTMLInputElement;
+    opacity_range = document.body.querySelector(".opacity_range") as HTMLInputElement;
+    red_range = document.body.querySelector(".red_range") as HTMLInputElement;
+    green_range = document.body.querySelector(".green_range") as HTMLInputElement;
+    blue_range = document.body.querySelector(".blue_range") as HTMLInputElement;
     metricDisplayIndex = 0;
     scaleVisualizer = false;
     searchShowing = false;
@@ -118,6 +122,30 @@ export class SongSearchApp {
         this.gradient_select.addEventListener("input", () => {
             localStorage.setItem("song_gradient", this.gradient_select.value);
             this.updateMotionVisualizer();
+        });
+        const visualizerOpacity = localStorage.getItem("song_visualizerOpacity");
+        this.opacity_range.value = visualizerOpacity ? visualizerOpacity : "1";
+        this.opacity_range.addEventListener("input", () => {
+            localStorage.setItem("song_visualizerOpacity", this.opacity_range.value);
+            this.resizeVisualizer();
+        });
+        const backgroundRed = localStorage.getItem("song_visualizerBackgroundRed");
+        this.red_range.value = backgroundRed ? backgroundRed : "0";
+        this.red_range.addEventListener("input", () => {
+            localStorage.setItem("song_visualizerBackgroundRed", this.red_range.value);
+            this.resizeVisualizer();
+        });
+        const backgroundGreen = localStorage.getItem("song_visualizerBackgroundGreen");
+        this.green_range.value = backgroundGreen ? backgroundGreen : "0";
+        this.green_range.addEventListener("input", () => {
+            localStorage.setItem("song_visualizerBackgroundGreen", this.green_range.value);
+            this.resizeVisualizer();
+        });
+        const backgroundBlue = localStorage.getItem("song_visualizerBackgroundBlue");
+        this.blue_range.value = backgroundBlue ? backgroundBlue : "0";
+        this.blue_range.addEventListener("input", () => {
+            localStorage.setItem("song_visualizerBackgroundBlue", this.blue_range.value);
+            this.resizeVisualizer();
         });
 
         this.updateMotionVisualizer();
@@ -387,6 +415,14 @@ export class SongSearchApp {
                 this.motionVisualizer.canvas.style.transform = `scaleX(${scale})`;
             }
         }
+
+        const opacity = localStorage.getItem("song_visualizerOpacity");
+        this.audio_visualizer.style.opacity = opacity || "1";
+        
+        const backgroundRed = localStorage.getItem("song_visualizerBackgroundRed");
+        const backgroundGreen = localStorage.getItem("song_visualizerBackgroundGreen");
+        const backgroundBlue = localStorage.getItem("song_visualizerBackgroundBlue");
+        document.body.style.backgroundColor = `rgb(${backgroundRed},${backgroundGreen},${backgroundBlue})`;
     }
     renderFilters() {
         this.filter_container.innerHTML = "";

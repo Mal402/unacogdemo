@@ -82,10 +82,33 @@
     <div class="lyric_overlay">
       <div class="full_display_lyrics"></div>
     </div>
-    <div class="palette_overlay">
+    <div class="palette_overlay" style="padding: 24px;text-align: center;line-height: 3em;">
+      Visualizer:
       <div style="display:inline-block">
         <select class="visualizer_select form-select"></select>
       </div>
+      <br>
+      Opacity:
+      <div style="display:inline-block;width:250px;">
+        <input type="range" class="opacity_range form-range" min="0" max="1" step="0.01" value="0.5">
+      </div>
+      <br>
+      Red:
+      <div style="display:inline-block;width:250px;">
+        <input type="range" class="red_range form-range" min="0" max="255" step="1" value="0">
+      </div>
+      <br>
+      Green:
+      <div style="display:inline-block;width:250px;">
+        <input type="range" class="green_range form-range" min="0" max="255" step="1" value="0">
+      </div>
+      <br>
+      Blue:
+      <div style="display:inline-block;width:250px;">
+        <input type="range" class="blue_range form-range" min="0" max="255" step="1" value="0">
+      </div>
+      <br>
+      Gradient:
       <div style="display:inline-block">
         <select class="gradient_select form-select">
           <option>classic</option>
