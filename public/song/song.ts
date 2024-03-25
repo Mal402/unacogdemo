@@ -124,7 +124,7 @@ export class SongSearchApp {
             this.updateMotionVisualizer();
         });
         const visualizerOpacity = localStorage.getItem("song_visualizerOpacity");
-        this.opacity_range.value = visualizerOpacity ? visualizerOpacity : "1";
+        this.opacity_range.value = visualizerOpacity ? visualizerOpacity : ".5";
         this.opacity_range.addEventListener("input", () => {
             localStorage.setItem("song_visualizerOpacity", this.opacity_range.value);
             this.resizeVisualizer();
@@ -417,11 +417,11 @@ export class SongSearchApp {
         }
 
         const opacity = localStorage.getItem("song_visualizerOpacity");
-        this.audio_visualizer.style.opacity = opacity || "1";
+        this.audio_visualizer.style.opacity = opacity || ".5";
         
-        const backgroundRed = localStorage.getItem("song_visualizerBackgroundRed");
-        const backgroundGreen = localStorage.getItem("song_visualizerBackgroundGreen");
-        const backgroundBlue = localStorage.getItem("song_visualizerBackgroundBlue");
+        const backgroundRed = localStorage.getItem("song_visualizerBackgroundRed") || "0";
+        const backgroundGreen = localStorage.getItem("song_visualizerBackgroundGreen") || "0";
+        const backgroundBlue = localStorage.getItem("song_visualizerBackgroundBlue") || "0";
         document.body.style.backgroundColor = `rgb(${backgroundRed},${backgroundGreen},${backgroundBlue})`;
     }
     renderFilters() {
