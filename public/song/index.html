@@ -131,8 +131,8 @@
         <div class="song_title_click_wrapper">
           <div class="song_title_container"></div>
           <i class="material-icons">expand_more</i>
-          &nbsp;
         </div>
+        &nbsp;
         <button type="button" class="btn show_search_overlay">
           <i class="material-icons">search</i>
         </button>
@@ -142,11 +142,14 @@
         </button>
         &nbsp;
         <button type="button" class="btn closed_caption_btn">
-          <i class="material-icons-outlined">lyrics</i>
+          <i class="material-icons-outlined" style="font-size:20px;top:3px;">lyrics</i>
         </button>
         &nbsp;
-        <div style="display:inline-block" class="song_metrics_container"></div>
+        <button type="button" class="btn about_overlay_btn"" data-bs-toggle="modal" data-bs-target="#about_modal">
+          <i class="material-icons-outlined">info</i>
+        </button>
       </div>
+      <div class="song_metrics_container"></div>
       <div style="display:flex;flex-direction:row">
         <div style="padding-top:12px;">
           <button class="play_next btn">
@@ -217,6 +220,21 @@
             <span class="stanza_chunk_highlight">Chunk matched</span>
           </div>
           <div style="flex:1"></div>
+          <button type="button" class="btn btn-primary intro_modal_close" data-bs-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="about_modal">
+    <div class="modal-dialog modal-xl" style="z-index: 400;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img src="metafilter.png" style="width:100%">
+          <br>
+          <br>
+          <img src="metricllm.png" style="width:100%">
+        </div>
+        <div class="modal-footer">
           <button type="button" class="btn btn-primary intro_modal_close" data-bs-dismiss="modal">Ok</button>
         </div>
       </div>

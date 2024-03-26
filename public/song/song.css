@@ -240,7 +240,8 @@ audio::-webkit-media-controls-fullscreen-button {
 .btn.play_next,
 .btn.show_search_overlay,
 .btn.closed_caption_btn,
-.btn.show_palette_overlay {
+.btn.show_palette_overlay,
+.btn.about_overlay_btn {
     background-color: rgba(255, 255, 255, .5);
     border-radius: 50%;
     margin-right: 10px;
@@ -252,7 +253,8 @@ audio::-webkit-media-controls-fullscreen-button {
 .btn.play_next i,
 .btn.show_search_overlay i,
 .btn.closed_caption_btn i,
-.btn.show_palette_overlay i {
+.btn.show_palette_overlay i,
+.btn.about_overlay_btn i {
     color: black;
     top: 2px;
     position: relative;

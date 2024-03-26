@@ -35,7 +35,6 @@ export class SongSearchApp {
     red_range = document.body.querySelector(".red_range") as HTMLInputElement;
     green_range = document.body.querySelector(".green_range") as HTMLInputElement;
     blue_range = document.body.querySelector(".blue_range") as HTMLInputElement;
-    metricDisplayIndex = 0;
     scaleVisualizer = false;
     searchShowing = false;
     songsInPlaylist: any[] = [];
@@ -267,10 +266,6 @@ export class SongSearchApp {
         setInterval(() => {
             this.polledUpdateStatus();
         }, 10);
-        setInterval(() => {
-            if (this.audio_player.paused === false)
-                this.updateMetricForCurrentSong();
-        }, 15000);
     }
     submitPassword(introModal: any, passwordModal: any) {
         if (this.password_input.value === "unacog") {
@@ -286,7 +281,6 @@ export class SongSearchApp {
         return localStorage.getItem("song_password") === "unacog";
     }
     updateMetricForCurrentSong() {
-        this.metricDisplayIndex++;
         let song = this.songsInPlaylist[this.playlistIndex];
         let songData = this.songMatchLookup[song];
         let metrics: string[] = [];
@@ -295,10 +289,11 @@ export class SongSearchApp {
                 metrics.push(category);
             }
         });
-        const metricIndex = this.metricDisplayIndex % metrics.length;
-        const metric = metrics[metricIndex];
-        const metricValue = songData.metadata[metric];
-        this.song_metrics_container.innerHTML = metric + ": " + metricValue;
+        let html = "";
+        metrics.forEach((metric: string) => {
+            html += `<span class="badge bg-primary me-1">${this.metricPromptMap[metric].title}: ${songData.metadata[metric]}</span>`;
+        });
+        this.song_metrics_container.innerHTML = html;
     }
     updateMotionVisualizer() {
         let vIndex = Number(localStorage.getItem("song_visualizer"));
@@ -647,7 +642,7 @@ export class SongSearchApp {
                 metricCategories.forEach(category => {
                     if (match.metadata[category] !== 0) {
                         catString += `
-                            <span class="badge bg-primary me-1">${category}: ${match.metadata[category]}</span>`;
+                            <span class="badge bg-primary me-1">${this.metricPromptMap[category].title}: ${match.metadata[category]}</span>`;
                     }
                 });
                 return `
