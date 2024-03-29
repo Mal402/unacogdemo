@@ -50,25 +50,25 @@ export class SongSearchApp {
         apiToken: "cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16",
         sessionId: "8umxl4rdt32x",
         lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
-        topK: 50,
+        topK: 15,
     }
     stanzaChunkMeta = {
         apiToken: "b0a5f137-b5ff-4b78-8074-79a3f775a212",
         sessionId: "prg66uadseer",
         lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-4-1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
-        topK: 50,
+        topK: 15,
     }
     verseChunkMeta = {
         apiToken: "6b71e856-1dee-4f9d-bd53-64b6adafc592",
         sessionId: "bsec9cwrpl72",
         lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-verse%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
-        topK: 50,
+        topK: 15,
     }
     doubleStanzaChunkMeta = {
         apiToken: "3b09a640-7f63-4776-becc-7deab9b9507c",
         sessionId: "ux4odeb8jqu7",
         lookupPath: "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3-double-stanze%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
-        topK: 50,
+        topK: 15,
     }
     metricPrompts: any[] = [];
     metricPromptMap: any = {};
@@ -82,6 +82,7 @@ export class SongSearchApp {
     constructor() {
         this.analyze_prompt_button.addEventListener("click", async () => {
             this.analyze_prompt_button.disabled = true;
+            this.analyze_prompt_textarea.select();
             this.analyze_prompt_button.innerHTML = "...";
             await this.renderSongSearchChunks();
             this.analyze_prompt_button.disabled = false;
@@ -261,6 +262,7 @@ export class SongSearchApp {
             this.lastSearchMatches.forEach((match: any) => {
                 this.addSongToPlaylist(match.id);
             });
+            this.showOverlay("none");
         });
 
         setInterval(() => {
@@ -350,18 +352,18 @@ export class SongSearchApp {
     }
     showOverlay(overlayName: string = "none", toggle = false) {
         const overlays = ["none", "playlist", "lyrics", "search", "palette"];
-        this.searchShowing = false;
+        this.searchShowing = overlayName === "search";
         overlays.forEach((overlay: string) => {
             if (overlay === overlayName) {
                 if (document.body.classList.contains(overlay) === false) {
                     document.body.classList.add(overlay);
                     if (overlayName === "search") {
-                        this.searchShowing = true;
                         this.analyze_prompt_textarea.select();
                         this.analyze_prompt_textarea.focus();
                     }
                 } else if (toggle === true) {
                     document.body.classList.remove(overlay);
+                    this.searchShowing = false;
                 }
             } else {
                 document.body.classList.remove(overlay);
@@ -789,6 +791,10 @@ export class SongSearchApp {
                 this.playNext(Number(button.getAttribute("data-songindex")));
             });
         });
+
+        if (this.songsInPlaylist.length === 0) {
+            this.showOverlay("search");
+        }
     }
     async fetchDocumentsLookup(idList: string[]) {
         const promises: any[] = [];
