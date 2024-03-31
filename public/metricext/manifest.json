@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "Page Metrics",
+    "description": "AI Generated Metrics Extension",
+    "version": "1.0",
+    "permissions": ["storage", "activeTab", "scripting"],
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": "logo64.png"
+    }
+  }
