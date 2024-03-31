@@ -17,5 +17,5 @@
       "default_title": "Page-Metrics",
       "default_icon": "logo128.png"
     },
-    "permissions": ["storage", "activeTab", "scripting", "contextMenus"]
+    "permissions": ["storage", "activeTab", "scripting", "contextMenus", "unlimitedStorage"]
   }

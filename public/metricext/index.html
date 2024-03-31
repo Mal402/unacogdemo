@@ -1,10 +1,22 @@
 <html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
+  </head>
     <body>
+      <script src="tabulator.js"></script>
+      <link href="tabulator.css" rel="stylesheet">
         <h1>metrics ext</h1>
-        <br>
-        <textarea id="page_innertext" rows="4" cols="50"></textarea>
-        <br>
-        <button id="get_page_text">Get Page Text</button>
+        <div class="prompt_list_editor" style="width: 600px;"></div>
+        <div class="footer_row">
+          <button class="reset_default">Reset</button>
+          &nbsp;
+          <button class="export_rows">Export</button>
+          &nbsp;
+          <button class="import_rows">Import</button>
+          &nbsp;
+          <button class="add_row">Add</button>
+        </div>
         <script src="metricext.js"></script>
   </body>
 </html>
