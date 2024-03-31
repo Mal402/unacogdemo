@@ -1,11 +1,21 @@
 {
     "manifest_version": 3,
-    "name": "Page Metrics",
-    "description": "AI Generated Metrics Extension",
-    "version": "1.0",
-    "permissions": ["storage", "activeTab", "scripting"],
+    "name": "Page-Metrics",
+    "description": "Compute subjective metrics for web pages",
+    "version": "0.0.1",
+    "background": {
+      "service_worker": "service-worker.js"
+    },
+    "icons": {
+      "16": "logo16.png",
+      "32": "logo32.png",
+      "48": "logo48.png",
+      "128": "logo128.png"
+    },
     "action": {
       "default_popup": "index.html",
-      "default_icon": "logo64.png"
-    }
+      "default_title": "Page-Metrics",
+      "default_icon": "logo128.png"
+    },
+    "permissions": ["storage", "activeTab", "scripting", "contextMenus"]
   }
