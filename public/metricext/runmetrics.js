@@ -78,22 +78,40 @@ class MetricAnalyzer {
             promises.push(runPrompt(prompt, text));
         }
         let results = await Promise.all(promises);
-        console.log("results", results);
         let history = await chrome.storage.local.get('history');
         history = history.history || [];
-        history.unshift({
+        let historyEntry = {
             text,
             results,
-        });
+        };
+        history.unshift(historyEntry);
         history = history.slice(0, 10);
         await chrome.storage.local.set({
             lastResult: results,
             running: false,
             history,
         });
-        return results;
+        return historyEntry;
+    }
+
+     getHTMLforPromptResult(result) {
+        if (result.prompt.prompttype === 'text') {
+            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+        } else if (result.prompt.prompttype === 'metric') {
+            try {
+                let json = JSON.parse(result.result);
+                let metric = json.contentRating;
+                return `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
+            } catch (error) {
+                return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+            }
+        }
+        else {
+            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+        }
     }
 }
+
 
 function getMetricAnalysis() {
     return new MetricAnalyzer();

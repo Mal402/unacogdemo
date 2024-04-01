@@ -1,6 +1,7 @@
+const metricAnalyzerObject = getMetricAnalysis();
+
 async function main() {
-    let abc = getMetricAnalysis();
-    let prompts = await abc.getPromptTemplateList();
+    let prompts = await metricAnalyzerObject.getPromptTemplateList();
     let promptsTable = new Tabulator(".prompt_list_editor", {
         data: prompts,
         layout: "fitDataStretch",
@@ -92,27 +93,9 @@ async function main() {
 }
 
 async function runMetrics() {
-    let abc = getMetricAnalysis();
     let text = document.querySelector('.query_source_text').value;
-    let result = await abc.runAnalysisPrompts(text);
+    let result = await metricAnalyzerObject.runAnalysisPrompts(text);
     renderOutputDisplay();
-}
-
-function getHTMLforPromptResult(result) {
-    if (result.prompt.prompttype === 'text') {
-        return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-    } else if (result.prompt.prompttype === 'metric') {
-        try {
-            let json = JSON.parse(result.result);
-            let metric = json.contentRating;
-            return `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
-        } catch (error) {
-            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-        }
-    }
-    else {
-        return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-    }
 }
 
 async function renderOutputDisplay() {
@@ -120,7 +103,7 @@ async function renderOutputDisplay() {
     let html = '';
     if (lastResult && lastResult.lastResult) {
         lastResult.lastResult.forEach((result) => {
-            html += getHTMLforPromptResult(result);
+            html += metricAnalyzerObject.getHTMLforPromptResult(result);
         });
     }
     document.querySelector('.analysis_display').innerHTML = html;
@@ -153,7 +136,7 @@ async function renderHistoryDisplay() {
     history.forEach((entry) => {
         html += `<div>${entry.text}</div>`;
         entry.results.forEach((result) => {
-            html += getHTMLforPromptResult(result);
+            html += metricAnalyzerObject.getHTMLforPromptResult(result);
         });
     });
     document.querySelector('.history_display').innerHTML = html;
