@@ -1,12 +1,22 @@
 class MetricAnalyzer {
     constructor() {
         this.promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
-        this.defaultPromptTemplate = `"Rate the following song 0-10, regarding its ""motivational"" content. Guideline for ""motivational"" metrics: Assess motivational/inspirational content by evaluating the presence of uplifting language, the ability to evoke resilience, ambition, and positive change. Consider how effectively the text encourages self-improvement, overcoming challenges, and pursuing goals. Look for narrative strength, real-life applicability, and the inspirational impact on the reader's mindset and actions. 
+        this.defaultPromptTemplate = `Rate the following song 0-10, regarding its "motivational" content.
+         Guideline for "motivational" metrics: 
+Assess motivational/inspirational content by evaluating the presence of uplifting language,
+the ability to evoke resilience, ambition, and positive change. 
+Consider how effectively the text encourages self-improvement, overcoming challenges, 
+and pursuing goals. Look for narrative strength, real-life applicability, 
+and the inspirational impact on the reader's mindset and actions. 
+0: Not motivational at all
+5: Moderately motivational
+10: Extremely motivational
+
        Song Lyrics: {{query}}
        Please respond with json and only json in this format:
        {
-         ""contentRating"": 0
-       }"`;
+         contentRating: 0
+       }`;
     }
 
     async sendPromptToLLM(message) {

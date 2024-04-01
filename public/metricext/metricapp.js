@@ -1,6 +1,5 @@
 
 async function main() {
-    console.log('main');
     let promptQuery = await fetch('defaultprompts.json');
     let defaultPrompts = await promptQuery.json();
     let prompts = defaultPrompts;
@@ -32,27 +31,27 @@ async function main() {
     });
     promptsTable.on("cellEdited", async (cell) => {
         let promptTemplateList = await promptsTable.getData();
-        chrome.storage.local.set({promptTemplateList});
+        chrome.storage.local.set({ promptTemplateList });
     });
     promptsTable.on("rowMoved", async (cell) => {
         let promptTemplateList = await promptsTable.getData();
-        chrome.storage.local.set({promptTemplateList});
+        chrome.storage.local.set({ promptTemplateList });
     });
     promptsTable.on("cellClick", async (e, cell) => {
         if (cell.getColumn().getField() === "delete") {
             promptsTable.deleteRow(cell.getRow());
             let promptTemplateList = await promptsTable.getData();
-        chrome.storage.local.set({promptTemplateList});
+            chrome.storage.local.set({ promptTemplateList });
         }
     });
     let addButton = document.querySelector('.add_row');
     addButton.addEventListener('click', async () => {
-        promptsTable.addRow({id: '', description: '', prompt: ''});
+        promptsTable.addRow({ id: '', description: '', prompt: '' });
     });
     let exportButton = document.querySelector('.export_rows');
     exportButton.addEventListener('click', async () => {
         let promptTemplateList = await promptsTable.getData();
-        let blob = new Blob([JSON.stringify(promptTemplateList)], {type: "application/json"});
+        let blob = new Blob([JSON.stringify(promptTemplateList)], { type: "application/json" });
         let url = URL.createObjectURL(blob);
         let a = document.createElement('a');
         a.href = url;
@@ -67,7 +66,7 @@ async function main() {
         reader.onload = async (e) => {
             let promptTemplateList = JSON.parse(e.target.result);
             promptsTable.setData(promptTemplateList);
-            chrome.storage.local.set({promptTemplateList});
+            chrome.storage.local.set({ promptTemplateList });
             importButton.value = '';
         };
         reader.readAsText(file);
@@ -76,20 +75,45 @@ async function main() {
     let resetButton = document.querySelector('.reset_default');
     resetButton.addEventListener('click', async () => {
         promptsTable.setData(defaultPrompts);
-        chrome.storage.local.set({promptTemplateList: defaultPrompts});
+        chrome.storage.local.set({ promptTemplateList: defaultPrompts });
     });
     let runButton = document.querySelector('.compute_metrics');
     runButton.addEventListener('click', async () => {
         runMetrics();
     });
+    fillLastResultData();
+    watchRunningFlag();
 }
 
 async function runMetrics() {
     let abc = getMetricAnalysis();
     let text = document.querySelector('.query_source_text').value;
     let fullPrompt = await abc.sendPromptForMetric(abc.defaultPromptTemplate, text);
-            let result = await abc.sendPromptToLLM(fullPrompt);
-            document.querySelector('.analysis_display').innerText = JSON.stringify(result, null, '/t');
-        }
+    let result = await abc.sendPromptToLLM(fullPrompt);
+    document.querySelector('.analysis_display').innerText = JSON.stringify(result, null, '/t');
+}
+
+function watchRunningFlag() {
+    chrome.storage.local.onChanged.addListener(fillLastResultData);
+    chrome.storage.local.onChanged.addListener(updateRunningStatus);
+    updateRunningStatus();
+}
+
+async function updateRunningStatus(changes, area) {
+    let running = await chrome.storage.local.get('running');
+    if (running && running.running) {
+        document.querySelector('.running_status').innerHTML = 'Running...';
+    } else {
+        document.querySelector('.running_status').innerHTML = '';
+    }
+}
+
+async function fillLastResultData() {
+    let lastSelection = await chrome.storage.local.get('lastSelection');
+    lastSelection = lastSelection.lastSelection || "";
+    document.querySelector(".query_source_text").value = lastSelection;
+    let lastResult = await chrome.storage.local.get('lastResult');
+    document.querySelector(".analysis_display").innerHTML = lastResult.lastResult;
+}
 
 main();
