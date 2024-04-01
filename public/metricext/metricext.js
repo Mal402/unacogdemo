@@ -78,5 +78,18 @@ async function main() {
         promptsTable.setData(defaultPrompts);
         chrome.storage.local.set({promptTemplateList: defaultPrompts});
     });
+    let runButton = document.querySelector('.compute_metrics');
+    runButton.addEventListener('click', async () => {
+        runMetrics();
+    });
 }
+
+async function runMetrics() {
+    let abc = getMetricAnalysis();
+    let text = document.querySelector('.query_source_text').value;
+    let fullPrompt = await abc.sendPromptForMetric(abc.defaultPromptTemplate, text);
+            let result = await abc.sendPromptToLLM(fullPrompt);
+            document.querySelector('.analysis_display').innerText = JSON.stringify(result, null, '/t');
+        }
+
 main();

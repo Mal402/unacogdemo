@@ -1,22 +1,51 @@
 <html>
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
-  </head>
-    <body>
-      <script src="tabulator.js"></script>
-      <link href="tabulator.css" rel="stylesheet">
-        <h1>metrics ext</h1>
-        <div class="prompt_list_editor" style="width: 600px;"></div>
-        <div class="footer_row">
-          <button class="reset_default">Reset</button>
-          &nbsp;
-          <button class="export_rows">Export</button>
-          &nbsp;
-          <input class="import_rows" type="file" accept=".json">
-          &nbsp;
-          <button class="add_row">Add</button>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap.bundle.min.js"></script>
+  <script src="metricanalysis.js"></script>
+</head>
+
+<body>
+  <script src="tabulator.js"></script>
+  <link href="tabulator.css" rel="stylesheet">
+  <h1>Compute Subjective Metrics</h1>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist" style="width: 600px;">
+      <button class="nav-link active" id="nav_analysis-tab" data-bs-toggle="tab" data-bs-target="#nav_analysis" type="button"
+        role="tab" aria-controls="nav_analysis" aria-selected="true">Analysis</button>
+      <button class="nav-link" id="nav_history-tab" data-bs-toggle="tab" data-bs-target="#nav_history" type="button"
+        role="tab" aria-controls="nav_history" aria-selected="false">History</button>
+      <button class="nav-link" id="nav_config-tab" data-bs-toggle="tab" data-bs-target="#nav_config" type="button"
+        role="tab" aria-controls="nav_config" aria-selected="false">Configure</button>
+    </div>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab" tabindex="0">
+      <textarea class="query_source_text" cols="30" rows="10" style="height: 30vh;overflow: auto;"></textarea>
+      <div class="analysis_display" style="height: 30vh; width: 600px;overflow: auto;"></div>
+      <div class="footer_row">
+        <button class="compute_metrics">Compute</button>
         </div>
-        <script src="metricext.js"></script>
-  </body>
+    </div>
+    <div class="tab-pane fade" id="nav_history" role="tabpanel" aria-labelledby="nav_history-tab" tabindex="0">...</div>
+    <div class="tab-pane fade" id="nav_config" role="tabpanel" aria-labelledby="nav_config-tab" tabindex="0">
+      <div class="prompt_list_editor" style="width: 600px;"></div>
+      <div class="footer_row">
+        <button class="reset_default">Reset</button>
+        &nbsp;
+        <button class="export_rows">Export</button>
+        &nbsp;
+        <input class="import_rows" type="file" accept=".json">
+        &nbsp;
+        <button class="add_row">Add</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="metricext.js"></script>
+</body>
+
 </html>
