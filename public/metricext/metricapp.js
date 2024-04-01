@@ -1,4 +1,3 @@
-
 async function main() {
     let abc = getMetricAnalysis();
     let prompts = await abc.getPromptTemplateList();
@@ -18,6 +17,16 @@ async function main() {
                 },
                 hozAlign: "center",
                 width: 30,
+            },
+            {
+                title: "Type", field: "prompttype", editor: "list", editorParams: {
+                    values:
+                    {
+                        "metric": "Metric",
+                        "json": "JSON",
+                        "text": "Text"
+                    }
+                }
             },
             { title: "Description", field: "description", editor: "textarea", headerSort: false, width: 100 },
             { title: "Prompt", field: "prompt", editor: "textarea", headerSort: false, width: 100 },
@@ -69,6 +78,8 @@ async function main() {
 
     let resetButton = document.querySelector('.reset_default');
     resetButton.addEventListener('click', async () => {
+        let promptQuery = await fetch('defaultprompts.json');
+        let defaultPrompts = await promptQuery.json();
         promptsTable.setData(defaultPrompts);
         chrome.storage.local.set({ promptTemplateList: defaultPrompts });
     });
@@ -84,30 +95,51 @@ async function runMetrics() {
     let abc = getMetricAnalysis();
     let text = document.querySelector('.query_source_text').value;
     let result = await abc.runAnalysisPrompts(text);
-    document.querySelector('.analysis_display').innerText = JSON.stringify(result, null, '/t');
+    renderOutputDisplay();
+}
+
+async function renderOutputDisplay() {
+    let lastResult = await chrome.storage.local.get('lastResult');
+    let html = '';
+    if (lastResult && lastResult.lastResult) {
+        lastResult.lastResult.forEach((result) => {
+            if (result.prompt.prompttype === 'text') {
+                html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+            } else if (result.prompt.prompttype === 'metric') {
+                try {
+                    let json = JSON.parse(result.result);
+                    let metric = json.contentRating;
+                    html += `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
+                } catch (error) {
+                    html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+                }
+            }
+            else {
+                html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+            }
+        });
+    }
+    document.querySelector('.analysis_display').innerHTML = html;
 }
 
 function watchRunningFlag() {
     chrome.storage.local.onChanged.addListener(fillLastResultData);
-    chrome.storage.local.onChanged.addListener(updateRunningStatus);
-    updateRunningStatus();
+    fillLastResultData();
 }
 
-async function updateRunningStatus(changes, area) {
+async function fillLastResultData() {
     let running = await chrome.storage.local.get('running');
     if (running && running.running) {
         document.querySelector('.running_status').innerHTML = 'Running...';
     } else {
         document.querySelector('.running_status').innerHTML = '';
     }
-}
 
-async function fillLastResultData() {
     let lastSelection = await chrome.storage.local.get('lastSelection');
     lastSelection = lastSelection.lastSelection || "";
     document.querySelector(".query_source_text").value = lastSelection;
     let lastResult = await chrome.storage.local.get('lastResult');
-    document.querySelector(".analysis_display").innerHTML = lastResult.lastResult;
+    renderOutputDisplay();
 }
 
 main();

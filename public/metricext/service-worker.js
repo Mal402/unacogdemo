@@ -15,21 +15,10 @@ chrome.runtime.onInstalled.addListener(async () => {
         contexts: ['page']
     });
     chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-        await chrome.storage.local.set({
-            lastSelection: "",
-            lastResult: "",
-            running: true,
-        });
         if (info.menuItemId === 'analyzeSelection') {
             let text = info.selectionText;
-            await chrome.storage.local.set({
-                lastSelection: text,
-            });
             let abc = getMetricAnalysis();
-            let result = await abc.runAnalysisPrompts(text);
-            await chrome.storage.local.set({
-                lastResult: result,
-            });
+            await abc.runAnalysisPrompts(text);
         }
         else if (info.menuItemId === 'analyzePage') {
             function getDom() {
@@ -40,18 +29,9 @@ chrome.runtime.onInstalled.addListener(async () => {
                 func: getDom,
             });
             let text = scrapes[0].result;
-            await chrome.storage.local.set({
-                lastSelection: text,
-            });
             let abc = getMetricAnalysis();
-            let result = await abc.runAnalysisPrompts(text);
-            await chrome.storage.local.set({
-                lastResult: result,
-            });
+            await abc.runAnalysisPrompts(text);
         }
-        chrome.storage.local.set({
-            running: false,
-        });
     });
 });
 

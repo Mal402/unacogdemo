@@ -59,17 +59,29 @@ class MetricAnalyzer {
         return prompts;
     }
     async runAnalysisPrompts(text) {
+        await chrome.storage.local.set({
+            lastSelection: text,
+            lastResult: "",
+            running: true,
+        });
         let prompts = await this.getPromptTemplateList();
         const runPrompt = async (prompt, text) => {
-            let fullPrompt = await this.sendPromptForMetric(prompt, text);
+            let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
             let result = await this.sendPromptToLLM(fullPrompt);
-            return result;
+            return {
+                prompt,
+                result,
+            };
         };
         let promises = [];
         for (let prompt of prompts) {
-            promises.push(runPrompt(prompt.prompt, text));
+            promises.push(runPrompt(prompt, text));
         }
         let results = await Promise.all(promises);
+        await chrome.storage.local.set({
+            lastResult: results,
+            running: false,
+        });
         return results;
     }
 }
