@@ -1,6 +1,12 @@
 const metricAnalyzerObject = getMetricAnalysis();
 
 async function main() {
+    let sessionConfig = await chrome.storage.local.get('sessionId');
+    if (sessionConfig && sessionConfig.sessionId) {
+    } else {
+        document.querySelector('.no_session_key').style.display = 'block';
+    }
+
     let prompts = await metricAnalyzerObject.getPromptTemplateList();
     let promptsTable = new Tabulator(".prompt_list_editor", {
         data: prompts,
@@ -102,6 +108,25 @@ async function main() {
             chrome.storage.local.set({ promptTemplateList: defaultPrompts });
         }
     });
+
+    const api_token_input = document.querySelector('.api_token_input');
+    const session_id_input = document.querySelector('.session_id_input');
+    let apiToken = await chrome.storage.local.get('apiToken');
+    apiToken = apiToken.apiToken || '';
+    api_token_input.value = apiToken;
+    let sessionId = await chrome.storage.local.get('sessionId');
+    sessionId = sessionId.sessionId || '';
+    session_id_input.value = sessionId;
+
+    api_token_input.addEventListener('input', async (e) => {
+        let apiToken = api_token_input.value;
+        chrome.storage.local.set({ apiToken });
+    });
+    session_id_input.addEventListener('input', async (e) => {
+        let sessionId = session_id_input.value;
+        chrome.storage.local.set({ sessionId });
+    });
+        
 
     fillLastResultData();
     watchRunningFlag();

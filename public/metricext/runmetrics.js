@@ -4,8 +4,13 @@ class MetricAnalyzer {
     }
 
     async sendPromptToLLM(message) {
-        const apiToken = 'cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16';
-        const sessionId = '8umxl4rdt32x';
+        //  const apiToken = 'cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16';
+        //  const sessionId = '8umxl4rdt32x';
+        let apiToken = await chrome.storage.local.get('apiToken');
+        apiToken = apiToken.apiToken || '';
+        let sessionId = await chrome.storage.local.get('sessionId');
+        sessionId = sessionId.sessionId || '';
+
         const body = {
             message,
             apiToken,
@@ -94,7 +99,7 @@ class MetricAnalyzer {
         return historyEntry;
     }
 
-     getHTMLforPromptResult(result) {
+    getHTMLforPromptResult(result) {
         if (result.prompt.prompttype === 'text') {
             return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
         } else if (result.prompt.prompttype === 'metric') {

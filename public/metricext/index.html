@@ -14,6 +14,7 @@
   <link href="tabulator.css" rel="stylesheet">
   <h1>Subjective Metrics</h1>
   <div class="running_status"></div>
+  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com" target="_blank">unacog.com</a></div>
   <div class="nav nav-tabs" id="nav-tab" role="tablist" style="width: 600px;">
     <button class="nav-link active" id="nav_analysis-tab" data-bs-toggle="tab" data-bs-target="#nav_analysis"
       type="button" role="tab" aria-controls="nav_analysis" aria-selected="true">Analysis</button>
@@ -50,6 +51,12 @@
           <option>summarization</option>
         </select>
       </div>
+      <hr>
+      <label for="api_token_input">API Key</label>
+      <input type="text" class="api_token_input">
+      <br>
+      <label for="session_id_input">Session Key</label>
+      <input type="text" class="session_id_input">
     </div>
   </div>
 
