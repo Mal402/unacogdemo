@@ -78,9 +78,18 @@ class MetricAnalyzer {
             promises.push(runPrompt(prompt, text));
         }
         let results = await Promise.all(promises);
+        console.log("results", results);
+        let history = await chrome.storage.local.get('history');
+        history = history.history || [];
+        history.unshift({
+            text,
+            results,
+        });
+        history = history.slice(0, 10);
         await chrome.storage.local.set({
             lastResult: results,
             running: false,
+            history,
         });
         return results;
     }

@@ -98,25 +98,29 @@ async function runMetrics() {
     renderOutputDisplay();
 }
 
+function getHTMLforPromptResult(result) {
+    if (result.prompt.prompttype === 'text') {
+        return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+    } else if (result.prompt.prompttype === 'metric') {
+        try {
+            let json = JSON.parse(result.result);
+            let metric = json.contentRating;
+            return `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
+        } catch (error) {
+            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+        }
+    }
+    else {
+        return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+    }
+}
+
 async function renderOutputDisplay() {
     let lastResult = await chrome.storage.local.get('lastResult');
     let html = '';
     if (lastResult && lastResult.lastResult) {
         lastResult.lastResult.forEach((result) => {
-            if (result.prompt.prompttype === 'text') {
-                html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-            } else if (result.prompt.prompttype === 'metric') {
-                try {
-                    let json = JSON.parse(result.result);
-                    let metric = json.contentRating;
-                    html += `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
-                } catch (error) {
-                    html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-                }
-            }
-            else {
-                html += `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
-            }
+            html += getHTMLforPromptResult(result);
         });
     }
     document.querySelector('.analysis_display').innerHTML = html;
@@ -138,8 +142,21 @@ async function fillLastResultData() {
     let lastSelection = await chrome.storage.local.get('lastSelection');
     lastSelection = lastSelection.lastSelection || "";
     document.querySelector(".query_source_text").value = lastSelection;
-    let lastResult = await chrome.storage.local.get('lastResult');
     renderOutputDisplay();
+    renderHistoryDisplay();
+}
+
+async function renderHistoryDisplay() {
+    let history = await chrome.storage.local.get('history');
+    history = history.history || [];
+    let html = '';
+    history.forEach((entry) => {
+        html += `<div>${entry.text}</div>`;
+        entry.results.forEach((result) => {
+            html += getHTMLforPromptResult(result);
+        });
+    });
+    document.querySelector('.history_display').innerHTML = html;
 }
 
 main();
