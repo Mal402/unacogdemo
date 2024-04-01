@@ -1,12 +1,7 @@
 
 async function main() {
-    let promptQuery = await fetch('defaultprompts.json');
-    let defaultPrompts = await promptQuery.json();
-    let prompts = defaultPrompts;
-    let rawData = await chrome.storage.local.get('promptTemplateList');
-    if (rawData.promptTemplateList && rawData.promptTemplateList.length > 0) {
-        prompts = rawData.promptTemplateList;
-    }
+    let abc = getMetricAnalysis();
+    let prompts = await abc.getPromptTemplateList();
     let promptsTable = new Tabulator(".prompt_list_editor", {
         data: prompts,
         layout: "fitDataStretch",
@@ -88,8 +83,7 @@ async function main() {
 async function runMetrics() {
     let abc = getMetricAnalysis();
     let text = document.querySelector('.query_source_text').value;
-    let fullPrompt = await abc.sendPromptForMetric(abc.defaultPromptTemplate, text);
-    let result = await abc.sendPromptToLLM(fullPrompt);
+    let result = await abc.runAnalysisPrompts(text);
     document.querySelector('.analysis_display').innerText = JSON.stringify(result, null, '/t');
 }
 

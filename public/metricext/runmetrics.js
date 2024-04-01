@@ -1,22 +1,6 @@
 class MetricAnalyzer {
     constructor() {
         this.promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
-        this.defaultPromptTemplate = `Rate the following song 0-10, regarding its "motivational" content.
-         Guideline for "motivational" metrics: 
-Assess motivational/inspirational content by evaluating the presence of uplifting language,
-the ability to evoke resilience, ambition, and positive change. 
-Consider how effectively the text encourages self-improvement, overcoming challenges, 
-and pursuing goals. Look for narrative strength, real-life applicability, 
-and the inspirational impact on the reader's mindset and actions. 
-0: Not motivational at all
-5: Moderately motivational
-10: Extremely motivational
-
-       Song Lyrics: {{query}}
-       Please respond with json and only json in this format:
-       {
-         contentRating: 0
-       }`;
     }
 
     async sendPromptToLLM(message) {
@@ -63,6 +47,30 @@ and the inspirational impact on the reader's mindset and actions.
         "contentRating": -1
       }`;
         }
+    }
+    async getPromptTemplateList() {
+        let promptQuery = await fetch('defaultprompts.json');
+        let defaultPrompts = await promptQuery.json();
+        let prompts = defaultPrompts;
+        let rawData = await chrome.storage.local.get('promptTemplateList');
+        if (rawData.promptTemplateList && rawData.promptTemplateList.length > 0) {
+            prompts = rawData.promptTemplateList;
+        }
+        return prompts;
+    }
+    async runAnalysisPrompts(text) {
+        let prompts = await this.getPromptTemplateList();
+        const runPrompt = async (prompt, text) => {
+            let fullPrompt = await this.sendPromptForMetric(prompt, text);
+            let result = await this.sendPromptToLLM(fullPrompt);
+            return result;
+        };
+        let promises = [];
+        for (let prompt of prompts) {
+            promises.push(runPrompt(prompt.prompt, text));
+        }
+        let results = await Promise.all(promises);
+        return results;
     }
 }
 

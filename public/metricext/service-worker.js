@@ -26,8 +26,7 @@ chrome.runtime.onInstalled.addListener(async () => {
                 lastSelection: text,
             });
             let abc = getMetricAnalysis();
-            let fullPrompt = await abc.sendPromptForMetric(abc.defaultPromptTemplate, text);
-            let result = await abc.sendPromptToLLM(fullPrompt);
+            let result = await abc.runAnalysisPrompts(text);
             await chrome.storage.local.set({
                 lastResult: result,
             });
@@ -45,8 +44,7 @@ chrome.runtime.onInstalled.addListener(async () => {
                 lastSelection: text,
             });
             let abc = getMetricAnalysis();
-            let fullPrompt = await abc.sendPromptForMetric(abc.defaultPromptTemplate, text);
-            let result = await abc.sendPromptToLLM(fullPrompt);
+            let result = await abc.runAnalysisPrompts(text);
             await chrome.storage.local.set({
                 lastResult: result,
             });
