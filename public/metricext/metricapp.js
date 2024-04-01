@@ -76,18 +76,33 @@ async function main() {
         };
         reader.readAsText(file);
     });
-
-    let resetButton = document.querySelector('.reset_default');
-    resetButton.addEventListener('click', async () => {
-        let promptQuery = await fetch('defaultprompts.json');
-        let defaultPrompts = await promptQuery.json();
-        promptsTable.setData(defaultPrompts);
-        chrome.storage.local.set({ promptTemplateList: defaultPrompts });
-    });
     let runButton = document.querySelector('.compute_metrics');
     runButton.addEventListener('click', async () => {
         runMetrics();
     });
+    let selectPrompt = document.querySelector('.default_prompt_select');
+    selectPrompt.addEventListener('click', async (e) => {
+        let selectedIndex = selectPrompt.selectedIndex;
+        if (selectedIndex === 1) {
+            let promptQuery = await fetch('promptsmoderation.json');
+            let defaultPrompts = await promptQuery.json();
+            promptsTable.setData(defaultPrompts);
+            chrome.storage.local.set({ promptTemplateList: defaultPrompts });
+        }
+        else if (selectedIndex === 2) {
+            let promptQuery = await fetch('promptsmessage.json');
+            let defaultPrompts = await promptQuery.json();
+            promptsTable.setData(defaultPrompts);
+            chrome.storage.local.set({ promptTemplateList: defaultPrompts });
+        }
+        else if (selectedIndex === 3) {
+            let promptQuery = await fetch('promptssummary.json');
+            let defaultPrompts = await promptQuery.json();
+            promptsTable.setData(defaultPrompts);
+            chrome.storage.local.set({ promptTemplateList: defaultPrompts });
+        }
+    });
+
     fillLastResultData();
     watchRunningFlag();
 }

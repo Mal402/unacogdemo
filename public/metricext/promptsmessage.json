@@ -1,0 +1,14 @@
+[
+  {
+    "id": "political",
+    "prompttype": "metric",
+    "description": "For political content, evaluate the presence of governance critique, societal commentary, and advocacy for change. Analyze language for references to political ideologies, policies, power dynamics, and social justice. Assess how the text addresses authority, civil rights, and the impact of governance on individuals and communities. Consider the depth of analysis and the call for action or reflection on political issues.",
+    "prompt": "Rate the following song 0-10, regarding its \"political\" content. Guideline for \"political\" metrics: For political content, evaluate the presence of governance critique, societal commentary, and advocacy for change. Analyze language for references to political ideologies, policies, power dynamics, and social justice. Assess how the text addresses authority, civil rights, and the impact of governance on individuals and communities. Consider the depth of analysis and the call for action or reflection on political issues. \nSong Lyrics: {{query}}\nPlease respond with json and only json in this format:\n{\n  \"contentRating\": 0\n}"
+  },
+  {
+    "id": "comedic",
+    "prompttype": "metric",
+    "description": "Assess comedic content by evaluating humor type (satire, slapstick, dry, wit), laughter intensity, and originality. Examine the use of comedic timing, language play, and incongruity in situations or dialogues. Consider cultural and contextual relevance, and the ability to evoke amusement across diverse audiences. Rate based on the cleverness of jokes, the presence of comedic characters or scenarios, and the overall enjoyment and light-heartedness conveyed.",
+    "prompt": "Rate the following song 0-10, regarding its \"comedic\" content. Guideline for \"comedic\" metrics: Assess comedic content by evaluating humor type (satire, slapstick, dry, wit), laughter intensity, and originality. Examine the use of comedic timing, language play, and incongruity in situations or dialogues. Consider cultural and contextual relevance, and the ability to evoke amusement across diverse audiences. Rate based on the cleverness of jokes, the presence of comedic characters or scenarios, and the overall enjoyment and light-heartedness conveyed. \nSong Lyrics: {{query}}\nPlease respond with json and only json in this format:\n{\n  \"contentRating\": 0\n}"
+  }
+]
