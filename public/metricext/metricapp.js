@@ -178,11 +178,22 @@ async function renderHistoryDisplay() {
     let history = await chrome.storage.local.get('history');
     history = history.history || [];
     let html = '';
-    history.forEach((entry) => {
-        html += `<div>${entry.text}</div>`;
+    const recentResults = history.slice(-5).reverse();
+    recentResults.forEach((entry, index) => {
+        const resultNumber = recentResults.length - index;
+        html += `<div class="history_entry">
+                    <div class="history_text">
+                    ${entry.text}
+                    <span class="history_label">Result ${resultNumber}</span>
+                    </div>
+                    <hr class="history_separator">`;
         entry.results.forEach((result) => {
             html += metricAnalyzerObject.getHTMLforPromptResult(result);
         });
+        html += `</div>`;
+        if (index < recentResults.length - 1) {
+            html += `<hr class="history_separator">`;
+        }
     });
     document.querySelector('.history_display').innerHTML = html;
 }

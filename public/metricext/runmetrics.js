@@ -101,18 +101,48 @@ class MetricAnalyzer {
 
     getHTMLforPromptResult(result) {
         if (result.prompt.prompttype === 'text') {
-            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+            return `
+            <div class="prompt_result text_result">
+              <div class="prompt_header">
+                <span class="prompt_id">${result.prompt.id}</span>
+              </div>
+              <div class="result_content">${result.result}</div>
+            </div>
+          `;
         } else if (result.prompt.prompttype === 'metric') {
             try {
                 let json = JSON.parse(result.result);
                 let metric = json.contentRating;
-                return `<div><b>${result.prompt.id}</b> (0-10): ${metric}</div>`;
+                return `
+              <div class="prompt_result metric_result">
+                <div class="prompt_header">
+                  <span class="prompt_id">${result.prompt.id}</span>
+                  <span class="metric_score">${metric}/10</span>
+                </div>
+                <div class="metric_bar">
+                  <div class="metric_fill" style="width: ${metric * 10}%;"></div>
+                </div>
+              </div>
+            `;
             } catch (error) {
-                return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+                return `
+              <div class="prompt_result error_result">
+                <div class="prompt_header">
+                  <span class="prompt_id">${result.prompt.id}</span>
+                </div>
+                <pre class="result_content">${result.result}</pre>
+              </div>
+            `;
             }
-        }
-        else {
-            return `<div>${result.prompt.id}</div><pre>${result.result}</pre>`;
+        } else {
+            return `
+            <div class="prompt_result json_result">
+              <div class="prompt_header">
+                <span class="prompt_id">${result.prompt.id}</span>
+              </div>
+              <pre class="result_content">${JSON.stringify(JSON.parse(result.result), null, 2)}</pre>
+            </div>
+          `;
         }
     }
 }

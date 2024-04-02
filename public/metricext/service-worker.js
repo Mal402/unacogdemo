@@ -46,6 +46,66 @@ chrome.runtime.onInstalled.addListener(async () => {
             if (existing) {
                 existing.remove();
             }
+            function getCSSString() {
+                return `
+                <style>
+            .running_status{
+                max-height: 25vh;
+                overflow: auto;
+            }
+              .prompt_result {
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 4px;
+                display: inline-block;
+              }
+            
+              .prompt_header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 5px;
+              }
+            
+              .prompt_id {
+                font-weight: bold;
+              }
+            
+              .result_content {
+                white-space: pre-wrap;
+                font-family: monospace;
+                font-size: 14px;
+              }
+            
+              .metric_score {
+                font-size: 18px;
+                color: #007bff;
+                margin-left: 4px;
+              }
+            
+              .metric_bar {
+                height: 10px;
+                background-color: #e0e0e0;
+                border-radius: 5px;
+                overflow: hidden;
+              }
+            
+              .metric_fill {
+                height: 100%;
+                background-color: #007bff;
+              }
+            
+              .text_result,
+              .metric_result,
+              .json_result {
+                background-color: #f0f0f0;
+              }
+            
+              .error_result {
+                background-color: #ffe0e0;
+              }
+            </style>`
+            }
             let div = document.createElement('div');
             div.classList.add('running_status');
             div.style.position = 'fixed';
@@ -54,7 +114,7 @@ chrome.runtime.onInstalled.addListener(async () => {
             div.style.padding = '10px';
             div.style.backgroundColor = 'gray';
             div.style.zIndex = '100000';
-            div.innerHTML = html;
+            div.innerHTML = html + getCSSString();
             document.body.appendChild(div);
             let dismissButton = document.createElement('button');
             dismissButton.innerHTML = 'Dismiss';

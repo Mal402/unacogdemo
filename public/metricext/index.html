@@ -16,17 +16,22 @@
   <div class="running_status"></div>
   <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
       target="_blank">unacog.com</a></div>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist" style="width: 600px;">
-    <button class="nav-link active" id="nav_analysis-tab" data-bs-toggle="tab" data-bs-target="#nav_analysis"
-      type="button" role="tab" aria-controls="nav_analysis" aria-selected="true">Analysis</button>
-    <button class="nav-link" id="nav_history-tab" data-bs-toggle="tab" data-bs-target="#nav_history" type="button"
-      role="tab" aria-controls="nav_history" aria-selected="false">History</button>
-    <button class="nav-link" id="nav_config-tab" data-bs-toggle="tab" data-bs-target="#nav_config" type="button"
-      role="tab" aria-controls="nav_config" aria-selected="false">Configure</button>
-  </div>
-  <div class="tab-content" id="nav-tabContent" style="max-height: 600px; overflow: auto;">
-    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab"
-      tabindex="0">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
+        role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
+        aria-controls="history" aria-selected="false">History</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
+        aria-controls="config" aria-selected="false">Configure</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
         <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
         <div class="analysis_display"></div>
@@ -35,16 +40,16 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane fade" id="nav_history" role="tabpanel" aria-labelledby="nav_history-tab" tabindex="0">
-      <div class="history_display" style="height: 100%; width: 600px;overflow: auto;"></div>
+    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+      <div class="history_display"></div>
     </div>
-    <div class="tab-pane fade" id="nav_config" role="tabpanel" aria-labelledby="nav_config-tab" tabindex="0">
+    <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="prompt_list_editor"></div>
       <div class="config_footer">
         <div class="prompt_controls">
           <div class="template_controls">
             <select class="default_prompt_select">
-              <option>Select a prompt template</option>
+              <option>Select a metric template</option>
               <option>Moderation metrics</option>
               <option>Message metrics</option>
               <option>Summarization</option>
@@ -112,47 +117,49 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .tab-content {
-    max-height: 600px;
-    overflow: auto;
+  .analysis_container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
   }
 
   .query_source_text {
     width: 100%;
-    height: 30vh;
+    height: 200px;
     padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: none;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
+    resize: vertical;
   }
 
   .analysis_display {
-    width: 100%;
-    height: 30vh;
+    margin-top: 20px;
     padding: 10px;
+    background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 4px;
-    overflow: auto;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    background-color: #f8f8f8;
+    max-height: 300px;
+    overflow-y: auto;
   }
 
   .footer_row {
-    margin-top: 10px;
+    margin-top: 20px;
     text-align: right;
   }
 
   .compute_metrics {
-    padding: 8px 16px;
-    background-color: #007bff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
     color: #fff;
+    background-color: #007bff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
 
   .compute_metrics:hover {
@@ -263,6 +270,121 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .prompt_result {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .prompt_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .prompt_id {
+    font-weight: bold;
+  }
+
+  .result_content {
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 14px;
+  }
+
+  .metric_score {
+    font-size: 18px;
+    color: #007bff;
+    margin-left: 4px;
+  }
+
+  .metric_bar {
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .metric_fill {
+    height: 100%;
+    background-color: #007bff;
+  }
+
+  .text_result,
+  .metric_result,
+  .json_result {
+    background-color: #f0f0f0;
+  }
+
+  .error_result {
+    background-color: #ffe0e0;
+  }
+
+  .history_entry {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.history_text {
+    font-size: 16px;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.history_label {
+    padding: 4px 8px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.history_separator {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+  .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .nav-tabs .nav-link {
+    color: #495057;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+  }
+
+  .nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #dee2e6;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+  }
+
+  .tab-content {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    width: 600px;
+    border-top: none;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    height: 500px;
   }
 </style>
 
