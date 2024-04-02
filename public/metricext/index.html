@@ -24,39 +24,46 @@
       role="tab" aria-controls="nav_config" aria-selected="false">Configure</button>
   </div>
   <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab"
-      tabindex="0">
-      <textarea class="query_source_text" cols="30" rows="10" style="height: 30vh;overflow: auto;"></textarea>
-      <div class="analysis_display" style="height: 30vh; width: 600px;overflow: auto;"></div>
-      <div class="footer_row">
-        <button class="compute_metrics">Compute</button>
+    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab" tabindex="0">
+      <div class="analysis_container">
+        <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
+        <div class="analysis_display"></div>
+        <div class="footer_row">
+          <button class="compute_metrics">Compute</button>
+        </div>
       </div>
     </div>
     <div class="tab-pane fade" id="nav_history" role="tabpanel" aria-labelledby="nav_history-tab" tabindex="0">
       <div class="history_display" style="height: 100%; width: 600px;overflow: auto;"></div>
     </div>
     <div class="tab-pane fade" id="nav_config" role="tabpanel" aria-labelledby="nav_config-tab" tabindex="0">
-      <div class="prompt_list_editor" style="width: 600px;"></div>
-      <div class="footer_row">
-        <button class="export_rows">Export</button>
-        &nbsp;
-        <input class="import_rows" type="file" accept=".json">
-        &nbsp;
-        <button class="add_row">Add</button>
-        <br>
-        <select class="default_prompt_select">
-          <option>put a prompt template</option>
-          <option>moderation metrics</option>
-          <option>message metrics</option>
-          <option>summarization</option>
-        </select>
+      <div class="prompt_list_editor"></div>
+      <div class="config_footer">
+        <div class="template_controls">
+          <select class="default_prompt_select">
+            <option>Select a prompt template</option>
+            <option>Moderation metrics</option>
+            <option>Message metrics</option>
+            <option>Summarization</option>
+          </select>
+          <button class="add_row">Add Prompt</button>
+        </div>
+      
+        <div class="data_controls">
+          <button class="export_rows">Export Data</button>
+          <input class="import_rows" type="file" accept=".json">
+        </div>
       </div>
-      <hr>
-      <label for="api_token_input">API Key</label>
-      <input type="text" class="api_token_input">
-      <br>
-      <label for="session_id_input">Session Key</label>
-      <input type="text" class="session_id_input">
+      <div class="api_config">
+        <div class="form_row">
+          <label for="api_token_input">API Key</label>
+          <input type="text" class="api_token_input">
+        </div>
+        <div class="form_row">
+          <label for="session_id_input">Session Key</label>  
+          <input type="text" class="session_id_input">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -64,5 +71,137 @@
 
   <script src="metricapp.js"></script>
 </body>
+<style>
+  .query_source_text {
+  width: 100%;
+  height: 30vh;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.analysis_display {
+  width: 100%;
+  height: 30vh;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #f8f8f8;
+}
+
+  .footer_row {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.compute_metrics {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.compute_metrics:hover {
+  background-color: #0056b3;
+}
+
+.analysis_container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.prompt_list_editor {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.prompt_list_editor th,
+.prompt_list_editor td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.prompt_list_editor th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  text-align: left;
+}
+
+.prompt_list_editor tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.config_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.template_controls,
+.data_controls {
+  display: flex;
+  gap: 10px;
+}
+
+.default_prompt_select,
+.add_row,
+.export_rows,
+.import_rows {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add_row,
+.export_rows {
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.add_row:hover,
+.export_rows:hover {
+  background-color: #0056b3;
+}
+
+.api_config {
+  margin-top: 20px;
+}
+
+.form_row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form_row label {
+  width: 100px;
+  font-weight: bold;
+}
+
+.api_token_input,
+.session_id_input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+</style>
 
 </html>
