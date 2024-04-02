@@ -14,7 +14,8 @@
   <link href="tabulator.css" rel="stylesheet">
   <h1>Subjective Metrics</h1>
   <div class="running_status"></div>
-  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com" target="_blank">unacog.com</a></div>
+  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
+      target="_blank">unacog.com</a></div>
   <div class="nav nav-tabs" id="nav-tab" role="tablist" style="width: 600px;">
     <button class="nav-link active" id="nav_analysis-tab" data-bs-toggle="tab" data-bs-target="#nav_analysis"
       type="button" role="tab" aria-controls="nav_analysis" aria-selected="true">Analysis</button>
@@ -23,8 +24,9 @@
     <button class="nav-link" id="nav_config-tab" data-bs-toggle="tab" data-bs-target="#nav_config" type="button"
       role="tab" aria-controls="nav_config" aria-selected="false">Configure</button>
   </div>
-  <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab" tabindex="0">
+  <div class="tab-content" id="nav-tabContent" style="height: 600px; overflow: auto;">
+    <div class="tab-pane fade show active" id="nav_analysis" role="tabpanel" aria-labelledby="nav_analysis-tab"
+      tabindex="0">
       <div class="analysis_container">
         <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
         <div class="analysis_display"></div>
@@ -39,29 +41,32 @@
     <div class="tab-pane fade" id="nav_config" role="tabpanel" aria-labelledby="nav_config-tab" tabindex="0">
       <div class="prompt_list_editor"></div>
       <div class="config_footer">
-        <div class="template_controls">
-          <select class="default_prompt_select">
-            <option>Select a prompt template</option>
-            <option>Moderation metrics</option>
-            <option>Message metrics</option>
-            <option>Summarization</option>
-          </select>
+        <div class="prompt_controls">
+          <div class="template_controls">
+            <select class="default_prompt_select">
+              <option>Select a prompt template</option>
+              <option>Moderation metrics</option>
+              <option>Message metrics</option>
+              <option>Summarization</option>
+            </select>
+          </div>
           <button class="add_row">Add Prompt</button>
         </div>
-      
+
         <div class="data_controls">
           <button class="export_rows">Export Data</button>
-          <input class="import_rows" type="file" accept=".json">
+          <button class="import_rows">Import Data</button>
+          <input type="file" id="file_input" accept=".json" style="display: none;">
         </div>
       </div>
       <div class="api_config">
         <div class="form_row">
-          <label for="api_token_input">API Key</label>
-          <input type="text" class="api_token_input">
+          <label for="api_token_input">API Key:</label>
+          <input type="text" class="api_token_input" id="api_token_input">
         </div>
         <div class="form_row">
-          <label for="session_id_input">Session Key</label>  
-          <input type="text" class="session_id_input">
+          <label for="session_id_input">Session:</label>
+          <input type="text" class="session_id_input" id="session_id_input">
         </div>
       </div>
     </div>
@@ -72,136 +77,193 @@
   <script src="metricapp.js"></script>
 </body>
 <style>
-  .query_source_text {
-  width: 100%;
-  height: 30vh;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: none;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-}
+  h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    padding-bottom: 10px;
+  }
 
-.analysis_display {
-  width: 100%;
-  height: 30vh;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: auto;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  background-color: #f8f8f8;
-}
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background-color: #007bff;
+  }
+
+  .running_status {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+    text-align: center;
+    font-style: italic;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-content {
+    height: 600px;
+    overflow: auto;
+  }
+
+  .query_source_text {
+    width: 100%;
+    height: 30vh;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+
+  .analysis_display {
+    width: 100%;
+    height: 30vh;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: auto;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f8f8f8;
+  }
 
   .footer_row {
-  margin-top: 10px;
-  text-align: right;
-}
+    margin-top: 10px;
+    text-align: right;
+  }
 
-.compute_metrics {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
+  .compute_metrics {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
 
-.compute_metrics:hover {
-  background-color: #0056b3;
-}
+  .compute_metrics:hover {
+    background-color: #0056b3;
+  }
 
-.analysis_container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+  .analysis_container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
 
-.prompt_list_editor {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-}
+  .prompt_list_editor {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
 
-.prompt_list_editor th,
-.prompt_list_editor td {
-  padding: 10px;
-  border: 1px solid #ccc;
-}
+  .prompt_list_editor th,
+  .prompt_list_editor td {
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
 
-.prompt_list_editor th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-  text-align: left;
-}
+  .prompt_list_editor th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+  }
 
-.prompt_list_editor tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
+  .prompt_list_editor tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
 
-.config_footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
+  .config_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 4px;
+  }
 
-.template_controls,
-.data_controls {
-  display: flex;
-  gap: 10px;
-}
+  .prompt_controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.default_prompt_select,
-.add_row,
-.export_rows,
-.import_rows {
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+  .template_controls {
+    display: flex;
+    align-items: center;
+  }
 
-.add_row,
-.export_rows {
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
+  .data_controls {
+    display: flex;
+    gap: 10px;
+  }
 
-.add_row:hover,
-.export_rows:hover {
-  background-color: #0056b3;
-}
+  .default_prompt_select,
+  .add_row,
+  .export_rows,
+  .import_rows {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+  }
 
-.api_config {
-  margin-top: 20px;
-}
+  .add_row,
+  .export_rows,
+  .import_rows {
+    background-color: #007bff;
+    color: #fff;
+  }
 
-.form_row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
+  .add_row:hover,
+  .export_rows:hover,
+  .import_rows:hover {
+    background-color: #0056b3;
+  }
 
-.form_row label {
-  width: 100px;
-  font-weight: bold;
-}
+  .api_config {
+    margin-top: 20px;
+  }
 
-.api_token_input,
-.session_id_input {
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+  .form_row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 
+  .form_row label {
+    width: 80px;
+    font-weight: bold;
+    font-size: 0.8em;
+    margin: 0 4px;
+  }
+
+  .api_token_input,
+  .session_id_input {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 </style>
 
 </html>

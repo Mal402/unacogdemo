@@ -71,14 +71,19 @@ async function main() {
         URL.revokeObjectURL(url);
     });
     let importButton = document.querySelector('.import_rows');
-    importButton.addEventListener('change', async (e) => {
+    importButton.addEventListener('click', () => {
+        document.getElementById('file_input').click();
+    });
+
+    let fileInput = document.getElementById('file_input');
+    fileInput.addEventListener('change', async (e) => {
         let file = e.target.files[0];
         let reader = new FileReader();
         reader.onload = async (e) => {
             let promptTemplateList = JSON.parse(e.target.result);
             promptsTable.setData(promptTemplateList);
             chrome.storage.local.set({ promptTemplateList });
-            importButton.value = '';
+            fileInput.value = ''; // Reset the file input value
         };
         reader.readAsText(file);
     });
@@ -126,7 +131,7 @@ async function main() {
         let sessionId = session_id_input.value;
         chrome.storage.local.set({ sessionId });
     });
-        
+
 
     fillLastResultData();
     watchRunningFlag();
