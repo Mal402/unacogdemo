@@ -24,6 +24,7 @@ chrome.runtime.onInstalled.addListener(async () => {
         let result = {};
         if (info.menuItemId === 'analyzeSelection') {
             text = info.selectionText;
+            text = text.slice(0, 20000);
             let abc = getMetricAnalysis();
             result = await abc.runAnalysisPrompts(text);
         }
@@ -36,6 +37,7 @@ chrome.runtime.onInstalled.addListener(async () => {
                 func: getDom,
             });
             text = scrapes[0].result;
+            text = text.slice(0, 20000);
             let abc = getMetricAnalysis();
             result = await abc.runAnalysisPrompts(text);
         }
