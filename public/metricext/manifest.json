@@ -6,6 +6,9 @@
     "background": {
       "service_worker": "service-worker.js"
     },
+    "externally_connectable": {
+      "matches": ["<all_urls>"]
+    },
     "icons": {
       "16": "logo16.png",
       "32": "logo32.png",

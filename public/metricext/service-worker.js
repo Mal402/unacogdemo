@@ -62,7 +62,7 @@ chrome.runtime.onInstalled.addListener(async () => {
             div.appendChild(dismissButton);
         }
         let abc = getMetricAnalysis();
-        console.log("super result",result);
+        console.log("super result", result);
         let def = '';
         result.results.forEach((result) => {
             def += abc.getHTMLforPromptResult(result);
@@ -76,4 +76,18 @@ chrome.runtime.onInstalled.addListener(async () => {
     });
 });
 
+chrome.runtime.onMessageExternal.addListener(
+    async (request, sender, sendResponse) => {
+        console.log(sender.tab ?
+            "from a content script:" + sender.tab.url :
+            "from the extension");
+        if (request.sessionId) {
+            await chrome.storage.local.set({
+                sessionId: request.sessionId,
+                apiToken: request.apiToken
+            });
+            sendResponse({ success: "key set" });
+        }
+    }
+);
 
