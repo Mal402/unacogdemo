@@ -12,24 +12,23 @@
 <body>
   <script src="tabulator.js"></script>
   <link href="tabulator.css" rel="stylesheet">
-  <h1>Subjective Metrics</h1>
-  <div class="running_status"></div>
-  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
-      target="_blank">unacog.com</a></div>
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
-        role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
+      role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
-        aria-controls="history" aria-selected="false">History</button>
+      aria-controls="history" aria-selected="false">History</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-        aria-controls="config" aria-selected="false">Configure</button>
+      aria-controls="config" aria-selected="false">Configure</button>
     </li>
   </ul>
+  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
+      target="_blank">unacog.com</a></div>
+  <div class="running_status"></div>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
@@ -82,28 +81,6 @@
   <script src="metricapp.js"></script>
 </body>
 <style>
-  h1 {
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 12px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    position: relative;
-    padding-bottom: 10px;
-  }
-
-  h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background-color: #007bff;
-  }
 
   .running_status {
     font-size: 16px;
@@ -120,7 +97,6 @@
   .analysis_container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
   }
 
   .query_source_text {
@@ -164,12 +140,6 @@
 
   .compute_metrics:hover {
     background-color: #0056b3;
-  }
-
-  .analysis_container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
   }
 
   .prompt_list_editor {

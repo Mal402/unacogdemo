@@ -180,11 +180,11 @@ async function renderHistoryDisplay() {
     let html = '';
     const recentResults = history.slice(-5).reverse();
     recentResults.forEach((entry, index) => {
-        const resultNumber = recentResults.length - index;
+        const resultNumber = index + 1;
         html += `<div class="history_entry">
+                    <span class="history_label">Result ${resultNumber}</span> &nbsp; &nbsp;
                     <div class="history_text">
                     ${entry.text}
-                    <span class="history_label">Result ${resultNumber}</span>
                     </div>
                     <hr class="history_separator">`;
         entry.results.forEach((result) => {
