@@ -2,6 +2,9 @@ importScripts("./node_modules/mustache/mustache.min.js");
 importScripts("./runmetrics.js");
 
 chrome.runtime.onInstalled.addListener(async () => {
+   
+
+
     chrome.contextMenus.create({
         id: 'analyzeSelection',
         title: 'Analyze selection',

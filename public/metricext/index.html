@@ -1,29 +1,29 @@
 <html>
 
 <head>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="materialiconsoutlined.css">
+  <link href="bootstrap.min.css" rel="stylesheet">
   <script src="bootstrap.bundle.min.js"></script>
   <script src="mustachees5.js"></script>
   <script src="runmetrics.js"></script>
+  <script src="tabulator.js"></script>
+  <link href="tabulator.css" rel="stylesheet">
+  <script src="metricapp.js"></script>
 </head>
 
 <body>
-  <script src="tabulator.js"></script>
-  <link href="tabulator.css" rel="stylesheet">
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
-      role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
+        role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
-      aria-controls="history" aria-selected="false">History</button>
+        aria-controls="history" aria-selected="false">History</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-      aria-controls="config" aria-selected="false">Configure</button>
+        aria-controls="config" aria-selected="false">Configure</button>
     </li>
   </ul>
   <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
@@ -45,7 +45,6 @@
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="prompt_list_editor"></div>
       <div class="config_footer">
-        <div class="prompt_controls">
           <div class="template_controls">
             <select class="default_prompt_select">
               <option>Select a metric template</option>
@@ -54,14 +53,12 @@
               <option>Summarization</option>
             </select>
           </div>
-          <button class="add_row">Add Prompt</button>
-        </div>
-
-        <div class="data_controls">
-          <button class="export_rows">Export Data</button>
-          <button class="import_rows">Import Data</button>
-          <input type="file" id="file_input" accept=".json" style="display: none;">
-        </div>
+          <div class="data_controls">
+            <button class="add_row">Add Prompt</button>
+            <button class="export_rows">Export Data</button>
+            <button class="import_rows">Import Data</button>
+            <input type="file" id="file_input" accept=".json" style="display: none;">
+          </div>
       </div>
       <div class="api_config">
         <div class="form_row">
@@ -77,10 +74,14 @@
   </div>
 
 
-
-  <script src="metricapp.js"></script>
 </body>
 <style>
+  html,
+  body {
+    height: 600px;
+    width: 450px;
+    overflow: hidden;
+  }
 
   .running_status {
     font-size: 16px;
@@ -95,16 +96,15 @@
   }
 
   .analysis_container {
-    max-width: 800px;
-    margin: 0 auto;
+
   }
 
   .query_source_text {
     width: 100%;
-    height: 200px;
+    height: 125px;
     padding: 10px;
     font-family: 'Courier New', monospace;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.5;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -167,6 +167,7 @@
 
   .config_footer {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     margin-top: 20px;
@@ -182,8 +183,7 @@
   }
 
   .template_controls {
-    display: flex;
-    align-items: center;
+    padding-bottom: 10px;
   }
 
   .data_controls {
@@ -301,16 +301,16 @@
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
-}
+  }
 
-.history_text {
+  .history_text {
     font-size: 16px;
     font-style: italic;
     color: #333;
     margin-bottom: 10px;
-}
+  }
 
-.history_label {
+  .history_label {
     padding: 4px 8px;
     background-color: #007bff;
     color: #fff;
@@ -318,16 +318,17 @@
     font-weight: bold;
     border-radius: 4px;
     margin-left: 8px;
-}
+  }
 
-.history_separator {
+  .history_separator {
     border: none;
     border-top: 1px solid #ccc;
     margin: 20px 0;
-}
+  }
 
   .nav-tabs {
     border-bottom: 1px solid #dee2e6;
+    position: relative;
   }
 
   .nav-tabs .nav-link {
@@ -348,13 +349,13 @@
   }
 
   .tab-content {
-    padding: 20px;
+    padding: 8px;
     border: 1px solid #dee2e6;
-    width: 600px;
     border-top: none;
     border-bottom-left-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
-    height: 500px;
+    width: 400px;
+    height: 550px;
   }
 </style>
 

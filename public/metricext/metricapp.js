@@ -198,4 +198,6 @@ async function renderHistoryDisplay() {
     document.querySelector('.history_display').innerHTML = html;
 }
 
-main();
+window.addEventListener('DOMContentLoaded', async () => {
+    await main();
+});
