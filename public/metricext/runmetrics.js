@@ -135,12 +135,18 @@ class MetricAnalyzer {
             `;
             }
         } else {
+          let resultDisplay = '';
+          try {
+            resultDisplay = JSON.stringify(JSON.parse(result.result), null, 2);
+          } catch (error) {
+            resultDisplay = result.result;
+          }
             return `
             <div class="prompt_result json_result">
               <div class="prompt_header">
                 <span class="prompt_id">${result.prompt.id}</span>
               </div>
-              <pre class="result_content">${JSON.stringify(JSON.parse(result.result), null, 2)}</pre>
+              <pre class="result_content">${resultDisplay}</pre>
             </div>
           `;
         }
