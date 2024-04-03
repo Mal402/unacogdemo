@@ -16,9 +16,11 @@ chrome.runtime.onInstalled.addListener(async () => {
         contexts: ['page']
     });
     chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+        chrome.sidePanel.open({ tabId: tab.id });
+
         await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            func: addRunningIndicator,
+            func: paintInDocumentHTMLResultDisplay,
             args: ['Running...']
         });
         let text = '';
@@ -42,7 +44,7 @@ chrome.runtime.onInstalled.addListener(async () => {
             let abc = getMetricAnalysis();
             result = await abc.runAnalysisPrompts(text);
         }
-        function addRunningIndicator(html) {
+        async function paintInDocumentHTMLResultDisplay(html) {
             let existing = document.querySelector('.running_status');
             if (existing) {
                 existing.remove();
@@ -106,23 +108,28 @@ chrome.runtime.onInstalled.addListener(async () => {
                 background-color: #ffe0e0;
               }
             </style>`
+            };
+
+            let showResultsInPage = await chrome.storage.local.get('showResultsInPage');
+            if (showResultsInPage && showResultsInPage.showResultsInPage === 'true') {
+                let div = document.createElement('div');
+                div.classList.add('running_status');
+                div.style.position = 'fixed';
+                div.style.bottom = '0';
+                div.style.left = '0';
+                div.style.padding = '10px';
+                div.style.backgroundColor = 'gray';
+                div.style.zIndex = '100000';
+                div.innerHTML = html + getCSSString();
+                document.body.appendChild(div);
+                let dismissButton = document.createElement('button');
+                dismissButton.innerHTML = 'Dismiss';
+                dismissButton.addEventListener('click', () => {
+                    document.querySelector('.running_status').remove();
+                });
+                div.appendChild(dismissButton);
             }
-            let div = document.createElement('div');
-            div.classList.add('running_status');
-            div.style.position = 'fixed';
-            div.style.bottom = '0';
-            div.style.left = '0';
-            div.style.padding = '10px';
-            div.style.backgroundColor = 'gray';
-            div.style.zIndex = '100000';
-            div.innerHTML = html + getCSSString();
-            document.body.appendChild(div);
-            let dismissButton = document.createElement('button');
-            dismissButton.innerHTML = 'Dismiss';
-            dismissButton.addEventListener('click', () => {
-                document.querySelector('.running_status').remove();
-            });
-            div.appendChild(dismissButton);
+
         }
         let abc = getMetricAnalysis();
         console.log("super result", result);
@@ -133,7 +140,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 
         await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            func: addRunningIndicator,
+            func: paintInDocumentHTMLResultDisplay,
             args: [def]
         });
     });
