@@ -178,7 +178,7 @@ async function renderHistoryDisplay() {
     let history = await chrome.storage.local.get('history');
     history = history.history || [];
     let html = '';
-    const recentResults = history.slice(-5).reverse();
+    const recentResults = history;
     recentResults.forEach((entry, index) => {
         const resultNumber = index + 1;
         html += `<div class="history_entry">
