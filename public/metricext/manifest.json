@@ -18,5 +18,12 @@
     "side_panel": {
       "default_path": "index.html"
     },
+    "action": {
+      "default_icon": {
+      "16": "logo16.png",
+      "32": "logo32.png"
+    },
+      "default_title": "open side panel"
+    },
     "permissions": ["storage", "activeTab", "scripting", "contextMenus", "unlimitedStorage", "sidePanel"]
   }
