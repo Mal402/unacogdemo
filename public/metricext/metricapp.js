@@ -6,7 +6,7 @@ class MetricSidePanelApp {
 
         this.runButton = document.querySelector('.compute_metrics');
         this.runButton.addEventListener('click', async () => {
-            runMetrics();
+            this.runMetrics();
         });
         this.addButton = document.querySelector('.add_row');
         this.addButton.addEventListener('click', async () => {
@@ -76,6 +76,8 @@ class MetricSidePanelApp {
             let sessionId = this.session_id_input.value;
             chrome.storage.local.set({ sessionId });
         });
+        this.session_anchor_label = document.querySelector('.session_anchor_label');
+        this.session_anchor = document.querySelector('.session_anchor');
         
         this.initPromptTable();
         
@@ -161,9 +163,17 @@ class MetricSidePanelApp {
         }
         let sessionConfig = await chrome.storage.local.get('sessionId');
         if (sessionConfig && sessionConfig.sessionId) {
+            document.querySelector('.no_session_key').style.display = 'none';
+            this.session_anchor_label.innerHTML = 'Use link to visit Unacog Session: ';
+            this.session_anchor.innerHTML = `Visit Session ${sessionConfig.sessionId}`;
+            this.session_anchor.href = `https://unacog.com/session/${sessionConfig.sessionId}`;
         } else {
             document.querySelector('.no_session_key').style.display = 'block';
+            this.session_anchor_label.innerHTML = 'Visit Unacog:';
+            this.session_anchor.innerHTML = `Get Started`;
+            this.session_anchor.href = `https://unacog.com/help/#metricextension`;
         }
+       
 
         let sessionId = await chrome.storage.local.get('sessionId');
         sessionId = sessionId.sessionId || '';

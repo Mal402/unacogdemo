@@ -64,6 +64,10 @@ class MetricAnalyzer {
         return prompts;
     }
     async runAnalysisPrompts(text) {
+      let running = await chrome.storage.local.get('running');
+        if (running && running.running) {
+            return;
+        }
         await chrome.storage.local.set({
             lastSelection: text,
             lastResult: "",

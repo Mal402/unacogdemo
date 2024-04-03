@@ -63,12 +63,18 @@
       </div>
       <div class="api_config">
         <div class="form_row">
-          <label for="api_token_input">API Key:</label>
-          <input type="text" class="api_token_input" id="api_token_input">
+          <label for="api_token_input">API Key:
+            <input type="text" class="api_token_input">
+          </label>
         </div>
         <div class="form_row">
-          <label for="session_id_input">Session:</label>
-          <input type="text" class="session_id_input" id="session_id_input">
+          <label for="session_id_input">Session:
+            <input type="text" class="session_id_input">
+          </label>
+        </div>
+        <div class="form_row">
+          <label class="session_anchor_label"></label>
+          <a class="session_anchor"  href="" target="_blank"></a>
         </div>
       </div>
     </div>
@@ -84,6 +90,12 @@
     overflow: hidden;
   }
 
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   .running_status {
     font-size: 16px;
     color: #666;
@@ -94,10 +106,6 @@
     border-radius: 4px;
     background-color: #f8f8f8;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .analysis_container {
-
   }
 
   .query_source_text {
@@ -351,12 +359,7 @@
 
   .tab-content {
     padding: 8px;
-    border: 1px solid #dee2e6;
-    border-top: none;
-    border-bottom-left-radius: 0.25rem;
-    border-bottom-right-radius: 0.25rem;
-    width: 400px;
-    height: 550px;
+    overflow: auto;
   }
 </style>
 
