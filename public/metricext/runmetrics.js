@@ -107,57 +107,55 @@ class MetricAnalyzer {
     }
 
     getHTMLforPromptResult(result) {
-        if (result.prompt.prompttype === 'text') {
-            return `
-            <div class="prompt_result text_result">
-              <div class="prompt_header">
-                <span class="prompt_id">${result.prompt.id}</span>
-              </div>
-              <div class="result_content">${result.result}</div>
+      if (result.prompt.prompttype === 'text') {
+          return `
+          <div class="prompt_result text_result">
+            <div class="prompt_header">
+              <span class="prompt_id">${result.prompt.id}</span>
             </div>
-          `;
-        } else if (result.prompt.prompttype === 'metric') {
-            try {
-                let json = JSON.parse(result.result);
-                let metric = json.contentRating;
-                return `
-              <div class="prompt_result metric_result">
-                <div class="prompt_header">
-                  <span class="prompt_id">${result.prompt.id}</span>
-                  <span class="metric_score">${metric}/10</span>
-                </div>
-                <div class="metric_bar">
-                  <div class="metric_fill" style="width: ${metric * 10}%;"></div>
-                </div>
-              </div>
-            `;
-            } catch (error) {
-                return `
-              <div class="prompt_result error_result">
-                <div class="prompt_header">
-                  <span class="prompt_id">${result.prompt.id}</span>
-                </div>
-                <pre class="result_content">${result.result}</pre>
-              </div>
-            `;
-            }
-        } else {
-          let resultDisplay = '';
+            <div class="result_content">${result.result}</div>
+          </div>
+        `;
+      } else if (result.prompt.prompttype === 'metric') {
           try {
-            resultDisplay = JSON.stringify(JSON.parse(result.result), null, 2);
+              let json = JSON.parse(result.result);
+              let metric = json.contentRating;
+              return `
+            <div class="prompt_result metric_result">
+              <span class="prompt_id">${result.prompt.id}</span>
+              <span class="metric_score">${metric}</span>
+              <div class="metric_bar">
+                <div class="metric_fill" style="width: ${metric * 10}%;"></div>
+              </div>
+            </div>
+          `;
           } catch (error) {
-            resultDisplay = result.result;
-          }
-            return `
-            <div class="prompt_result json_result">
+              return `
+            <div class="prompt_result error_result">
               <div class="prompt_header">
                 <span class="prompt_id">${result.prompt.id}</span>
               </div>
-              <pre class="result_content">${resultDisplay}</pre>
+              <pre class="result_content">${result.result}</pre>
             </div>
           `;
+          }
+      } else {
+        let resultDisplay = '';
+        try {
+          resultDisplay = JSON.stringify(JSON.parse(result.result), null, 2);
+        } catch (error) {
+          resultDisplay = result.result;
         }
-    }
+          return `
+          <div class="prompt_result json_result">
+            <div class="prompt_header">
+              <span class="prompt_id">${result.prompt.id}</span>
+            </div>
+            <pre class="result_content">${resultDisplay}</pre>
+          </div>
+        `;
+      }
+  }
 }
 
 

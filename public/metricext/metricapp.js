@@ -206,30 +206,43 @@ class MetricSidePanelApp {
     async renderHistoryDisplay() {
         let history = await chrome.storage.local.get('history');
         history = history.history || [];
-        let html = '';
-        const recentResults = history;
-        recentResults.forEach((entry, index) => {
-            const resultNumber = index + 1;
-            html += `<div class="history_entry">
-            <div><span class="history_label">Result ${resultNumber}</span> &nbsp; &nbsp;
-            <span class="history_date">${this.showGmailStyleDate(entry.runDate)}</span>
-            <span class="url_display">${entry.url}</span> </div>
-                        
-
-                        <div class="history_text">
-                        ${entry.text}
-                        </div>
-                        <hr class="history_separator">`;
-            entry.results.forEach((result) => {
-                html += metricAnalyzerObject.getHTMLforPromptResult(result);
-            });
-            html += `</div>`;
-            if (index < recentResults.length - 1) {
-                html += `<hr class="history_separator">`;
-            }
-        });
-        document.querySelector('.history_display').innerHTML = html;
-    }
+        let historyHtml = '';
+        for (let i = 0; i < history.length; i++) {
+          let entry = history[i];
+          let entryHtml = `
+            <div class="history_entry">
+              <div class="history_index">${i + 1}</div>
+              <div class="history_content">
+                <div class="history_header">
+                  <span class="history_date">${this.showGmailStyleDate(entry.runDate)}</span>
+                  <span class="url_display">${entry.url}</span>
+                </div>
+                <div class="history_preview">
+                  <div class="history_text">${this.truncateText(entry.text, 80)}</div>
+                  <div class="history_prompt">${entry.results[0].prompt.id}: ${this.truncateText(entry.results[0].prompt.prompt, 50)}</div>
+                </div>
+                <div class="history_results">
+          `;
+          for (let result of entry.results) {
+            entryHtml += metricAnalyzerObject.getHTMLforPromptResult(result);
+          }
+          entryHtml += `
+                </div>
+              </div>
+            </div>
+            <hr class="history_separator">
+          `;
+          historyHtml += entryHtml;
+        }
+        document.querySelector('.history_display').innerHTML = historyHtml;
+      }
+      
+      truncateText(text, maxLength) {
+        if (text.length <= maxLength) {
+          return text;
+        }
+        return text.slice(0, maxLength) + '...';
+      }
 
     formatAMPM(date) {
         let hours = date.getHours();

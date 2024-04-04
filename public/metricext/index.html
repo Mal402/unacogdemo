@@ -17,19 +17,19 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
           role="tab" aria-controls="analysis" aria-selected="true">
-          <i class="material-icons-outlined">analytics</i>
+          <i class="material-icons-outlined">insights</i>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
+          aria-controls="config" aria-selected="false">
+          <i class="material-icons-outlined">build_circle</i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
           role="tab" aria-controls="history" aria-selected="false">
           <i class="material-icons-outlined">history</i>
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-          aria-controls="config" aria-selected="false">
-          <i class="material-icons-outlined">settings</i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -49,7 +49,7 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
-        <h5 class="analysis_header" style="float: left;">Text to Analyze</h5>
+        <h5 class="category_header" style="float: left;">Text to Analyze</h5>
         <span class="status_text" style="float: right;"></span>
         <div class="textarea_container">
           <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
@@ -58,14 +58,11 @@
             <div class="spinner"></div>
           </button>
         </div>
-        <h5 class="output_header">Analysis Results</h5>
+        <h5 class="category_header">Analysis Results</h5>
         <div class="output_container">
           <div class="analysis_display"></div>
         </div>
       </div>
-    </div>
-    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-      <div class="history_display"></div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="prompt_list_editor"></div>
@@ -85,6 +82,10 @@
           <input type="file" id="file_input" accept=".json" style="display: none;">
         </div>
       </div>
+    </div>
+    <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+      <h5 class="category_header">Metric History</h5>
+      <div class="history_display"></div>
     </div>
   </div>
 
@@ -235,8 +236,7 @@
     padding: 8px;
   }
 
-  .analysis_header,
-  .output_header {
+  .category_header {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -244,7 +244,7 @@
 
   .textarea_container {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .query_source_text {
@@ -259,6 +259,7 @@
     background-color: #f5f5f5;
     resize: vertical;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 60px;
   }
 
   .compute_metrics {
@@ -413,13 +414,6 @@
     display: inline-block;
   }
 
-  .prompt_header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-
   .prompt_id {
     font-weight: bold;
   }
@@ -465,23 +459,56 @@
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    font-size: 12px;
   }
 
-  .history_text {
-    font-size: 14px;
-    font-style: italic;
-    color: #333;
+  .history_index {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    margin-right: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .history_content {
+    flex: 1;
+  }
+
+  .history_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .history_date {
+    font-size: 12px;
+    color: #888;
+  }
+
+  .url_display {
+    font-size: 12px;
+    color: #888;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+
+  .history_preview {
     margin-bottom: 10px;
   }
 
-  .history_label {
-    padding: 2px 6px;
-    background-color: #007bff;
-    color: #fff;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 4px;
-    margin-left: 8px;
+  .history_text,
+  .history_prompt {
+    font-size: 16px;
+    color: #566;
+    margin-bottom: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   .history_separator {
