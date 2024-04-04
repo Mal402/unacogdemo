@@ -78,6 +78,8 @@ class MetricSidePanelApp {
         });
         this.session_anchor_label = document.querySelector('.session_anchor_label');
         this.session_anchor = document.querySelector('.session_anchor');
+        this.status_text = document.querySelector('.status_text');
+
 
         this.initPromptTable();
 
@@ -156,14 +158,18 @@ class MetricSidePanelApp {
 
     async paintData() {
         let running = await chrome.storage.local.get('running');
-        const statusText = document.querySelector('.status_text');
         if (running && running.running) {
-            statusText.textContent = 'Running...';
-            document.querySelector('.running_status').style.display = 'flex';
+          this.runButton.disabled = true;
+          this.runButton.classList.add('processing');
+          this.status_text.textContent = 'Running...';
+          this.status_text.style.display = 'flex';
         } else {
-            statusText.textContent = '';
-            document.querySelector('.running_status').style.display = 'none';
+          this.runButton.disabled = false;
+          this.runButton.classList.remove('processing');
+          this.status_text.textContent = '';
+          this.status_text.style.display = 'none';
         }
+
         let sessionConfig = await chrome.storage.local.get('sessionId');
         if (sessionConfig && sessionConfig.sessionId) {
             document.querySelector('.no_session_key').style.display = 'none';

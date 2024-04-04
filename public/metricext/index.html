@@ -42,21 +42,26 @@
   <div class="no_session_key" style="display: none;">
     <div class="message">
       <i class="material-icons-outlined">warning</i>
-      <span>No session key. Please visit <a href="https://unacog.com" target="_blank">unacog.com</a> to get started.</span>
+      <span>No session key. Please visit <a href="https://unacog.com" target="_blank">unacog.com</a> to get
+        started.</span>
     </div>
-  </div>
-  <div class="running_status">
-    <div class="spinner"></div>
-    <span class="status_text"></span>
   </div>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
-        <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
-        <div class="footer_row">
-          <button class="compute_metrics">Compute</button>
+        <h5 class="analysis_header" style="float: left;">Text to Analyze</h5>
+        <span class="status_text" style="float: right;"></span>
+        <div class="textarea_container">
+          <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
+          <button class="compute_metrics">
+            <span class="button_text">Compute</span>
+            <div class="spinner"></div>
+          </button>
         </div>
-        <div class="analysis_display"></div>
+        <h5 class="output_header">Analysis Results</h5>
+        <div class="output_container">
+          <div class="analysis_display"></div>
+        </div>
       </div>
     </div>
     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
@@ -84,38 +89,38 @@
   </div>
 
   <!-- Modal -->
-<div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="configModalLabel">Configuration</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="api_config">
-          <div class="form_row">
-            <label for="api_token_input">API Key:
-              <input type="text" class="api_token_input">
-            </label>
-          </div>
-          <div class="form_row">
-            <label for="session_id_input">Session:
-              <input type="text" class="session_id_input">
-            </label>
-          </div>
-          <div class="form_row">
-            <label class="session_anchor_label"></label>
-            <a class="session_anchor" href="" target="_blank"></a>
-          </div>
-          <button class="una_sharp_btn reset_chrome_storage">Clear Storage</button>
+  <div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="configModalLabel">Configuration</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div class="modal-body">
+          <div class="api_config">
+            <div class="form_row">
+              <label for="api_token_input">API Key:
+                <input type="text" class="api_token_input">
+              </label>
+            </div>
+            <div class="form_row">
+              <label for="session_id_input">Session:
+                <input type="text" class="session_id_input">
+              </label>
+            </div>
+            <div class="form_row">
+              <label class="session_anchor_label"></label>
+              <a class="session_anchor" href="" target="_blank"></a>
+            </div>
+            <button class="una_sharp_btn reset_chrome_storage">Clear Storage</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 
 
@@ -134,78 +139,134 @@
   }
 
   .no_session_key {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.no_session_key .message {
-  display: flex;
-  align-items: center;
-}
-
-.no_session_key .material-icons-outlined {
-  color: #856404;
-  font-size: 24px;
-  margin-right: 10px;
-}
-
-.no_session_key span {
-  color: #856404;
-  font-size: 14px;
-}
-
-.no_session_key a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.no_session_key a:hover {
-  text-decoration: underline;
-}
-
-.running_status {
-  background-color: #d1ecf1;
-  border: 1px solid #bee5eb;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #0c5460;
-}
-
-  .query_source_text {
-    width: 100%;
-    height: 125px;
-    padding: 10px;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    line-height: 1.5;
-    border: 1px solid #ccc;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
     border-radius: 4px;
-    resize: vertical;
+    padding: 10px;
+    margin-bottom: 20px;
   }
 
-  .analysis_display {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow-y: auto;
+  .no_session_key .message {
+    display: flex;
+    align-items: center;
+  }
+
+  .no_session_key .material-icons-outlined {
+    color: #856404;
+    font-size: 24px;
+    margin-right: 10px;
+  }
+
+  .no_session_key span {
+    color: #856404;
+    font-size: 14px;
+  }
+
+  .no_session_key a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .no_session_key a:hover {
+    text-decoration: underline;
   }
 
   .footer_row {
-    margin-top: 20px;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .status_container {
+    flex: 1;
+  }
+
+  .status_text {
+    font-size: 12px;
+    color: #0c5460;
+    background-color: #d1ecf1;
+    margin-bottom: 10px;
+  }
+
+  .compute_metrics:hover {
+    background-color: #0056b3;
+  }
+
+  .button_text {
+    display: inline-block;
+    transition: opacity 0.3s ease;
+  }
+
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .compute_metrics.processing .button_text {
+    opacity: 0;
+  }
+
+  .compute_metrics.processing .spinner {
+    opacity: 1;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .analysis_container {
+    padding: 8px;
+  }
+
+  .analysis_header,
+  .output_header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .textarea_container {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .query_source_text {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    border: none;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    resize: vertical;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .compute_metrics {
-    padding: 10px 20px;
-    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
     font-weight: bold;
     color: #fff;
     background-color: #007bff;
@@ -215,20 +276,26 @@
     transition: background-color 0.3s ease;
   }
 
-  .compute_metrics:hover {
-    background-color: #0056b3;
+  .output_container {
+    height: auto;
+  }
+
+  .analysis_display {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .prompt_list_editor {
     width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .prompt_list_editor th,
   .prompt_list_editor td {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ccc;
   }
 
@@ -247,7 +314,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 10px;
     background-color: #f2f2f2;
     border-radius: 4px;
@@ -312,10 +379,10 @@
   }
 
   .api-key-warning {
-  color: red;
-  text-decoration: underline;
-  text-decoration-color: red;
-}
+    color: red;
+    text-decoration: underline;
+    text-decoration-color: red;
+  }
 
   .form_row {
     display: flex;
@@ -392,8 +459,8 @@
   }
 
   .history_entry {
-    margin-bottom: 20px;
-    padding: 20px;
+    margin-bottom: 10px;
+    padding: 10px;
     background-color: #f8f8f8;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -401,17 +468,17 @@
   }
 
   .history_text {
-    font-size: 16px;
+    font-size: 14px;
     font-style: italic;
     color: #333;
     margin-bottom: 10px;
   }
 
   .history_label {
-    padding: 4px 8px;
+    padding: 2px 6px;
     background-color: #007bff;
     color: #fff;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
     border-radius: 4px;
     margin-left: 8px;
@@ -458,41 +525,6 @@
     padding: 8px;
     overflow: auto;
   }
-
-  .running_status {
-  display: flex;
-  align-items: center;
-  background-color: #d1ecf1;
-  border: 1px solid #bee5eb;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #0c5460;
-}
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #0c5460;
-  border-top-color: transparent;
-  animation: spin 1s linear infinite;
-  margin-right: 10px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.status_text {
-  margin: 0;
-}
 </style>
 
 </html>
