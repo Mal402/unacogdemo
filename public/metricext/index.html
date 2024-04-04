@@ -12,22 +12,34 @@
 </head>
 
 <body>
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
-        role="tab" aria-controls="analysis" aria-selected="true">Analysis</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab"
-        aria-controls="history" aria-selected="false">History</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-        aria-controls="config" aria-selected="false">Configure</button>
-    </li>
-  </ul>
-  <div class="no_session_key" style="display: none;">No session key. Please visit <a href="https://unacog.com"
-      target="_blank">unacog.com</a></div>
+  <div class="tab_container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
+          role="tab" aria-controls="analysis" aria-selected="true">
+          <i class="material-icons-outlined">analytics</i> Analysis
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
+          role="tab" aria-controls="history" aria-selected="false">
+          <i class="material-icons-outlined">history</i> History
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
+          aria-controls="config" aria-selected="false">
+          <i class="material-icons-outlined">settings</i> Config
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="no_session_key" style="display: none;">
+    <div class="message">
+      <i class="material-icons-outlined">warning</i>
+      <span>No session key. Please visit <a href="https://unacog.com" target="_blank">unacog.com</a> to get started.</span>
+    </div>
+  </div>
   <div class="running_status"></div>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
@@ -45,21 +57,21 @@
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="prompt_list_editor"></div>
       <div class="config_footer">
-          <div class="template_controls">
-            <select class="default_prompt_select">
-              <option>Select a metric template</option>
-              <option>Moderation metrics</option>
-              <option>Message metrics</option>
-              <option>Summarization</option>
-            </select>
-          </div>
-          <div class="data_controls">
-            <button class="add_row">Add Prompt</button>
-            <button class="export_rows">Export Data</button>
-            <button class="import_rows">Import Data</button>
-            <input type="file" id="file_input" accept=".json" style="display: none;">
-            <button class="reset_chrome_storage">Clear Storage</button>
-          </div>
+        <div class="template_controls">
+          <select class="default_prompt_select">
+            <option>Select a metric template</option>
+            <option>Moderation metrics</option>
+            <option>Message metrics</option>
+            <option>Summarization</option>
+          </select>
+        </div>
+        <div class="data_controls">
+          <button class="add_row">Add Prompt</button>
+          <button class="export_rows">Export Data</button>
+          <button class="import_rows">Import Data</button>
+          <input type="file" id="file_input" accept=".json" style="display: none;">
+          <button class="reset_chrome_storage">Clear Storage</button>
+        </div>
       </div>
       <div class="api_config">
         <div class="form_row">
@@ -74,7 +86,7 @@
         </div>
         <div class="form_row">
           <label class="session_anchor_label"></label>
-          <a class="session_anchor"  href="" target="_blank"></a>
+          <a class="session_anchor" href="" target="_blank"></a>
         </div>
       </div>
     </div>
@@ -94,17 +106,49 @@
     height: 100%;
   }
 
-  .running_status {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
-    text-align: center;
-    font-style: italic;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  .no_session_key {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.no_session_key .message {
+  display: flex;
+  align-items: center;
+}
+
+.no_session_key .material-icons-outlined {
+  color: #856404;
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.no_session_key span {
+  color: #856404;
+  font-size: 14px;
+}
+
+.no_session_key a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.no_session_key a:hover {
+  text-decoration: underline;
+}
+
+.running_status {
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #0c5460;
+}
 
   .query_source_text {
     width: 100%;
@@ -124,7 +168,6 @@
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 4px;
-    max-height: 300px;
     overflow-y: auto;
   }
 
@@ -330,29 +373,38 @@
   .history_separator {
     border: none;
     border-top: 1px solid #ccc;
-    margin: 20px 0;
+    margin: 16px 0;
+  }
+
+  .tab_container {
+    margin-bottom: 12px;
   }
 
   .nav-tabs {
-    border-bottom: 1px solid #dee2e6;
-    position: relative;
+    background-color: #f8f8f8;
+    border-bottom: none;
   }
 
-  .nav-tabs .nav-link {
+  .nav-link {
+    font-size: .7em;
     color: #495057;
-    border: 1px solid transparent;
-    border-top-left-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
+    border: none;
+    border-radius: 0;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
   }
 
-  .nav-tabs .nav-link:hover {
-    border-color: #e9ecef #e9ecef #dee2e6;
+  .nav-link:hover {
+    background-color: #e9ecef;
   }
 
-  .nav-tabs .nav-link.active {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
+  .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .nav-link i {
+    margin-right: 5px;
   }
 
   .tab-content {
