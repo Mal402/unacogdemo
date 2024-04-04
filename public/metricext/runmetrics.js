@@ -63,7 +63,8 @@ class MetricAnalyzer {
         }
         return prompts;
     }
-    async runAnalysisPrompts(text) {
+    async runAnalysisPrompts(text, url = "") {
+      const runDate = new Date().toISOString();
       let running = await chrome.storage.local.get('running');
         if (running && running.running) {
             return;
@@ -92,6 +93,8 @@ class MetricAnalyzer {
         let historyEntry = {
             text,
             results,
+            runDate,
+            url
         };
         history.unshift(historyEntry);
         history = history.slice(0, 10);

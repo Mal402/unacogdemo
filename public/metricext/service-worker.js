@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         text = info.selectionText;
         text = text.slice(0, 20000);
         let abc = getMetricAnalysis();
-        result = await abc.runAnalysisPrompts(text);
+        result = await abc.runAnalysisPrompts(text, tab.url);
     }
     else if (info.menuItemId === 'analyzePage') {
         function getDom() {
@@ -44,7 +44,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         text = scrapes[0].result;
         text = text.slice(0, 20000);
         let abc = getMetricAnalysis();
-        result = await abc.runAnalysisPrompts(text);
+        result = await abc.runAnalysisPrompts(text, tab.url);
     }
     async function paintInDocumentHTMLResultDisplay(html) {
         let existing = document.querySelector('.running_status');
@@ -147,7 +147,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
 });
 
-chrome.action.onClicked.addListener((tab) => {
+chrome.action.onClicked.addListener(async (tab) => {
     chrome.sidePanel.open({ tabId: tab.id });
 });
 

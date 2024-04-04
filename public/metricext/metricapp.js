@@ -78,14 +78,14 @@ class MetricSidePanelApp {
         });
         this.session_anchor_label = document.querySelector('.session_anchor_label');
         this.session_anchor = document.querySelector('.session_anchor');
-        
+
         this.initPromptTable();
-        
+
         chrome.storage.local.onChanged.addListener(() => {
             this.paintData();
         });
 
-        this.paintData();
+                this.paintData();
     }
 
     initPromptTable() {
@@ -139,7 +139,7 @@ class MetricSidePanelApp {
 
     async runMetrics() {
         let text = document.querySelector('.query_source_text').value;
-        let result = await metricAnalyzerObject.runAnalysisPrompts(text);
+        let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
 
@@ -173,7 +173,7 @@ class MetricSidePanelApp {
             this.session_anchor.innerHTML = `Get Started`;
             this.session_anchor.href = `https://unacog.com/help/#metricextension`;
         }
-       
+
 
         let sessionId = await chrome.storage.local.get('sessionId');
         sessionId = sessionId.sessionId || '';
@@ -200,7 +200,11 @@ class MetricSidePanelApp {
         recentResults.forEach((entry, index) => {
             const resultNumber = index + 1;
             html += `<div class="history_entry">
-                        <span class="history_label">Result ${resultNumber}</span> &nbsp; &nbsp;
+            <div><span class="history_label">Result ${resultNumber}</span> &nbsp; &nbsp;
+            <span class="history_date">${this.showGmailStyleDate(entry.runDate)}</span>
+            <span class="url_display">${entry.url}</span> </div>
+                        
+
                         <div class="history_text">
                         ${entry.text}
                         </div>
@@ -214,6 +218,31 @@ class MetricSidePanelApp {
             }
         });
         document.querySelector('.history_display').innerHTML = html;
+    }
+
+    formatAMPM(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        const ampm = hours >= 12 ? "pm" : "am";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        return hours + ":" + minutes + " " + ampm;
+    }
+
+    showGmailStyleDate(ISOdate, amFormat = false) {
+        let date = new Date(ISOdate);
+        if (Date.now() - date.getTime() < 24 * 60 * 60 * 1000) {
+            if (amFormat) return BaseApp.formatAMPM(date);
+
+            let result = this.formatAMPM(date);
+            return result;
+        }
+
+        return date.toLocaleDateString("en-us", {
+            month: "short",
+            day: "numeric",
+        });
     }
 }
 
