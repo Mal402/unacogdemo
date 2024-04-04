@@ -85,7 +85,7 @@ class MetricSidePanelApp {
             this.paintData();
         });
 
-                this.paintData();
+        this.paintData();
     }
 
     initPromptTable() {
@@ -156,10 +156,13 @@ class MetricSidePanelApp {
 
     async paintData() {
         let running = await chrome.storage.local.get('running');
+        const statusText = document.querySelector('.status_text');
         if (running && running.running) {
-            document.querySelector('.running_status').innerHTML = 'Running...';
+            statusText.textContent = 'Running...';
+            document.querySelector('.running_status').style.display = 'flex';
         } else {
-            document.querySelector('.running_status').innerHTML = '';
+            statusText.textContent = '';
+            document.querySelector('.running_status').style.display = 'none';
         }
         let sessionConfig = await chrome.storage.local.get('sessionId');
         if (sessionConfig && sessionConfig.sessionId) {
@@ -167,11 +170,13 @@ class MetricSidePanelApp {
             this.session_anchor_label.innerHTML = 'Use link to visit Unacog Session: ';
             this.session_anchor.innerHTML = `Visit Session ${sessionConfig.sessionId}`;
             this.session_anchor.href = `https://unacog.com/session/${sessionConfig.sessionId}`;
+            document.querySelector('#api-config-tab i').classList.remove('api-key-warning');
         } else {
             document.querySelector('.no_session_key').style.display = 'block';
             this.session_anchor_label.innerHTML = 'Visit Unacog:';
             this.session_anchor.innerHTML = `Get Started`;
             this.session_anchor.href = `https://unacog.com/help/#metricextension`;
+            document.querySelector('#api-config-tab i').classList.add('api-key-warning');
         }
 
 
