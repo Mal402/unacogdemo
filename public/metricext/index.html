@@ -23,7 +23,7 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
           aria-controls="config" aria-selected="false">
-          <i class="material-icons-outlined">build_circle</i>
+          <i class="material-icons-outlined">integration_instructions</i>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -34,7 +34,7 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="api-config-tab" data-bs-toggle="modal" data-bs-target="#configModal" type="button">
-          <i class="material-icons-outlined">key</i>
+          <i class="material-icons-outlined">vpn_key</i>
         </button>
       </li>
     </ul>
@@ -49,8 +49,10 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
-        <h5 class="category_header" style="float: left;">Text to Analyze</h5>
-        <span class="status_text" style="float: right;"></span>
+        <div class="analysis_header">
+          <h5 class="category_header">Text to Analyze</h5>
+          <span class="status_text"></span>
+        </div>
         <div class="textarea_container">
           <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
           <button class="compute_metrics">
@@ -58,25 +60,52 @@
             <div class="spinner"></div>
           </button>
         </div>
-        <h5 class="category_header">Analysis Results</h5>
-        <div class="output_container">
-          <div class="analysis_display"></div>
+        <div class="tab-content" id="menuContent">
+          <div class="tab-pane fade show active" id="analyze_text" role="tabpanel" aria-labelledby="analyze_text_tab">
+            <h5 class="category_header">Analysis Results</h5>
+            <div class="output_container">
+              <div class="analysis_display"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
+      <h5 class="category_header">Create Prompt</h5>
+      <form class="prompt_template_form">
+        <div class="form_group">
+          <label for="prompt_id_input">Name/Id:</label>
+          <input type="text" class="prompt_id_input" name="prompt_id_input" required>
+        </div>
+        <div class="form_group">
+          <label for="prompt_description">Description:</label>
+          <input class="prompt_description" name="prompt_description">
+        </div>
+        <div class="form_group">
+          <label for="prompt_type">Type:</label>
+          <select class="prompt_type" name="prompt_type" required>
+            <option value="metric">Metric</option>
+            <option value="json">JSON</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+        <div class="form_group">
+          <label for="prompt_template_text">Prompt:</label>
+          <textarea class="prompt_template_text" name="prompt_template_text" required></textarea>
+        </div>
+        <button class="add_to_library_button una_btn">Add to Library</button>
+      </form>
       <div class="prompt_list_editor"></div>
       <div class="config_footer">
         <div class="template_controls">
           <select class="default_prompt_select">
-            <option>Select a metric template</option>
-            <option>Moderation metrics</option>
-            <option>Message metrics</option>
-            <option>Summarization</option>
+            <option>Select a metric set</option>
+            <option>Moderation set</option>
+            <option>Feedback set</option>
+            <option>Summary set</option>
           </select>
         </div>
         <div class="data_controls">
-          <button class="una_btn add_row">Row</button>
           <button class="una_btn export_rows">Export</button>
           <button class="una_btn import_rows">Import</button>
           <input type="file" id="file_input" accept=".json" style="display: none;">
@@ -414,7 +443,7 @@
     display: inline-block;
   }
 
-  .prompt_id {
+  .prompt_id_input {
     font-weight: bold;
   }
 
@@ -551,6 +580,50 @@
   .tab-content {
     padding: 8px;
     overflow: auto;
+  }
+
+  .analysis_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .category_header {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+
+  .prompt_template_form {
+    margin-top: 20px;
+  }
+
+  .form_group {
+    margin-bottom: 15px;
+  }
+
+  .form_group label {
+    font-size: 14px;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .form_group input,
+  .form_group select,
+  .form_group textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .form_group textarea {
+    resize: vertical;
+    min-height: 100px;
   }
 </style>
 
