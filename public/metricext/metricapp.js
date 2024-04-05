@@ -78,6 +78,15 @@ class MetricSidePanelApp {
             let sessionId = this.session_id_input.value;
             chrome.storage.local.set({ sessionId });
         });
+        this.add_prompt_row = document.querySelector('.add_prompt_row');
+        this.add_prompt_row.addEventListener('click', async () => {
+            this.prompt_id_input.value = '';
+            this.prompt_description.value = '';
+            this.prompt_type.value = '';
+            this.prompt_template_text.value = '';
+            this.prompt_id_input.focus();
+        });
+        this.test_metric_container = document.querySelector('.test_metric_container');
         this.session_anchor_label = document.querySelector('.session_anchor_label');
         this.session_anchor = document.querySelector('.session_anchor');
         this.status_text = document.querySelector('.status_text');
@@ -127,7 +136,7 @@ class MetricSidePanelApp {
         this.promptsTable = new Tabulator(".prompt_list_editor", {
             layout: "fitDataStretch",
             movableRows: true,
-            selectableRows: 1, 
+            selectableRows: 1,
             rowHeader: { headerSort: false, resizable: false, minWidth: 30, width: 30, rowHandle: true, formatter: "handle" },
             columns: [
                 { title: "Id", field: "id", headerSort: false, width: 100 },
@@ -142,11 +151,21 @@ class MetricSidePanelApp {
                     width: 30,
                 },
                 {
-                 title: "",
-                 field: "testone",
-                 headerSort: false,
+                    title: "",
+                    field: "testone",
+                    headerSort: false,
                     formatter: () => {
                         return `<i class="material-icons">bolt</i>`;
+                    },
+                    hozAlign: "center",
+                    width: 30,
+                },
+                {
+                    title: "",
+                    field: "edit",
+                    headerSort: false,
+                    formatter: () => {
+                        return `<i class="material-icons">edit</i>`;
                     },
                     hozAlign: "center",
                     width: 30,
@@ -178,8 +197,16 @@ class MetricSidePanelApp {
             if (cell.getColumn().getField() === "testone") {
                 let prompt = cell.getRow().getData();
                 let text = document.querySelector('.query_source_text').value;
-                let result = await metricAnalyzerObject.runAnalysisPrompts(text, '', prompt);
-                this.renderOutputDisplay();
+                let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'Manual', prompt);
+                this.renderOutputDisplay('test_metric_container');
+            }
+            if (cell.getColumn().getField() === "edit") {
+                let prompt = cell.getRow().getData();
+                this.add_prompt_row.click();
+                this.prompt_id_input.value = prompt.id;
+                this.prompt_description.value = prompt.description;
+                this.prompt_type.value = prompt.prompttype;
+                this.prompt_template_text.value = prompt.prompt;
             }
         });
         this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
@@ -188,7 +215,7 @@ class MetricSidePanelApp {
             this.prompt_id_input.value = data.id;
             this.prompt_description.value = data.description;
             this.prompt_type.value = data.prompttype;
-            this.prompt_template_text.value = data.prompt; 
+            this.prompt_template_text.value = data.prompt;
         });
     }
 
@@ -199,7 +226,7 @@ class MetricSidePanelApp {
         this.renderOutputDisplay();
     }
 
-    async renderOutputDisplay() {
+    async renderOutputDisplay(className = 'analysis_display') {
         let lastResult = await chrome.storage.local.get('lastResult');
         let html = '';
         if (lastResult && lastResult.lastResult) {
@@ -207,21 +234,21 @@ class MetricSidePanelApp {
                 html += metricAnalyzerObject.getHTMLforPromptResult(result);
             });
         }
-        document.querySelector('.analysis_display').innerHTML = html;
+        document.querySelector('.' + className).innerHTML = html;
     }
 
     async paintData() {
         let running = await chrome.storage.local.get('running');
         if (running && running.running) {
-          this.runButton.disabled = true;
-          this.runButton.classList.add('processing');
-          this.status_text.textContent = 'Running...';
-          this.status_text.style.display = 'flex';
+            this.runButton.disabled = true;
+            this.runButton.classList.add('processing');
+            this.status_text.textContent = 'Running...';
+            this.status_text.style.display = 'flex';
         } else {
-          this.runButton.disabled = false;
-          this.runButton.classList.remove('processing');
-          this.status_text.textContent = '';
-          this.status_text.style.display = 'none';
+            this.runButton.disabled = false;
+            this.runButton.classList.remove('processing');
+            this.status_text.textContent = '';
+            this.status_text.style.display = 'none';
         }
 
         let sessionConfig = await chrome.storage.local.get('sessionId');
@@ -262,8 +289,8 @@ class MetricSidePanelApp {
         history = history.history || [];
         let historyHtml = '';
         for (let i = 0; i < history.length; i++) {
-          let entry = history[i];
-          let entryHtml = `
+            let entry = history[i];
+            let entryHtml = `
             <div class="history_entry">
               <div class="history_index">${i + 1}</div>
               <div class="history_content">
@@ -277,26 +304,26 @@ class MetricSidePanelApp {
                 </div>
                 <div class="history_results">
           `;
-          for (let result of entry.results) {
-            entryHtml += metricAnalyzerObject.getHTMLforPromptResult(result);
-          }
-          entryHtml += `
+            for (let result of entry.results) {
+                entryHtml += metricAnalyzerObject.getHTMLforPromptResult(result);
+            }
+            entryHtml += `
                 </div>
               </div>
             </div>
             <hr class="history_separator">
           `;
-          historyHtml += entryHtml;
+            historyHtml += entryHtml;
         }
         document.querySelector('.history_display').innerHTML = historyHtml;
-      }
-      
-      truncateText(text, maxLength) {
+    }
+
+    truncateText(text, maxLength) {
         if (text.length <= maxLength) {
-          return text;
+            return text;
         }
         return text.slice(0, maxLength) + '...';
-      }
+    }
 
     formatAMPM(date) {
         let hours = date.getHours();

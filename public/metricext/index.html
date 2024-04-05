@@ -71,32 +71,8 @@
       </div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
-      <h5 class="category_header">Create Prompt</h5>
-      <form class="prompt_template_form">
-        <div class="form_group">
-          <label for="prompt_id_input">Name/Id:</label>
-          <input type="text" class="prompt_id_input" name="prompt_id_input" required>
-        </div>
-        <div class="form_group">
-          <label for="prompt_description">Description:</label>
-          <input class="prompt_description" name="prompt_description">
-        </div>
-        <div class="form_group">
-          <label for="prompt_type">Type:</label>
-          <select class="prompt_type" name="prompt_type" required>
-            <option value="metric">Metric</option>
-            <option value="json">JSON</option>
-            <option value="text">Text</option>
-          </select>
-        </div>
-        <div class="form_group">
-          <label for="prompt_template_text">Prompt:</label>
-          <textarea class="prompt_template_text" name="prompt_template_text" required></textarea>
-        </div>
-        <button class="add_to_library_button una_btn">Add to Library</button>
-      </form>
-      <div class="prompt_list_editor"></div>
-      <div class="config_footer">
+      <div class="library_container">
+        <div class="prompt_list_editor"></div>
         <div class="template_controls">
           <select class="default_prompt_select">
             <option>Select a metric set</option>
@@ -106,19 +82,60 @@
           </select>
         </div>
         <div class="data_controls">
+          <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal" data-bs-target="#promptWizard" type="button">Add Metric</button>
           <button class="una_btn export_rows">Export</button>
           <button class="una_btn import_rows">Import</button>
           <input type="file" id="file_input" accept=".json" style="display: none;">
         </div>
       </div>
+      <div class="test_metric_container"></div>
     </div>
     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
       <h5 class="category_header">Metric History</h5>
       <div class="history_display"></div>
     </div>
   </div>
+  <!-- create prompt wizard -->
+  <div class="modal fade" id="promptWizard" tabindex="-1" aria-labelledby="promptWizardLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="promptWizardLabel">Create Prompt</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form class="prompt_template_form">
+            <div class="form_group">
+              <label for="prompt_id_input">Name/Id:</label>
+              <input type="text" class="prompt_id_input" name="prompt_id_input" required>
+            </div>
+            <div class="form_group">
+              <label for="prompt_description">Description:</label>
+              <input class="prompt_description" name="prompt_description">
+            </div>
+            <div class="form_group">
+              <label for="prompt_type">Type:</label>
+              <select class="prompt_type" name="prompt_type" required>
+                <option value="metric">Metric</option>
+                <option value="json">JSON</option>
+                <option value="text">Text</option>
+              </select>
+            </div>
+            <div class="form_group">
+              <label for="prompt_template_text">Prompt:</label>
+              <textarea class="prompt_template_text" name="prompt_template_text" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="add_to_library_button una_btn btn btn-secondary">Add to Library</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <!-- Modal -->
+  <!-- Config Modal -->
   <div class="modal fade" id="configModal" tabindex="-1" aria-labelledby="configModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -339,7 +356,7 @@
     background-color: #f9f9f9;
   }
 
-  .config_footer {
+  .library_container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -625,6 +642,19 @@
     resize: vertical;
     min-height: 100px;
   }
+
+  .test_metric_container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #f8f8f8;
+}
+
+.source_url {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
 </style>
 
 </html>
