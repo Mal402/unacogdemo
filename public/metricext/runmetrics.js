@@ -63,48 +63,52 @@ class MetricAnalyzer {
         }
         return prompts;
     }
-    async runAnalysisPrompts(text, url = "") {
+    async runAnalysisPrompts(text, url = "", promptToUse = null) {
       const runDate = new Date().toISOString();
       let running = await chrome.storage.local.get('running');
-        if (running && running.running) {
-            return;
-        }
-        await chrome.storage.local.set({
-            lastSelection: text,
-            lastResult: "",
-            running: true,
-        });
-        let prompts = await this.getPromptTemplateList();
-        const runPrompt = async (prompt, text) => {
-            let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
-            let result = await this.sendPromptToLLM(fullPrompt);
-            return {
-                prompt,
-                result,
-            };
-        };
-        let promises = [];
-        for (let prompt of prompts) {
-            promises.push(runPrompt(prompt, text));
-        }
-        let results = await Promise.all(promises);
-        let history = await chrome.storage.local.get('history');
-        history = history.history || [];
-        let historyEntry = {
-            text,
-            results,
-            runDate,
-            url
-        };
-        history.unshift(historyEntry);
-        history = history.slice(0, 10);
-        await chrome.storage.local.set({
-            lastResult: results,
-            running: false,
-            history,
-        });
-        return historyEntry;
-    }
+      if (running && running.running) {
+          return;
+      }
+      await chrome.storage.local.set({
+          lastSelection: text,
+          lastResult: "",
+          running: true,
+      });
+  
+      let prompts = promptToUse ? [promptToUse] : await this.getPromptTemplateList();
+  
+      const runPrompt = async (prompt, text) => {
+          let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
+          let result = await this.sendPromptToLLM(fullPrompt);
+          return {
+              prompt,
+              result,
+          };
+      };
+  
+      let promises = [];
+      for (let prompt of prompts) {
+          promises.push(runPrompt(prompt, text));
+      }
+  
+      let results = await Promise.all(promises);
+      let history = await chrome.storage.local.get('history');
+      history = history.history || [];
+      let historyEntry = {
+          text,
+          results,
+          runDate,
+          url
+      };
+      history.unshift(historyEntry);
+      history = history.slice(0, 10);
+      await chrome.storage.local.set({
+          lastResult: results,
+          running: false,
+          history,
+      });
+      return historyEntry;
+  }
 
     getHTMLforPromptResult(result) {
       if (result.prompt.prompttype === 'text') {

@@ -178,7 +178,7 @@ class MetricSidePanelApp {
             if (cell.getColumn().getField() === "testone") {
                 let prompt = cell.getRow().getData();
                 let text = document.querySelector('.query_source_text').value;
-                let result = await metricAnalyzerObject.runAnalysisPrompts(text, prompt);
+                let result = await metricAnalyzerObject.runAnalysisPrompts(text, '', prompt);
                 this.renderOutputDisplay();
             }
         });
