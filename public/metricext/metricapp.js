@@ -1,8 +1,30 @@
+/*
+import {
+    encode,
+} from "gpt-tokenizer";
+*/
 const metricAnalyzerObject = getMetricAnalysis();
+
 class MetricSidePanelApp {
     constructor() {
         this.api_token_input = document.querySelector('.api_token_input');
         this.session_id_input = document.querySelector('.session_id_input');
+        this.query_source_text_length = document.querySelector('.query_source_text_length');
+        this.query_source_tokens_length = document.querySelector('.query_source_tokens_length');
+
+        this.query_source_text = document.querySelector(".query_source_text");
+        this.query_source_text.addEventListener('input', async (e) => {
+            this.updateQuerySourceDetails();
+        });
+        this.query_copy_text = document.querySelector(".query_copy_text");
+        this.query_copy_text.addEventListener('click', async (e) => {
+            this.query_source_text.select();
+            navigator.clipboard.writeText(this.query_source_text.value);
+            this.query_copy_text.textContent = 'Copy';
+            setTimeout(() => {
+                this.query_copy_text.innerHTML = '<i class="material-icons-outlined">content_copy</i>';
+            }, 1000);
+        });
 
         this.runButton = document.querySelector('.compute_metrics');
         this.runButton.addEventListener('click', async () => {
@@ -203,7 +225,7 @@ class MetricSidePanelApp {
             }
             if (cell.getColumn().getField() === "testone") {
                 let prompt = cell.getRow().getData();
-                let text = document.querySelector('.query_source_text').value;
+                let text = this.query_source_text.value;
                 let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'Manual', prompt);
                 this.renderOutputDisplay('test_metric_container');
             }
@@ -216,7 +238,7 @@ class MetricSidePanelApp {
                 this.prompt_template_text.value = prompt.prompt;
                 let rowIndex = cell.getRow().getPosition(true);
                 this.prompt_row_index.value = rowIndex;
-              
+
             }
         });
         this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
@@ -231,7 +253,7 @@ class MetricSidePanelApp {
 
 
     async runMetrics() {
-        let text = document.querySelector('.query_source_text').value;
+        let text = this.query_source_text.value;
         let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
@@ -287,11 +309,31 @@ class MetricSidePanelApp {
 
         let lastSelection = await chrome.storage.local.get('lastSelection');
         lastSelection = lastSelection.lastSelection || "";
-        document.querySelector(".query_source_text").value = lastSelection;
+        this.query_source_text.value = lastSelection;
+        this.updateQuerySourceDetails();
+
         this.renderOutputDisplay();
         this.renderHistoryDisplay();
         let prompts = await metricAnalyzerObject.getPromptTemplateList();
         this.promptsTable.setData(prompts);
+    }
+    updateQuerySourceDetails() {
+        let lastSelection = this.query_source_text.value;
+        this.query_source_tokens_length.innerHTML = lastSelection.length + ' characters';
+
+        /*
+let tokenCount = "N/A";
+try {
+    tokenCount = encode(text).length.toString() + " tokens";
+} catch (err) {
+    let cleanText = "";
+    if (text) cleanText = text;
+    cleanText = cleanText.replace(/[^a-z0-9\s]/gi, "");
+
+    tokenCount = encode(text).length.toString() + " tokens";
+}
+this.query_source_tokens_length.innerHTML = tokenCount;
+*/
     }
 
     async renderHistoryDisplay() {
@@ -361,8 +403,6 @@ class MetricSidePanelApp {
     }
 }
 
-
-
-window.addEventListener('DOMContentLoaded', async () => {
-    window.appInstance = new MetricSidePanelApp();
+window.addEventListener('DOMContentLoaded', (event) => {
+    window.metricAnalyzerObject = new MetricSidePanelApp();
 });

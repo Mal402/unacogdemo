@@ -56,10 +56,19 @@
         </div>
         <div class="textarea_container">
           <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
-          <button class="compute_metrics">
-            <span class="button_text">Compute</span>
-            <div class="spinner"></div>
-          </button>
+          <div class="query_source_controls">
+            <div class="query_text_description">
+              <div class="query_source_text_length"></div>
+              <div class="query_source_tokens_length">&nbsp;</div>
+            </div>
+            <button class="btn btn-secondary query_copy_text">
+              <i class="material-icons-outlined">content_copy</i>
+            </button>
+            <button class="compute_metrics">
+              <span class="button_text">Compute</span>
+              <div class="spinner"></div>
+            </button>
+          </div>
         </div>
         <div class="tab-content" id="menuContent">
           <div class="tab-pane fade show active" id="analyze_text" role="tabpanel" aria-labelledby="analyze_text_tab">
