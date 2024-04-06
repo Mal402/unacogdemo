@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Page-Metrics",
     "description": "Compute subjective metrics for web pages",
-    "version": "0.0.1",
+    "version": "0.5.0",
     "background": {
       "service_worker": "service-worker.js"
     },
