@@ -79,12 +79,20 @@ class MetricSidePanelApp {
             chrome.storage.local.set({ sessionId });
         });
         this.add_prompt_row = document.querySelector('.add_prompt_row');
+        this.prompt_row_index = document.querySelector('.prompt_row_index');
         this.add_prompt_row.addEventListener('click', async () => {
             this.prompt_id_input.value = '';
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
+            this.prompt_row_index.value = -1;
             this.prompt_id_input.focus();
+        });
+        this.generate_metric_prompt = document.querySelector('.generate_metric_prompt');
+        this.generate_metric_prompt.addEventListener('click', async () => {
+            let newPromptDetail = prompt('Describe the metric you want to generate a prompt for:', '');
+            let newPrompt = await metricAnalyzerObject.getMetricPromptForDescription(newPromptDetail);
+            this.prompt_template_text.value = newPrompt;
         });
         this.test_metric_container = document.querySelector('.test_metric_container');
         this.session_anchor_label = document.querySelector('.session_anchor_label');
@@ -102,25 +110,24 @@ class MetricSidePanelApp {
             let promptDescription = this.prompt_description.value;
             let promptType = this.prompt_type.value;
             let promptTemplate = this.prompt_template_text.value;
+            if (!promptId || !promptType || !promptTemplate) {
+                alert('Please fill out all fields to add a prompt to the library.');
+                return;
+            }
             let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate };
             let promptTemplateList = await this.promptsTable.getData();
-            let existingIndex = -1;
-            promptTemplateList.forEach((existingPrompt, index) => {
-                if (existingPrompt.id === promptId) {
-                    existingIndex = index;
-                }
-            });
+            let existingIndex = Number(this.prompt_row_index.value) - 1;
             if (existingIndex >= 0) {
                 promptTemplateList[existingIndex] = prompt;
             } else {
                 promptTemplateList.push(prompt);
             }
-            chrome.storage.local.set({ promptTemplateList });
-            this.promptsTable.setData(promptTemplateList);
             this.prompt_id_input.value = '';
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
+            chrome.storage.local.set({ promptTemplateList });
+            this.promptsTable.setData(promptTemplateList);
         });
 
         this.initPromptTable();
@@ -207,6 +214,9 @@ class MetricSidePanelApp {
                 this.prompt_description.value = prompt.description;
                 this.prompt_type.value = prompt.prompttype;
                 this.prompt_template_text.value = prompt.prompt;
+                let rowIndex = cell.getRow().getPosition(true);
+                this.prompt_row_index.value = rowIndex;
+              
             }
         });
         this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
