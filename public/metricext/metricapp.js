@@ -16,20 +16,49 @@ class MetricSidePanelApp {
         this.query_source_text.addEventListener('input', async (e) => {
             this.updateQuerySourceDetails();
         });
-        this.query_copy_text = document.querySelector(".query_copy_text");
-        this.query_copy_text.addEventListener('click', async (e) => {
-            this.query_source_text.select();
-            navigator.clipboard.writeText(this.query_source_text.value);
-            this.query_copy_text.textContent = 'Copy';
-            setTimeout(() => {
-                this.query_copy_text.innerHTML = '<i class="material-icons-outlined">content_copy</i>';
-            }, 1000);
+
+        this.query_source_action = document.querySelector(".query_source_action");
+        this.query_source_action.addEventListener('click', async (e) => {
+            let index = this.query_source_action.selectedIndex;
+            if (index > 0) {
+                if (index === 1) {
+                    this.runMetrics();
+                } else if (index === 2) {
+                    this.query_source_text.select();
+                    navigator.clipboard.writeText(this.query_source_text.value);
+                } else if (index === 3) {
+                    function getSelection() {
+                        return document.getSelection().toString();
+                    }
+                    let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
+                    let tab = tabResults[0];
+                    let scrapes = await chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        func: getSelection,
+                    });
+                    let text = scrapes[0].result;
+                    text = text.slice(0, 20000);
+                    this.query_source_text.value = text;
+                    this.runMetrics();
+                } else if (index === 4) {
+                    function getDom() {
+                        return document.body.innerText;
+                    }
+                    let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
+                    let tab = tabResults[0];
+                    let scrapes = await chrome.scripting.executeScript({
+                        target: { tabId: tab.id },
+                        func: getDom,
+                    });
+                    let text = scrapes[0].result;
+                    text = text.slice(0, 20000);
+                    this.query_source_text.value = text;
+                    this.runMetrics();
+                }
+            }
+            this.query_source_action.selectedIndex = 0;
         });
 
-        this.runButton = document.querySelector('.compute_metrics');
-        this.runButton.addEventListener('click', async () => {
-            this.runMetrics();
-        });
         this.importButton = document.querySelector('.import_rows');
         this.importButton.addEventListener('click', () => {
             document.getElementById('file_input').click();
@@ -272,13 +301,13 @@ class MetricSidePanelApp {
     async paintData() {
         let running = await chrome.storage.local.get('running');
         if (running && running.running) {
-            this.runButton.disabled = true;
-            this.runButton.classList.add('processing');
+            //            this.runButton.disabled = true;
+            //           this.runButton.classList.add('processing');
             this.status_text.textContent = 'Running...';
             this.status_text.style.display = 'flex';
         } else {
-            this.runButton.disabled = false;
-            this.runButton.classList.remove('processing');
+            //         this.runButton.disabled = false;
+            //        this.runButton.classList.remove('processing');
             this.status_text.textContent = '';
             this.status_text.style.display = 'none';
         }

@@ -60,20 +60,7 @@ body {
   margin-bottom: 10px;
 }
 
-.compute_metrics:hover {
-  background-color: #0056b3;
-}
-
-.button_text {
-  display: inline-block;
-  transition: opacity 0.3s ease;
-}
-
 .spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -82,10 +69,6 @@ body {
   animation: spin 1s linear infinite;
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.compute_metrics.processing .button_text {
-  opacity: 0;
 }
 
 .compute_metrics.processing .spinner {
