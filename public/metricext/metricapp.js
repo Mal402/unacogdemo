@@ -11,6 +11,14 @@ class MetricSidePanelApp {
         this.session_id_input = document.querySelector('.session_id_input');
         this.query_source_text_length = document.querySelector('.query_source_text_length');
         this.query_source_tokens_length = document.querySelector('.query_source_tokens_length');
+        this.analysis_set_select = document.querySelector('.analysis_set_select');
+        this.analysis_set_slimselect = new SlimSelect({
+            select: '.analysis_set_select',
+            showSearch: false,
+            settings: {
+                placeholderText: 'Select Analysis Set(s)',
+              },
+        });
 
         this.query_source_text = document.querySelector(".query_source_text");
         this.query_source_text.addEventListener('input', async (e) => {
@@ -102,19 +110,19 @@ class MetricSidePanelApp {
                 return;
             }
             if (selectedIndex === 1) {
-                let promptQuery = await fetch('promptsmoderation.json');
+                let promptQuery = await fetch('defaults/promptsmoderation.json');
                 let defaultPrompts = await promptQuery.json();
                 this.promptsTable.setData(defaultPrompts);
                 chrome.storage.local.set({ promptTemplateList: defaultPrompts });
             }
             else if (selectedIndex === 2) {
-                let promptQuery = await fetch('promptsmessage.json');
+                let promptQuery = await fetch('defaults/promptsmessage.json');
                 let defaultPrompts = await promptQuery.json();
                 this.promptsTable.setData(defaultPrompts);
                 chrome.storage.local.set({ promptTemplateList: defaultPrompts });
             }
             else if (selectedIndex === 3) {
-                let promptQuery = await fetch('promptssummary.json');
+                let promptQuery = await fetch('defaults/promptssummary.json');
                 let defaultPrompts = await promptQuery.json();
                 this.promptsTable.setData(defaultPrompts);
                 chrome.storage.local.set({ promptTemplateList: defaultPrompts });
@@ -283,7 +291,7 @@ class MetricSidePanelApp {
 
     async runMetrics() {
         let text = this.query_source_text.value;
-        let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
+        await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
 
@@ -301,15 +309,11 @@ class MetricSidePanelApp {
     async paintData() {
         let running = await chrome.storage.local.get('running');
         if (running && running.running) {
-            //            this.runButton.disabled = true;
-            //           this.runButton.classList.add('processing');
-            this.status_text.textContent = 'Running...';
-            this.status_text.style.display = 'flex';
+            document.body.classList.add("extension_running");
+            document.body.classList.remove("extension_not_running");
         } else {
-            //         this.runButton.disabled = false;
-            //        this.runButton.classList.remove('processing');
-            this.status_text.textContent = '';
-            this.status_text.style.display = 'none';
+            document.body.classList.remove("extension_running");
+            document.body.classList.add("extension_not_running");
         }
 
         let sessionConfig = await chrome.storage.local.get('sessionId');

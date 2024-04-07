@@ -50,7 +50,7 @@ class MetricAnalyzer {
     }
   }
   async getPromptTemplateList() {
-    let promptQuery = await fetch('promptsmoderation.json');
+    let promptQuery = await fetch('defaults/promptsmoderation.json');
     let defaultPrompts = await promptQuery.json();
     let prompts = defaultPrompts;
     let rawData = await chrome.storage.local.get('promptTemplateList');

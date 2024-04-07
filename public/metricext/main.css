@@ -60,31 +60,6 @@ body {
   margin-bottom: 10px;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  border-top-color: transparent;
-  animation: spin 1s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.compute_metrics.processing .spinner {
-  opacity: 1;
-}
-
-@keyframes spin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
 .analysis_container {
   padding: 8px;
 }
@@ -113,18 +88,6 @@ body {
   resize: vertical;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-height: 60px;
-}
-
-.compute_metrics {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .query_source_controls {
@@ -476,4 +439,20 @@ body {
   margin-bottom: -20px;
   margin-top: -20px;
   padding-top: 2px;
+}
+
+.status_text {
+  display: none;
+}
+
+.extension_running .status_text {
+  display: flex;
+}
+
+.extension_not_running .analysis_running {
+  display: none;
+}
+
+.extension_running .analysis_complete {
+  display: none;
 }
