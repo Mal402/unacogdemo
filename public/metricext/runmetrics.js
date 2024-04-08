@@ -49,15 +49,34 @@ class MetricAnalyzer {
       }`;
     }
   }
-  async getPromptTemplateList() {
-    let promptQuery = await fetch('defaults/promptsmoderation.json');
-    let defaultPrompts = await promptQuery.json();
-    let prompts = defaultPrompts;
-    let rawData = await chrome.storage.local.get('promptTemplateList');
-    if (rawData.promptTemplateList && rawData.promptTemplateList.length > 0) {
-      prompts = rawData.promptTemplateList;
+  async getDefaultAnalysisSets() {
+    const defaultPromptList = [
+      "Moderation",
+      "Message",
+      "Summary",
+    ];
+    const promises = [];
+    defaultPromptList.forEach((url) => {
+      promises.push((async (url) => {
+        let promptQuery = await fetch("defaults/" + url + ".json");
+        let defaultPrompts = await promptQuery.json();
+        return defaultPrompts;
+      })(url));
+    });
+    const defaultPrompts = await Promise.all(promises);
+    const setMap = {};
+    defaultPromptList.forEach((url, index) => {
+      setMap[url] = defaultPrompts[index];
+    });
+    return setMap;
+  }
+  async getAnalysisSets() {
+    let sets = await this.getDefaultAnalysisSets();
+    let rawData = await chrome.storage.local.get('analysisSets');
+    if (rawData && rawData.analysisSets && Object.keys(rawData.analysisSets).length > 0) {
+      sets = rawData.analysisSets;
     }
-    return prompts;
+    return sets;
   }
   async runAnalysisPrompts(text, url = "", promptToUse = null) {
     const runDate = new Date().toISOString();
@@ -71,7 +90,8 @@ class MetricAnalyzer {
       running: true,
     });
 
-    let prompts = promptToUse ? [promptToUse] : await this.getPromptTemplateList();
+    let defaultSets = await this.getDefaultAnalysisSets();
+    let prompts = promptToUse ? [promptToUse] : defaultSets["Summary"];
 
     const runPrompt = async (prompt, text) => {
       let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);

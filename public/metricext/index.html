@@ -95,7 +95,7 @@
       <h5 class="category_header">Analysis Sets</h5>
       <div style="display:flex;flex-direction:row">
         <div style="flex:1">
-          <select class="analysis_set_select form-select"></select>
+          <select class="analysis_set_edit_select form-select"></select>
         </div>
         <button class="btn add_analysis_set">
           <i class="material-icons-outlined">add</i>
@@ -104,17 +104,8 @@
           <i class="material-icons-outlined">delete</i>
         </button>
       </div>
-      <hr>
       <div class="library_container">
         <div class="prompt_list_editor"></div>
-        <div class="template_controls">
-          <select class="default_prompt_select">
-            <option>Select a metric set</option>
-            <option>Moderation set</option>
-            <option>Feedback set</option>
-            <option>Summary set</option>
-          </select>
-        </div>
         <div class="data_controls">
           <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal"
             data-bs-target="#promptWizard" type="button">Add Metric</button>

@@ -17,7 +17,12 @@ class MetricSidePanelApp {
             showSearch: false,
             settings: {
                 placeholderText: 'Select Analysis Set(s)',
-              },
+            },
+        });
+        this.analysis_set_edit_select = document.querySelector('.analysis_set_edit_select');
+        this.analysis_set_edit_select.addEventListener("change", async (e) => {
+            let analysisSets = await metricAnalyzerObject.getAnalysisSets();
+            this.promptsTable.setData(analysisSets[this.analysis_set_edit_select.value]);
         });
 
         this.query_source_text = document.querySelector(".query_source_text");
@@ -100,34 +105,6 @@ class MetricSidePanelApp {
                 await chrome.storage.local.clear();
                 location.reload();
             }
-        });
-        this.selectPrompt = document.querySelector('.default_prompt_select');
-        this.selectPrompt.addEventListener('click', async (e) => {
-            let selectedIndex = this.selectPrompt.selectedIndex;
-            if (selectedIndex === 0) return;
-            if (confirm('Are you sure you want to load the default prompts? This will overwrite any custom prompts you have.') === false) {
-                this.selectPrompt.selectedIndex = 0;
-                return;
-            }
-            if (selectedIndex === 1) {
-                let promptQuery = await fetch('defaults/promptsmoderation.json');
-                let defaultPrompts = await promptQuery.json();
-                this.promptsTable.setData(defaultPrompts);
-                chrome.storage.local.set({ promptTemplateList: defaultPrompts });
-            }
-            else if (selectedIndex === 2) {
-                let promptQuery = await fetch('defaults/promptsmessage.json');
-                let defaultPrompts = await promptQuery.json();
-                this.promptsTable.setData(defaultPrompts);
-                chrome.storage.local.set({ promptTemplateList: defaultPrompts });
-            }
-            else if (selectedIndex === 3) {
-                let promptQuery = await fetch('defaults/promptssummary.json');
-                let defaultPrompts = await promptQuery.json();
-                this.promptsTable.setData(defaultPrompts);
-                chrome.storage.local.set({ promptTemplateList: defaultPrompts });
-            }
-            this.selectPrompt.selectedIndex = 0;
         });
         this.api_token_input.addEventListener('input', async (e) => {
             let apiToken = this.api_token_input.value;
@@ -287,14 +264,11 @@ class MetricSidePanelApp {
             this.prompt_template_text.value = data.prompt;
         });
     }
-
-
     async runMetrics() {
         let text = this.query_source_text.value;
         await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
-
     async renderOutputDisplay(className = 'analysis_display') {
         let lastResult = await chrome.storage.local.get('lastResult');
         let html = '';
@@ -305,7 +279,6 @@ class MetricSidePanelApp {
         }
         document.querySelector('.' + className).innerHTML = html;
     }
-
     async paintData() {
         let running = await chrome.storage.local.get('running');
         if (running && running.running) {
@@ -347,8 +320,20 @@ class MetricSidePanelApp {
 
         this.renderOutputDisplay();
         this.renderHistoryDisplay();
-        let prompts = await metricAnalyzerObject.getPromptTemplateList();
-        this.promptsTable.setData(prompts);
+
+        const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+        const setNames = Object.keys(analysisSets);
+        let html = "";
+        setNames.forEach((setName) => {
+            html += `<option value="${setName}">${setName}</option>`;
+        });
+        let temp = this.analysis_set_edit_select.value;
+        this.analysis_set_edit_select.innerHTML = html;
+        this.analysis_set_edit_select.value = temp;
+        if (!this.analysis_set_edit_select.value)
+            this.analysis_set_edit_select.selectedIndex = 0;
+
+        this.promptsTable.setData(analysisSets[this.analysis_set_edit_select.value]);
     }
     updateQuerySourceDetails() {
         let lastSelection = this.query_source_text.value;
