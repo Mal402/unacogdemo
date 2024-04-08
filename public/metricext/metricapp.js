@@ -19,10 +19,17 @@ class MetricSidePanelApp {
                 placeholderText: 'Select Analysis Set(s)',
                 keepOrder: true,
                 hideSelected: true,
+                minSelected: 1,
+                closeOnSelect: false,
             },
             events: {
                 afterChange: async (newVal) => {
-                    let selectedAnalysisSets = this.analysis_set_slimselect.getSelected();
+                    let selectedAnalysisSets = [];
+                    this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value')
+                        .forEach((item) => {
+                            selectedAnalysisSets.push(item.innerText);
+                        });
+
                     await chrome.storage.local.set({ selectedAnalysisSets });
                 },
             },
@@ -376,10 +383,24 @@ class MetricSidePanelApp {
         setNames.forEach((setName) => {
             slimOptions.push({ text: setName, value: setName });
         });
-        this.analysis_set_slimselect.setData(slimOptions);
+        const slimOptionsString = JSON.stringify(slimOptions);
+        if (this.previousSlimOptions !== slimOptionsString) {
+            this.analysis_set_slimselect.setData(slimOptions);
+            this.previousSlimOptions = slimOptionsString;
+        }
 
         if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
             this.analysis_set_slimselect.setSelected(selectedAnalysisSets.selectedAnalysisSets);
+            let domSelections = this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value');
+            let indexMap = {};
+            domSelections.forEach((item, index) => {
+                indexMap[item.innerText] = index;
+            });
+            let setOrder = selectedAnalysisSets.selectedAnalysisSets;
+            setOrder.forEach((setName, index) => {
+                let domIndex = indexMap[setName];
+                this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
+            });
         } else {
             this.analysis_set_slimselect.setSelected(["Summary"]);
         }
@@ -409,6 +430,15 @@ this.query_source_tokens_length.innerHTML = tokenCount;
         let historyHtml = '';
         for (let i = 0; i < history.length; i++) {
             let entry = history[i];
+            let historyPrompt = "";
+            try {
+                let result = entry.result;
+                if (!result) result = entry.results[0];
+                historyPrompt = `${result.prompt.id}: ${this.truncateText(result.prompt.prompt, 50)}`;
+            } catch(e) {
+                historyPrompt = "Error loading prompt";
+                console.error(e);
+            }
             let entryHtml = `
             <div class="history_entry">
               <div class="history_index">${i + 1}</div>
@@ -419,7 +449,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
                 </div>
                 <div class="history_preview">
                   <div class="history_text">${this.truncateText(entry.text, 80)}</div>
-                  <div class="history_prompt">${entry.results[0].prompt.id}: ${this.truncateText(entry.results[0].prompt.prompt, 50)}</div>
+                  <div class="history_prompt">${historyPrompt}</div>
                 </div>
                 <div class="history_results">
           `;
@@ -471,5 +501,5 @@ this.query_source_tokens_length.innerHTML = tokenCount;
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    window.metricAnalyzerObject = new MetricSidePanelApp();
+    window.metricAppInstance = new MetricSidePanelApp();
 });
