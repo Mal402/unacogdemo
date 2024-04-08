@@ -162,7 +162,10 @@ class MetricSidePanelApp {
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
-            chrome.storage.local.set({ promptTemplateList });
+            
+            const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+            analysisSets[this.analysis_set_edit_select.value] = promptTemplateList;
+            chrome.storage.local.set({ analysisSets });
             this.promptsTable.setData(promptTemplateList);
         });
 
@@ -174,7 +177,6 @@ class MetricSidePanelApp {
 
         this.paintData();
     }
-
     initPromptTable() {
         this.promptsTable = new Tabulator(".prompt_list_editor", {
             layout: "fitDataStretch",
@@ -223,7 +225,9 @@ class MetricSidePanelApp {
         });
         this.promptsTable.on("rowMoved", async (cell) => {
             let promptTemplateList = await this.promptsTable.getData();
-            chrome.storage.local.set({ promptTemplateList });
+            const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+            analysisSets[this.analysis_set_edit_select.value] = promptTemplateList;
+            chrome.storage.local.set({ analysisSets });
         });
         this.promptsTable.on("cellClick", async (e, cell) => {
             if (cell.getColumn().getField() === "delete") {
@@ -233,7 +237,10 @@ class MetricSidePanelApp {
                     if (confirm('Are you sure you want to delete this row?')) {
                         this.promptsTable.deleteRow(cell.getRow());
                         let promptTemplateList = await this.promptsTable.getData();
-                        chrome.storage.local.set({ promptTemplateList });
+
+                        const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+                        analysisSets[this.analysis_set_edit_select.value] = promptTemplateList;
+                        chrome.storage.local.set({ analysisSets });;
                     }
                 }
             }
