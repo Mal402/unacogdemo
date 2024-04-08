@@ -91,8 +91,8 @@
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="data_controls">
-        <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal"
-          data-bs-target="#promptWizard" type="button">Add Metric</button>
+        <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal" data-bs-target="#promptWizard"
+          type="button">Add Metric</button>
         <button class="una_btn export_rows">Export</button>
         <button class="una_btn import_rows">Import</button>
         <input type="file" id="file_input" accept=".json" style="display: none;">
@@ -112,38 +112,61 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="promptWizardLabel">Create Prompt</h1>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="wizard-config-tab" data-bs-toggle="tab" data-bs-target="#wizard-config" type="button"
+                role="tab" aria-controls="wizard-config" aria-selected="true">
+                Configurations
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="wizard-prompt-tab" data-bs-toggle="tab" data-bs-target="#wizard-prompt"
+                type="button" role="tab" aria-controls="wizard-prompt" aria-selected="false">
+                Create Prompt
+              </button>
+            </li>
+          </ul>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form class="prompt_template_form">
-            <div class="form_group">
-              <label for="prompt_setname_input">Set Name:</label>
-              <input type="text" class="prompt_setname_input" list="input_datalist_prompt_list" name="prompt_setname_input" required value="">
-              <datalist id="input_datalist_prompt_list"></datalist>
+          <div class="tab-content" id="wizardTabs">
+            <div class="tab-pane fade show active" id="wizard-config" role="tabpanel" aria-labelledby="wizard-config-tab">
+              <form class="prompt_template_form">
+                <div class="form_group">
+                  <label for="prompt_setname_input">Set Name:</label>
+                  <input type="text" class="prompt_setname_input" list="input_datalist_prompt_list"
+                    name="prompt_setname_input" required value="">
+                  <datalist id="input_datalist_prompt_list"></datalist>
+                </div>
+                <div class="form_group">
+                  <label for="prompt_id_input">Name/Id:</label>
+                  <input type="text" class="prompt_id_input" name="prompt_id_input" required>
+                  <input type="hidden" class="prompt_row_index">
+                </div>
+                <div class="form_group">
+                  <label for="prompt_description">Description:</label>
+                  <input class="prompt_description" name="prompt_description">
+                </div>
+                <div class="form_group">
+                  <label for="prompt_type">Type:</label>
+                  <select class="prompt_type" name="prompt_type" required>
+                    <option value="metric">Metric*</option>
+                    <option value="keywords">Keyword*</option>
+                    <option value="shortsummary">50 Word Summary*</option>
+                    <option value="json">JSON</option>
+                    <option value="prompt">Text</option>
+                  </select>
+                </div>
+              </form>
+              <br>
+              <label>generate prompt like</label>
+              <textarea class="wizard_input_prompt" rows="4" style="width: 100%;"></textarea>
             </div>
-            <div class="form_group">
-              <label for="prompt_id_input">Name/Id:</label>
-              <input type="text" class="prompt_id_input" name="prompt_id_input" required>
-              <input type="hidden" class="prompt_row_index">
+            <div class="tab-pane fade" id="wizard-prompt" role="tabpanel" aria-labelledby="wizard-prompt-tab">
+              <label for="prompt_template_text">Prompt Output:</label><br>
+              <textarea class="prompt_template_text" style="width: 100%;white-space: pre-wrap;height: 15em;" name="prompt_template_text" required></textarea>
             </div>
-            <div class="form_group">
-              <label for="prompt_description">Description:</label>
-              <input class="prompt_description" name="prompt_description">
-            </div>
-            <div class="form_group">
-              <label for="prompt_type">Type:</label>
-              <select class="prompt_type" name="prompt_type" required>
-                <option value="metric">Metric</option>
-                <option value="json">JSON</option>
-                <option value="text">Text</option>
-              </select>
-            </div>
-            <div class="form_group">
-              <label for="prompt_template_text">Prompt:</label>
-              <textarea class="prompt_template_text" name="prompt_template_text" required></textarea>
-            </div>
-          </form>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="generate_metric_prompt btn btn-primary">Generate</button>

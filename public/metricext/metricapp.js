@@ -29,11 +29,11 @@ class MetricSidePanelApp {
                         .forEach((item) => {
                             selectedAnalysisSets.push(item.innerText);
                         });
-                        if (selectedAnalysisSets.length <= 1) {
-                            this.analysis_set_select.classList.add('slimselect_onevalue');
-                        } else {
-                            this.analysis_set_select.classList.remove('slimselect_onevalue');
-                        }
+                    if (selectedAnalysisSets.length <= 1) {
+                        this.analysis_set_select.classList.add('slimselect_onevalue');
+                    } else {
+                        this.analysis_set_select.classList.remove('slimselect_onevalue');
+                    }
                     await chrome.storage.local.set({ selectedAnalysisSets });
                 },
             },
@@ -142,8 +142,18 @@ class MetricSidePanelApp {
         });
         this.generate_metric_prompt = document.querySelector('.generate_metric_prompt');
         this.generate_metric_prompt.addEventListener('click', async () => {
-            let newPromptDetail = prompt('Describe the metric you want to generate a prompt for:', '');
-            let newPrompt = await metricAnalyzerObject.getMetricPromptForDescription(newPromptDetail);
+            let text = document.querySelector('.wizard_input_prompt').value;
+            this.prompt_template_text.value = `generating prompt...`;
+            document.getElementById('wizard-prompt-tab').click();
+            let newPrompt = '';
+            if (this.prompt_type.value === 'metric') {
+                newPrompt = await metricAnalyzerObject.getMetricPromptForDescription(text);
+            } else if (this.prompt_type.value === 'keywords') {
+                newPrompt = await metricAnalyzerObject.getKeywordPromptForDescription(text);
+            } else if (this.prompt_type.value === 'shortsummary') { 
+                newPrompt = await metricAnalyzerObject.getSummaryPromptForDescription(text);
+                console.log('shortSummary', newPrompt);
+            };
             this.prompt_template_text.value = newPrompt;
         });
         this.test_metric_container = document.querySelector('.test_metric_container');
@@ -168,6 +178,7 @@ class MetricSidePanelApp {
             if (!promptId || !promptType || !promptTemplate || !setName) {
                 alert('Please fill out all fields to add a prompt to the library.');
                 e.preventDefault();
+                document.querybyId('wizard-config-tab').click();
                 return;
             }
             let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate, setName };
@@ -386,7 +397,7 @@ class MetricSidePanelApp {
                     this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
                 }
             });
-        } 
+        }
         if (this.analysis_set_slimselect.getSelected().length === 0) {
             this.analysis_set_slimselect.setSelected([setNames[0]]);
         }

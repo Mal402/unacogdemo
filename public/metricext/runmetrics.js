@@ -209,24 +209,45 @@ class MetricAnalyzer {
         `;
     }
   }
+
+  async getSummaryPromptForDescription(description) {
+  const newPromptAgent = `Please help me form a concise set of guidenlines for summarizing content based on the following description: ${description}`;
+  let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
+  newPromptContent += `
+  This summary should be no longer than 50 or more words. Use the following format to answer:
+  Summary: [summary of content]
+  Here is the content to analyze:
+  {{query}}`;
+  return newPromptContent;  
+  }
+
+  async getKeywordPromptForDescription(description) {
+    const newPromptAgent = `Please help form a concise set guidelines for keywords using following description: ${description}
+    `;
+
+    let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
+    newPromptContent += `Use the following format to answer, include up to 5: Keywords: [keyword1], [keyword2], [keyword3], ...
+    Here is the content to analyze:
+    {{query}}
+    `;
+    return newPromptContent;
+  }
+
   async getMetricPromptForDescription(description) {
-    const newPromptAgent = `Please help form a new set guidelines for scoring content. 
+    const newPromptAgent = `Please help form a new concise set guidelines for scoring content.
     I would like one based on the following description: ${description}
     
     Here is an example of guidelines for scoring content based on political content:
     Rate the following content 0-100, regarding its political content. 
-    Guideline for political metrics: Assess political content by evaluating
-    the depth of political commentary, the range of political perspectives presented, and the degree of bias or impartiality. Consider the relevance of political themes to current events, historical context, and societal impact. Examine the effectiveness of conveying political messages, the use of persuasive language or rhetoric,
-    and the potential for inciting debate or controversy. Take into account the diversity of political ideologies and the potential for engaging audiences
-    with different political beliefs.`;
+    Guideline for political metrics: Assess political content by evaluating the depth of political commentary, the range of political perspectives presented, and the degree of bias or impartiality. Consider the relevance of political themes to current events, historical context, and societal impact. Examine the effectiveness of conveying political messages, the use of persuasive language or rhetoric, and the potential for inciting debate or controversy. Take into account the diversity of political ideologies and the potential for engaging audiences with different political beliefs.`;
 
     let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
-    newPromptContent += `/n 
+    newPromptContent += ` 
     Please respond with json and only json in this format:
     {
       "contentRating": 0
     }
-    /n
+    
     Here is the content to analyze:
     {{query}}`;
     return newPromptContent;
