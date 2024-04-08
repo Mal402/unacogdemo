@@ -29,7 +29,11 @@ class MetricSidePanelApp {
                         .forEach((item) => {
                             selectedAnalysisSets.push(item.innerText);
                         });
-
+                        if (selectedAnalysisSets.length <= 1) {
+                            this.analysis_set_select.classList.add('slimselect_onevalue');
+                        } else {
+                            this.analysis_set_select.classList.remove('slimselect_onevalue');
+                        }
                     await chrome.storage.local.set({ selectedAnalysisSets });
                 },
             },
@@ -382,8 +386,9 @@ class MetricSidePanelApp {
                     this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
                 }
             });
-        } else {
-            this.analysis_set_slimselect.setSelected(["Summary"]);
+        } 
+        if (this.analysis_set_slimselect.getSelected().length === 0) {
+            this.analysis_set_slimselect.setSelected([setNames[0]]);
         }
     }
     updateQuerySourceDetails() {

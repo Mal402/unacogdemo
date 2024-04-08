@@ -1,3 +1,8 @@
+
+:root {
+  --ss-animation-timing: 0.05s;
+}
+
 html,
 body {
   overflow: hidden;
@@ -454,5 +459,9 @@ body {
 }
 
 .extension_running .analysis_complete {
+  display: none;
+}
+
+.ss-main.slimselect_onevalue .ss-values .ss-value .ss-value-delete {
   display: none;
 }
