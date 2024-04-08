@@ -23,6 +23,9 @@
       "16": "media/logo16.png",
       "32": "media/logo32.png"
     },
+    "host_permission": [
+      "<all_urls>"
+    ],
       "default_title": "open side panel"
     },
     "permissions": ["storage", "activeTab", "scripting", "contextMenus", "unlimitedStorage", "sidePanel"]
