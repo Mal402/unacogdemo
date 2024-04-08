@@ -17,6 +17,14 @@ class MetricSidePanelApp {
             settings: {
                 showSearch: false,
                 placeholderText: 'Select Analysis Set(s)',
+                keepOrder: true,
+                hideSelected: true,
+            },
+            events: {
+                afterChange: async (newVal) => {
+                    let selectedAnalysisSets = this.analysis_set_slimselect.getSelected();
+                    await chrome.storage.local.set({ selectedAnalysisSets });
+                },
             },
         });
         this.analysis_set_edit_select = document.querySelector('.analysis_set_edit_select');
@@ -167,6 +175,27 @@ class MetricSidePanelApp {
             analysisSets[this.analysis_set_edit_select.value] = promptTemplateList;
             chrome.storage.local.set({ analysisSets });
             this.promptsTable.setData(promptTemplateList);
+        });
+
+        this.add_analysis_set_button = document.querySelector('.add_analysis_set_button');
+        this.add_analysis_set_button.addEventListener('click', async () => {
+            let newSetName = prompt('Enter a name for the new analysis set:', '');
+            if (!newSetName) return;
+            const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+            analysisSets[newSetName] = [];
+            await chrome.storage.local.set({ analysisSets });
+            this.paintData();
+            this.analysis_set_edit_select.value = newSetName;
+        }); 
+
+        this.delete_analysis_set_button = document.querySelector('.delete_analysis_set_button');
+        this.delete_analysis_set_button.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete this analysis set?')) {
+                const analysisSets = await metricAnalyzerObject.getAnalysisSets();
+                delete analysisSets[this.analysis_set_edit_select.value];
+                await chrome.storage.local.set({ analysisSets });
+                this.paintData();
+            }
         });
 
         this.initPromptTable();
@@ -342,12 +371,18 @@ class MetricSidePanelApp {
 
         this.promptsTable.setData(analysisSets[this.analysis_set_edit_select.value]);
 
+        let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
         let slimOptions = [];
         setNames.forEach((setName) => {
             slimOptions.push({ text: setName, value: setName });
         });
         this.analysis_set_slimselect.setData(slimOptions);
-        this.analysis_set_slimselect.setSelected(["Summary"]);
+
+        if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
+            this.analysis_set_slimselect.setSelected(selectedAnalysisSets.selectedAnalysisSets);
+        } else {
+            this.analysis_set_slimselect.setSelected(["Summary"]);
+        }
     }
     updateQuerySourceDetails() {
         let lastSelection = this.query_source_text.value;

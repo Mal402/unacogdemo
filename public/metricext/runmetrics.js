@@ -90,8 +90,21 @@ class MetricAnalyzer {
       running: true,
     });
 
-    let defaultSets = await this.getDefaultAnalysisSets();
-    let prompts = promptToUse ? [promptToUse] : defaultSets["Summary"];
+    let prompts = [];
+    let analysisSets = await this.getAnalysisSets();
+    let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
+    if (promptToUse) {
+      prompts = [promptToUse];
+    } else if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
+      selectedAnalysisSets = selectedAnalysisSets.selectedAnalysisSets;
+      for (let set of selectedAnalysisSets) {
+        if (analysisSets[set]) {
+          prompts = prompts.concat(analysisSets[set]);
+        }
+      }
+    } else {
+      prompts = analysisSets["Summary"];
+    }
 
     const runPrompt = async (prompt, text) => {
       let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
