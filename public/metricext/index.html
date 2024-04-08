@@ -8,6 +8,7 @@
   <script src="runmetrics.js"></script>
   <script src="lib/tabulator.js"></script>
   <link href="lib/tabulator.css" rel="stylesheet">
+  <link href="lib/tabsimple.css" rel="stylesheet">
   <link href="main.css" rel="stylesheet">
   <script src="metricapp.js"></script>
   <script src="lib/slimselect.min.js"></script>
@@ -89,16 +90,10 @@
       </div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
-      <h5 class="category_header">Analysis Sets</h5>
       <div style="display:flex;flex-direction:row">
-        <div style="flex:1">
-          <select class="analysis_set_edit_select form-select"></select>
-        </div>
-        <button class="btn add_analysis_set_button">
+        <button class="btn add_analysis_set_button btn-secondary">
           <i class="material-icons-outlined">add</i>
-        </button>
-        <button class="btn delete_analysis_set_button">
-          <i class="material-icons-outlined">delete</i>
+          Analysis Set
         </button>
       </div>
       <div class="library_container">
@@ -128,6 +123,10 @@
         </div>
         <div class="modal-body">
           <form class="prompt_template_form">
+            <div class="form_group">
+              <label for="prompt_setname_input">Set Name:</label>
+              <input type="text" class="prompt_setname_input" name="prompt_setname_input" required value="">
+            </div>
             <div class="form_group">
               <label for="prompt_id_input">Name/Id:</label>
               <input type="text" class="prompt_id_input" name="prompt_id_input" required>
