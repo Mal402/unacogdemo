@@ -92,8 +92,8 @@ class MetricSidePanelApp {
             let reader = new FileReader();
             reader.onload = async (e) => {
                 let promptTemplateList = JSON.parse(e.target.result);
-                this.promptsTable.setData(promptTemplateList);
-                chrome.storage.local.set({ promptTemplateList });
+                await chrome.storage.local.set({ masterAnalysisList: promptTemplateList });
+                this.hydrateAllPromptRows();
                 this.fileInput.value = ''; // Reset the file input value
             };
             reader.readAsText(file);
@@ -105,7 +105,7 @@ class MetricSidePanelApp {
             let url = URL.createObjectURL(blob);
             let a = document.createElement('a');
             a.href = url;
-            a.download = 'promptTemplateList.json';
+            a.download = 'allprompts.json';
             a.click();
             URL.revokeObjectURL(url);
         });
@@ -201,6 +201,45 @@ class MetricSidePanelApp {
         this.promptsTable.setData(allPrompts);
     }
     initPromptTable() {
+        this.rowContextMenu = [
+            {
+                label: "Delete",
+                action: (e, row) => {
+                    const prompt = row.getData();
+                    if (this.promptsTable.getDataCount() <= 1) {
+                        alert('You must have at least one prompt in the library.');
+                    } else {
+                        if (confirm('Are you sure you want to delete this row?')) {
+                            row.getRow().delete();
+                            this.savePromptTableData();
+                        }
+                    }
+                }
+            }, {
+                label: "Test",
+                action: async (e, row) => {
+                    const prompt = row.getRow().getData();
+                    let text = this.query_source_text.value;
+                    let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'Manual', prompt);
+                    this.renderOutputDisplay('test_metric_container');
+                }
+            }, {
+                label: "Edit",
+                action: async (e, row) => {
+                    const prompt = row.getRow().getData();
+                    this.add_prompt_row.click();
+                    this.prompt_id_input.value = prompt.id;
+                    this.prompt_description.value = prompt.description;
+                    this.prompt_type.value = prompt.prompttype;
+                    this.prompt_template_text.value = prompt.prompt;
+                    this.prompt_setname_input.value = prompt.setName;
+                    let rowIndex = row.getRow().getPosition(true);
+                    this.prompt_row_index.value = rowIndex;
+                    this.getAnalysisSetNameList();
+
+                }
+            },
+        ];
         this.promptsTable = new Tabulator(".prompt_list_editor", {
             layout: "fitDataStretch",
             movableRows: true,
@@ -210,37 +249,17 @@ class MetricSidePanelApp {
                 return value + "<span style='margin-left:10px;'>(" + count + " item)</span>";
             },
             columns: [
+                {
+                    title: "",
+                    field: "contextMenu",
+                    headerSort: false,
+                    clickMenu: this.rowContextMenu,
+                    formatter: () => {
+                        return `<i class="material-icons">more_vert</i>`;
+                    },
+                    hozAlign: "center",
+                },
                 { title: "Id", field: "id", headerSort: false, width: 100 },
-                {
-                    title: "",
-                    field: "delete",
-                    headerSort: false,
-                    formatter: () => {
-                        return `<i class="material-icons">delete</i>`;
-                    },
-                    hozAlign: "center",
-                    width: 30,
-                },
-                {
-                    title: "",
-                    field: "testone",
-                    headerSort: false,
-                    formatter: () => {
-                        return `<i class="material-icons">bolt</i>`;
-                    },
-                    hozAlign: "center",
-                    width: 30,
-                },
-                {
-                    title: "",
-                    field: "edit",
-                    headerSort: false,
-                    formatter: () => {
-                        return `<i class="material-icons">edit</i>`;
-                    },
-                    hozAlign: "center",
-                    width: 30,
-                },
                 {
                     title: "Type", field: "prompttype",
                     headerSort: false,
@@ -252,36 +271,6 @@ class MetricSidePanelApp {
         });
         this.promptsTable.on("rowMoved", async (cell) => {
             this.savePromptTableData();
-        });
-        this.promptsTable.on("cellClick", async (e, cell) => {
-            if (cell.getColumn().getField() === "delete") {
-                if (this.promptsTable.getDataCount() <= 1) {
-                    alert('You must have at least one prompt in the library.');
-                } else {
-                    if (confirm('Are you sure you want to delete this row?')) {
-                        this.promptsTable.deleteRow(cell.getRow());
-                        this.savePromptTableData();
-                    }
-                }
-            }
-            if (cell.getColumn().getField() === "testone") {
-                let prompt = cell.getRow().getData();
-                let text = this.query_source_text.value;
-                let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'Manual', prompt);
-                this.renderOutputDisplay('test_metric_container');
-            }
-            if (cell.getColumn().getField() === "edit") {
-                let prompt = cell.getRow().getData();
-                this.add_prompt_row.click();
-                this.prompt_id_input.value = prompt.id;
-                this.prompt_description.value = prompt.description;
-                this.prompt_type.value = prompt.prompttype;
-                this.prompt_template_text.value = prompt.prompt;
-                this.prompt_setname_input.value = prompt.setName;
-                let rowIndex = cell.getRow().getPosition(true);
-                this.prompt_row_index.value = rowIndex;
-                this.getAnalysisSetNameList();
-            }
         });
         this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
             if (!dataArray || dataArray.length === 0) return;

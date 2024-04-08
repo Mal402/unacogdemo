@@ -90,15 +90,15 @@
       </div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
+      <div class="data_controls">
+        <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal"
+          data-bs-target="#promptWizard" type="button">Add Metric</button>
+        <button class="una_btn export_rows">Export</button>
+        <button class="una_btn import_rows">Import</button>
+        <input type="file" id="file_input" accept=".json" style="display: none;">
+      </div>
       <div class="library_container">
         <div class="prompt_list_editor"></div>
-        <div class="data_controls">
-          <button class="una_btn add_prompt_row" id="add_prompt_btn" data-bs-toggle="modal"
-            data-bs-target="#promptWizard" type="button">Add Metric</button>
-          <button class="una_btn export_rows">Export</button>
-          <button class="una_btn import_rows">Import</button>
-          <input type="file" id="file_input" accept=".json" style="display: none;">
-        </div>
       </div>
       <div class="test_metric_container"></div>
     </div>
