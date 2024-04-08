@@ -127,12 +127,14 @@ class MetricSidePanelApp {
         this.add_prompt_row = document.querySelector('.add_prompt_row');
         this.prompt_row_index = document.querySelector('.prompt_row_index');
         this.add_prompt_row.addEventListener('click', async () => {
+            this.prompt_setname_input.value = '';
             this.prompt_id_input.value = '';
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
             this.prompt_row_index.value = -1;
             this.prompt_id_input.focus();
+            this.getAnalysisSetNameList();
         });
         this.generate_metric_prompt = document.querySelector('.generate_metric_prompt');
         this.generate_metric_prompt.addEventListener('click', async () => {
@@ -152,17 +154,19 @@ class MetricSidePanelApp {
         this.user_prompt_library = document.querySelector('.user_prompt_library');
         this.add_to_library_button = document.querySelector('.add_to_library_button');
         this.prompt_setname_input = document.querySelector('.prompt_setname_input');
-        this.add_to_library_button.addEventListener('click', async () => {
+        this.input_datalist_prompt_list = document.querySelector('#input_datalist_prompt_list');
+        this.add_to_library_button.addEventListener('click', async (e) => {
             let promptId = this.prompt_id_input.value;
             let promptDescription = this.prompt_description.value;
             let promptType = this.prompt_type.value;
             let promptTemplate = this.prompt_template_text.value;
             let setName = this.prompt_setname_input.value;
-            if (!promptId || !promptType || !promptTemplate) {
+            if (!promptId || !promptType || !promptTemplate || !setName) {
                 alert('Please fill out all fields to add a prompt to the library.');
+                e.preventDefault();
                 return;
             }
-            let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate };
+            let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate, setName };
             let promptTemplateList = await this.promptsTable.getData();
             let existingIndex = Number(this.prompt_row_index.value) - 1;
             if (existingIndex >= 0) {
@@ -175,25 +179,16 @@ class MetricSidePanelApp {
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
 
-            const analysisSets = await metricAnalyzerObject.getAnalysisSets();
-            analysisSets[setName] = promptTemplateList;
-            await chrome.storage.local.set({ analysisSets });
+            await chrome.storage.local.set({ masterAnalysisList: promptTemplateList });
             this.hydrateAllPromptRows();
-        });
-
-        this.add_analysis_set_button = document.querySelector('.add_analysis_set_button');
-        this.add_analysis_set_button.addEventListener('click', async () => {
-            let newSetName = prompt('Enter a name for the new analysis set:', '');
-            if (!newSetName) return;
-            const analysisSets = await metricAnalyzerObject.getAnalysisSets();
-            analysisSets[newSetName] = [];
-            await chrome.storage.local.set({ analysisSets });
-            this.paintData();
+            var myModalEl = document.getElementById('promptWizard');
+            var modal = bootstrap.Modal.getInstance(myModalEl)
+            modal.hide();
         });
 
         this.initPromptTable();
         this.hydrateAllPromptRows();
-        
+
         chrome.storage.local.onChanged.addListener(() => {
             this.paintData();
         });
@@ -201,26 +196,16 @@ class MetricSidePanelApp {
         this.paintData();
     }
     async hydrateAllPromptRows() {
-        let analysisSets = await metricAnalyzerObject.getAnalysisSets();
-        let setNames = Object.keys(analysisSets);
-        let allPrompts = [];
-        setNames.forEach((setName) => {
-            let prompts = analysisSets[setName];
-            prompts.forEach((prompt) => {
-                allPrompts.push(prompt);
-                prompt.setName = setName;
-            });
-        });
+        let allPrompts = await metricAnalyzerObject.getAnalysisPrompts();
+        console.log('allPrompts', allPrompts);
         this.promptsTable.setData(allPrompts);
     }
     initPromptTable() {
         this.promptsTable = new Tabulator(".prompt_list_editor", {
             layout: "fitDataStretch",
             movableRows: true,
-            selectableRange: true,
             groupBy: "setName",
-//            groupStartOpen: [false],
-            rowHeader: { headerSort: false, resizable: false, minWidth: 30, width: 30, rowHandle: true, formatter: "handle" },
+            //            groupStartOpen: [false],
             groupHeader: (value, count, data, group) => {
                 return value + "<span style='margin-left:10px;'>(" + count + " item)</span>";
             },
@@ -292,9 +277,10 @@ class MetricSidePanelApp {
                 this.prompt_description.value = prompt.description;
                 this.prompt_type.value = prompt.prompttype;
                 this.prompt_template_text.value = prompt.prompt;
+                this.prompt_setname_input.value = prompt.setName;
                 let rowIndex = cell.getRow().getPosition(true);
                 this.prompt_row_index.value = rowIndex;
-
+                this.getAnalysisSetNameList();
             }
         });
         this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
@@ -306,14 +292,19 @@ class MetricSidePanelApp {
             this.prompt_template_text.value = data.prompt;
         });
     }
-    async savePromptTableData() {
-        let promptTemplateList = await this.promptsTable.getData();
-        let analysisSets = {};
-        promptTemplateList.forEach((prompt) => {
-            if (!analysisSets[prompt.setName]) analysisSets[prompt.setName] = [];
-            analysisSets[prompt.setName].push(prompt);
+    async getAnalysisSetNameList() {
+        let html = '';
+        let promptSetNames = await metricAnalyzerObject.getAnalysisSetNames();
+        promptSetNames.forEach((setName) => {
+            html += `<option>${setName}</option>`;
         });
-        chrome.storage.local.set({ analysisSets });
+        this.input_datalist_prompt_list.innerHTML = html;
+    }
+
+
+    async savePromptTableData() {
+        let masterAnalysisList = await this.promptsTable.getData();
+        chrome.storage.local.set({ masterAnalysisList });
     }
     async runMetrics() {
         let text = this.query_source_text.value;
@@ -372,13 +363,11 @@ class MetricSidePanelApp {
         this.renderOutputDisplay();
         this.renderHistoryDisplay();
 
-        const analysisSets = await metricAnalyzerObject.getAnalysisSets();
-        const setNames = Object.keys(analysisSets);
+        const setNames = await metricAnalyzerObject.getAnalysisSetNames();
         let html = "";
         setNames.forEach((setName) => {
             html += `<option value="${setName}">${setName}</option>`;
         });
-
         let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
         let slimOptions = [];
         setNames.forEach((setName) => {
@@ -400,7 +389,9 @@ class MetricSidePanelApp {
             let setOrder = selectedAnalysisSets.selectedAnalysisSets;
             setOrder.forEach((setName, index) => {
                 let domIndex = indexMap[setName];
-                this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
+                if (domSelections[domIndex]) {
+                    this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
+                }
             });
         } else {
             this.analysis_set_slimselect.setSelected(["Summary"]);

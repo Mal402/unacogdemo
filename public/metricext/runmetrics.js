@@ -49,7 +49,7 @@ class MetricAnalyzer {
       }`;
     }
   }
-  async getDefaultAnalysisSets() {
+  async getDefaultAnalysisPrompts() {
     const defaultPromptList = [
       "Moderation",
       "Message",
@@ -60,24 +60,44 @@ class MetricAnalyzer {
       promises.push((async (url) => {
         let promptQuery = await fetch("defaults/" + url + ".json");
         let defaultPrompts = await promptQuery.json();
-        return defaultPrompts;
+        const allPrompts = [];
+        defaultPrompts.forEach((prompt) => {
+          prompt.setName = url;
+          allPrompts.push(prompt);
+        });
+        return allPrompts;
       })(url));
     });
     const defaultPrompts = await Promise.all(promises);
-    const setMap = {};
-    defaultPromptList.forEach((url, index) => {
-      setMap[url] = defaultPrompts[index];
+    const resultPrompts = [];
+    defaultPrompts.forEach((promptList, index) => {
+      promptList.forEach((prompt) => {
+        resultPrompts.push(prompt);
+      });
     });
-    return setMap;
+    return resultPrompts;
   }
-  async getAnalysisSets() {
-    let sets = await this.getDefaultAnalysisSets();
-    let rawData = await chrome.storage.local.get('analysisSets');
-    if (rawData && rawData.analysisSets && Object.keys(rawData.analysisSets).length > 0) {
-      sets = rawData.analysisSets;
+  async getAnalysisPrompts() {
+    let prompts = await this.getDefaultAnalysisPrompts();
+    let rawData = await chrome.storage.local.get('masterAnalysisList');
+    if (rawData && rawData.masterAnalysisList && Object.keys(rawData.masterAnalysisList).length > 0) {
+      prompts = rawData.masterAnalysisList;
     }
-    return sets;
+    return prompts;
   }
+  async getAnalysisSetNames() {
+    let allPrompts = await this.getAnalysisPrompts();
+    let analysisSets = {};
+    allPrompts.forEach((prompt) => {
+      if (!analysisSets[prompt.setName]) {
+        analysisSets[prompt.setName] = [];
+      }
+      analysisSets[prompt.setName].push(prompt);
+    });
+
+    return Object.keys(analysisSets);
+  }
+
   async runAnalysisPrompts(text, url = "", promptToUse = null) {
     const runDate = new Date().toISOString();
     let running = await chrome.storage.local.get('running');
@@ -91,16 +111,17 @@ class MetricAnalyzer {
     });
 
     let prompts = [];
-    let analysisSets = await this.getAnalysisSets();
+    let analysisPrompts = await this.getAnalysisPrompts();
     let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
     if (promptToUse) {
       prompts = [promptToUse];
     } else if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
       selectedAnalysisSets = selectedAnalysisSets.selectedAnalysisSets;
       for (let set of selectedAnalysisSets) {
-        if (analysisSets[set]) {
-          prompts = prompts.concat(analysisSets[set]);
-        }
+        let localPrompts = analysisPrompts.filter((prompt) => prompt.setName === set);
+        localPrompts.forEach((prompt) => {
+          prompts.push(prompt);
+        });
       }
     } else {
       prompts = analysisSets["Summary"];

@@ -90,12 +90,6 @@
       </div>
     </div>
     <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
-      <div style="display:flex;flex-direction:row">
-        <button class="btn add_analysis_set_button btn-secondary">
-          <i class="material-icons-outlined">add</i>
-          Analysis Set
-        </button>
-      </div>
       <div class="library_container">
         <div class="prompt_list_editor"></div>
         <div class="data_controls">
@@ -125,7 +119,8 @@
           <form class="prompt_template_form">
             <div class="form_group">
               <label for="prompt_setname_input">Set Name:</label>
-              <input type="text" class="prompt_setname_input" name="prompt_setname_input" required value="">
+              <input type="text" class="prompt_setname_input" list="input_datalist_prompt_list" name="prompt_setname_input" required value="">
+              <datalist id="input_datalist_prompt_list"></datalist>
             </div>
             <div class="form_group">
               <label for="prompt_id_input">Name/Id:</label>
@@ -152,7 +147,7 @@
         </div>
         <div class="modal-footer">
           <button class="generate_metric_prompt btn btn-primary">Generate</button>
-          <button class="add_to_library_button btn btn-secondary" data-bs-dismiss="modal">Save</button>
+          <button class="add_to_library_button btn btn-secondary">Save</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
