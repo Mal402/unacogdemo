@@ -14,8 +14,8 @@ class MetricSidePanelApp {
         this.analysis_set_select = document.querySelector('.analysis_set_select');
         this.analysis_set_slimselect = new SlimSelect({
             select: '.analysis_set_select',
-            showSearch: false,
             settings: {
+                showSearch: false,
                 placeholderText: 'Select Analysis Set(s)',
             },
         });
@@ -334,6 +334,13 @@ class MetricSidePanelApp {
             this.analysis_set_edit_select.selectedIndex = 0;
 
         this.promptsTable.setData(analysisSets[this.analysis_set_edit_select.value]);
+
+        let slimOptions = [];
+        setNames.forEach((setName) => {
+            slimOptions.push({ text: setName, value: setName });
+        });
+        this.analysis_set_slimselect.setData(slimOptions);
+        this.analysis_set_slimselect.setSelected(["Summary"]);
     }
     updateQuerySourceDetails() {
         let lastSelection = this.query_source_text.value;
