@@ -362,7 +362,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     });
 
     this.query_source_text.addEventListener('input', async (e) => {
-      this.extCommon.updateQuerySourceDetails();
+      this.updateQuerySourceDetails();
     });
 
     this.query_source_action = document.querySelector(".query_source_action");
