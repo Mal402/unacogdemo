@@ -128,21 +128,23 @@ class MetricSidePanelApp {
             let sessionId = this.session_id_input.value;
             chrome.storage.local.set({ sessionId });
         });
-        this.add_prompt_row = document.querySelector('.add_prompt_row');
+        this.wizard_input_prompt = document.querySelector('.wizard_input_prompt');
+        this.show_prompt_dialouge = document.querySelector('.show_prompt_dialouge');
         this.prompt_row_index = document.querySelector('.prompt_row_index');
-        this.add_prompt_row.addEventListener('click', async () => {
+        this.show_prompt_dialouge.addEventListener('click', async () => {
             this.prompt_setname_input.value = '';
             this.prompt_id_input.value = '';
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
             this.prompt_row_index.value = -1;
+            this.wizard_input_prompt.value = '';
             this.prompt_id_input.focus();
             this.getAnalysisSetNameList();
         });
         this.generate_metric_prompt = document.querySelector('.generate_metric_prompt');
         this.generate_metric_prompt.addEventListener('click', async () => {
-            let text = document.querySelector('.wizard_input_prompt').value;
+            let text = this.wizard_input_prompt.value;
             this.prompt_template_text.value = `generating prompt...`;
             document.getElementById('wizard-prompt-tab').click();
             let newPrompt = '';
@@ -170,18 +172,19 @@ class MetricSidePanelApp {
         this.prompt_setname_input = document.querySelector('.prompt_setname_input');
         this.input_datalist_prompt_list = document.querySelector('#input_datalist_prompt_list');
         this.add_to_library_button.addEventListener('click', async (e) => {
-            let promptId = this.prompt_id_input.value;
-            let promptDescription = this.prompt_description.value;
+            let promptId = this.prompt_id_input.value.trim();
+            let promptDescription = this.prompt_description.value.trim();
+            let promptSuggestion = this.wizard_input_prompt.value.trim();
             let promptType = this.prompt_type.value;
-            let promptTemplate = this.prompt_template_text.value;
-            let setName = this.prompt_setname_input.value;
+            let promptTemplate = this.prompt_template_text.value.trim();
+            let setName = this.prompt_setname_input.value.trim();
             if (!promptId || !promptType || !promptTemplate || !setName) {
                 alert('Please fill out all fields to add a prompt to the library.');
                 e.preventDefault();
                 document.querybyId('wizard-config-tab').click();
                 return;
             }
-            let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate, setName };
+            let prompt = { id: promptId, description: promptDescription, prompttype: promptType, prompt: promptTemplate, setName, promptSuggestion };
             let promptTemplateList = await this.promptsTable.getData();
             let existingIndex = Number(this.prompt_row_index.value) - 1;
             if (existingIndex >= 0) {
@@ -193,6 +196,7 @@ class MetricSidePanelApp {
             this.prompt_description.value = '';
             this.prompt_type.value = '';
             this.prompt_template_text.value = '';
+            this.wizard_input_prompt.value = '';
 
             await chrome.storage.local.set({ masterAnalysisList: promptTemplateList });
             this.hydrateAllPromptRows();
@@ -242,12 +246,13 @@ class MetricSidePanelApp {
                 label: "Edit",
                 action: async (e, row) => {
                     const prompt = row.getRow().getData();
-                    this.add_prompt_row.click();
+                    this.show_prompt_dialouge.click();
                     this.prompt_id_input.value = prompt.id;
                     this.prompt_description.value = prompt.description;
                     this.prompt_type.value = prompt.prompttype;
                     this.prompt_template_text.value = prompt.prompt;
                     this.prompt_setname_input.value = prompt.setName;
+                    this.wizard_input_prompt.value = prompt.suggestion;
                     let rowIndex = row.getRow().getPosition(true);
                     this.prompt_row_index.value = rowIndex;
                     this.getAnalysisSetNameList();
@@ -286,14 +291,6 @@ class MetricSidePanelApp {
         });
         this.promptsTable.on("rowMoved", async (cell) => {
             this.savePromptTableData();
-        });
-        this.promptsTable.on("rowSelectionChanged", (dataArray, rows, selected, deselected) => {
-            if (!dataArray || dataArray.length === 0) return;
-            let data = dataArray[0];
-            this.prompt_id_input.value = data.id;
-            this.prompt_description.value = data.description;
-            this.prompt_type.value = data.prompttype;
-            this.prompt_template_text.value = data.prompt;
         });
     }
     async getAnalysisSetNameList() {
