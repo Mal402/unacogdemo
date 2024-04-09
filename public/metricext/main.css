@@ -465,3 +465,7 @@ body {
 .ss-main.slimselect_onevalue .ss-values .ss-value .ss-value-delete {
   display: none;
 }
+
+.prompt_list_editor .tabulator-tableholder {
+  overflow: hidden;
+}

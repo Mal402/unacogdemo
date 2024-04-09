@@ -10,8 +10,10 @@ class SidePanelApp {
         this.show_main_page_btn = document.querySelector('.show_main_page_btn');
         if (this.show_main_page_btn) {
             this.show_main_page_btn.addEventListener('click', () => {
-                chrome.tabs.create({ url: 'main.html' });
+                chrome.tabs.create({ url: 'main.html', active: true });
             });
+
+            
         }
     }
 }

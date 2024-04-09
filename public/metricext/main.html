@@ -19,16 +19,18 @@
 <body class="main_configuration_page">
   <div class="tab_container">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
-          role="tab" aria-controls="analysis" aria-selected="true">
-          <i class="material-icons-outlined">insights</i>
+      <li class="nav-item active" role="presentation">
+        <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
+          aria-controls="config" aria-selected="true">
+          <i class="material-icons-outlined">integration_instructions</i>
+          Prompts
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-          aria-controls="config" aria-selected="false">
-          <i class="material-icons-outlined">integration_instructions</i>
+        <button class="nav-link" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button"
+          role="tab" aria-controls="analysis" aria-selected="false">
+          <i class="material-icons-outlined">insights</i>
+          Results
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -52,7 +54,20 @@
     </div>
   </div>
   <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+    <div class="tab-pane fade show active" id="config" role="tabpanel" aria-labelledby="config-tab">
+      <div class="data_controls">
+        <button class="una_btn show_prompt_dialouge" id="add_prompt_btn" data-bs-toggle="modal" data-bs-target="#promptWizard"
+          type="button">Add Metric</button>
+        <button class="una_btn export_rows">Export</button>
+        <button class="una_btn import_rows">Import</button>
+        <input type="file" id="file_input" accept=".json" style="display: none;">
+      </div>
+      <div class="library_container">
+        <div class="prompt_list_editor"></div>
+      </div>
+      <div class="test_metric_container"></div>
+    </div>
+    <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
         <div class="analysis_header">
           <h5 class="category_header">Text to Analyze</h5>
@@ -88,19 +103,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
-      <div class="data_controls">
-        <button class="una_btn show_prompt_dialouge" id="add_prompt_btn" data-bs-toggle="modal" data-bs-target="#promptWizard"
-          type="button">Add Metric</button>
-        <button class="una_btn export_rows">Export</button>
-        <button class="una_btn import_rows">Import</button>
-        <input type="file" id="file_input" accept=".json" style="display: none;">
-      </div>
-      <div class="library_container">
-        <div class="prompt_list_editor"></div>
-      </div>
-      <div class="test_metric_container"></div>
     </div>
     <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
       <h5 class="category_header">Metric History</h5>

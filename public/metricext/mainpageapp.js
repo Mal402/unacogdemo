@@ -122,14 +122,8 @@ class MainPageApp {
             var modal = bootstrap.Modal.getInstance(myModalEl)
             modal.hide();
         });
-
-        this.show_main_page_btn = document.querySelector('.show_main_page_btn');
-        if (this.show_main_page_btn) {
-            this.show_main_page_btn.addEventListener('click', () => {
-                chrome.tabs.create({ url: 'main.html' });
-            });
-        }
-
+        
+        this.query_source_text = document.querySelector('.query_source_text');
         this.initPromptTable();
         this.hydrateAllPromptRows();
 
@@ -143,46 +137,6 @@ class MainPageApp {
         this.promptsTable.setData(allPrompts);
     }
     initPromptTable() {
-        this.rowContextMenu = [
-            {
-                label: "Delete",
-                action: (e, row) => {
-                    const prompt = row.getData();
-                    if (this.promptsTable.getDataCount() <= 1) {
-                        alert('You must have at least one prompt in the library.');
-                    } else {
-                        if (confirm('Are you sure you want to delete this row?')) {
-                            row.getRow().delete();
-                            this.savePromptTableData();
-                        }
-                    }
-                }
-            }, {
-                label: "Test",
-                action: async (e, row) => {
-                    const prompt = row.getRow().getData();
-                    let text = this.query_source_text.value;
-                    let result = await this.extCommon.runAnalysisPrompts(text, 'Manual', prompt);
-                    this.extCommon.renderDisplay('test_metric_container');
-                }
-            }, {
-                label: "Edit",
-                action: async (e, row) => {
-                    const prompt = row.getRow().getData();
-                    this.show_prompt_dialouge.click();
-                    this.prompt_id_input.value = prompt.id;
-                    this.prompt_description.value = prompt.description;
-                    this.prompt_type.value = prompt.prompttype;
-                    this.prompt_template_text.value = prompt.prompt;
-                    this.prompt_setname_input.value = prompt.setName;
-                    this.wizard_input_prompt.value = prompt.suggestion;
-                    let rowIndex = row.getRow().getPosition(true);
-                    this.prompt_row_index.value = rowIndex;
-                    this.getAnalysisSetNameList();
-
-                }
-            },
-        ];
         this.promptsTable = new Tabulator(".prompt_list_editor", {
             layout: "fitDataStretch",
             movableRows: true,
@@ -192,26 +146,80 @@ class MainPageApp {
                 return value + "<span style='margin-left:10px;'>(" + count + " item)</span>";
             },
             columns: [
+                { title: "Id", field: "id", headerSort: false, width: 100 },
                 {
                     title: "",
-                    field: "contextMenu",
+                    field: "delete",
                     headerSort: false,
-                    clickMenu: this.rowContextMenu,
                     formatter: () => {
-                        return `<i class="material-icons">more_vert</i>`;
+                        return `<i class="material-icons">delete</i>`;
                     },
                     hozAlign: "center",
+                    width: 30,
                 },
-                { title: "Id", field: "id", headerSort: false, width: 100 },
+                {
+                    title: "",
+                    field: "edit",
+                    headerSort: false,
+                    formatter: () => {
+                        return `<i class="material-icons">edit</i>`;
+                    },
+                    hozAlign: "center",
+                    width: 30,
+                },
+                {
+                    title: "",
+                    field: "testone",
+                    headerSort: false,
+                    formatter: () => {
+                        return `<i class="material-icons">bolt</i>`;
+                    },
+                    hozAlign: "center",
+                    width: 30,
+                },
                 {
                     title: "Type", field: "prompttype",
                     headerSort: false,
                 },
-                { title: "Description", field: "description", headerSort: false, width: 100 },
+         //       { title: "Description", field: "description", headerSort: false, width: 100 },
                 { title: "Prompt", field: "prompt", headerSort: false, width: 100 },
 
             ],
         });
+        this.promptsTable.on("cellClick", async (e, cell) => {
+            if (cell.getColumn().getField() === "delete") {
+                if (this.promptsTable.getDataCount() <= 1) {
+                    alert('You must have at least one prompt in the library.');
+                } else {
+                    if (confirm('Are you sure you want to delete this row?')) {
+                        this.promptsTable.deleteRow(cell.getRow());
+                        this.savePromptTableData();
+                    }
+                }
+            }
+            if (cell.getColumn().getField() === "testone") {
+                const row = cell.getRow();
+                const prompt = row.getData();
+
+                let text = this.query_source_text.value;
+                let result = await this.extCommon.runAnalysisPrompts(text, 'Manual', prompt);
+            }
+            if (cell.getColumn().getField() === "edit") {
+                    const row = cell.getRow();
+                    const prompt = row.getData();
+                    this.show_prompt_dialouge.click();
+                    this.prompt_id_input.value = prompt.id;
+                    this.prompt_description.value = prompt.description;
+                    this.prompt_type.value = prompt.prompttype;
+                    this.prompt_template_text.value = prompt.prompt;
+                    this.prompt_setname_input.value = prompt.setName;
+                    this.wizard_input_prompt.value = prompt.suggestion;
+                    let rowIndex = row.getPosition(true);
+                    this.prompt_row_index.value = rowIndex;
+                    this.getAnalysisSetNameList();
+            }
+        });
+
         this.promptsTable.on("rowMoved", async (cell) => {
             this.savePromptTableData();
         });
