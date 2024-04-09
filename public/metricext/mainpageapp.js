@@ -1,85 +1,17 @@
 class MainPageApp {
-    constructor(extCommon) {
-        this.extCommon = extCommon;
+    constructor(extCommon) {        this.extCommon = extCommon;
+        this.extCommon.initCommonDom();
+        
         this.api_token_input = document.querySelector('.api_token_input');
         this.session_id_input = document.querySelector('.session_id_input');
-        this.query_source_text_length = document.querySelector('.query_source_text_length');
-        this.query_source_tokens_length = document.querySelector('.query_source_tokens_length');
-        this.analysis_set_select = document.querySelector('.analysis_set_select');
-        this.analysis_set_slimselect = new SlimSelect({
-            select: '.analysis_set_select',
-            settings: {
-                showSearch: false,
-                placeholderText: 'Select Analysis Set(s)',
-                keepOrder: true,
-                hideSelected: true,
-                minSelected: 1,
-                closeOnSelect: false,
-            },
-            events: {
-                afterChange: async (newVal) => {
-                    let selectedAnalysisSets = [];
-                    this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value')
-                        .forEach((item) => {
-                            selectedAnalysisSets.push(item.innerText);
-                        });
-                    if (selectedAnalysisSets.length <= 1) {
-                        this.analysis_set_select.classList.add('slimselect_onevalue');
-                    } else {
-                        this.analysis_set_select.classList.remove('slimselect_onevalue');
-                    }
-                    await chrome.storage.local.set({ selectedAnalysisSets });
-                },
-            },
+        this.api_token_input.addEventListener('input', async (e) => {
+            let apiToken = this.api_token_input.value;
+            chrome.storage.local.set({ apiToken });
         });
-
-        this.query_source_text = document.querySelector(".query_source_text");
-        this.query_source_text.addEventListener('input', async (e) => {
-            this.updateQuerySourceDetails();
+        this.session_id_input.addEventListener('input', async (e) => {
+            let sessionId = this.session_id_input.value;
+            chrome.storage.local.set({ sessionId });
         });
-
-        this.query_source_action = document.querySelector(".query_source_action");
-        this.query_source_action.addEventListener('click', async (e) => {
-            let index = this.query_source_action.selectedIndex;
-            if (index > 0) {
-                if (index === 1) {
-                    this.runMetrics();
-                } else if (index === 2) {
-                    this.query_source_text.select();
-                    navigator.clipboard.writeText(this.query_source_text.value);
-                } else if (index === 3) {
-                    function getSelection() {
-                        return document.getSelection().toString();
-                    }
-                    let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
-                    let tab = tabResults[0];
-                    let scrapes = await chrome.scripting.executeScript({
-                        target: { tabId: tab.id },
-                        func: getSelection,
-                    });
-                    let text = scrapes[0].result;
-                    text = text.slice(0, 20000);
-                    this.query_source_text.value = text;
-                    this.runMetrics();
-                } else if (index === 4) {
-                    function getDom() {
-                        return document.body.innerText;
-                    }
-                    let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
-                    let tab = tabResults[0];
-                    let scrapes = await chrome.scripting.executeScript({
-                        target: { tabId: tab.id },
-                        func: getDom,
-                    });
-                    let text = scrapes[0].result;
-                    text = text.slice(0, 20000);
-                    this.query_source_text.value = text;
-                    this.runMetrics();
-                }
-            }
-            this.query_source_action.selectedIndex = 0;
-        });
-
         this.importButton = document.querySelector('.import_rows');
         this.importButton.addEventListener('click', () => {
             document.getElementById('file_input').click();
@@ -113,14 +45,6 @@ class MainPageApp {
                 await chrome.storage.local.clear();
                 location.reload();
             }
-        });
-        this.api_token_input.addEventListener('input', async (e) => {
-            let apiToken = this.api_token_input.value;
-            chrome.storage.local.set({ apiToken });
-        });
-        this.session_id_input.addEventListener('input', async (e) => {
-            let sessionId = this.session_id_input.value;
-            chrome.storage.local.set({ sessionId });
         });
         this.wizard_input_prompt = document.querySelector('.wizard_input_prompt');
         this.show_prompt_dialouge = document.querySelector('.show_prompt_dialouge');
@@ -212,7 +136,6 @@ class MainPageApp {
         chrome.storage.local.onChanged.addListener(() => {
             this.paintData();
         });
-
         this.paintData();
     }
     async hydrateAllPromptRows() {
@@ -240,7 +163,7 @@ class MainPageApp {
                     const prompt = row.getRow().getData();
                     let text = this.query_source_text.value;
                     let result = await this.extCommon.runAnalysisPrompts(text, 'Manual', prompt);
-                    this.renderOutputDisplay('test_metric_container');
+                    this.extCommon.renderDisplay('test_metric_container');
                 }
             }, {
                 label: "Edit",
@@ -301,8 +224,6 @@ class MainPageApp {
         });
         this.input_datalist_prompt_list.innerHTML = html;
     }
-
-
     async savePromptTableData() {
         let masterAnalysisList = await this.promptsTable.getData();
         chrome.storage.local.set({ masterAnalysisList });
@@ -310,28 +231,14 @@ class MainPageApp {
     async runMetrics() {
         let text = this.query_source_text.value;
         await this.extCommon.runAnalysisPrompts(text, 'user input');
-        this.renderOutputDisplay();
-    }
-    async renderOutputDisplay(className = 'analysis_display') {
-        let lastResult = await chrome.storage.local.get('lastResult');
-        let html = '';
-        if (lastResult && lastResult.lastResult) {
-            lastResult.lastResult.forEach((result) => {
-                html += this.extCommon.getHTMLforPromptResult(result);
-            });
-        }
-        document.querySelector('.' + className).innerHTML = html;
+        this.extCommon.renderDisplay();
     }
     async paintData() {
-        let running = await chrome.storage.local.get('running');
-        if (running && running.running) {
-            document.body.classList.add("extension_running");
-            document.body.classList.remove("extension_not_running");
-        } else {
-            document.body.classList.remove("extension_running");
-            document.body.classList.add("extension_not_running");
-        }
-
+        await this.extCommon.paintAnalysisTab();
+        this.renderSettingsTab();
+        this.renderHistoryDisplay();
+    }
+    async renderSettingsTab() {
         let sessionConfig = await chrome.storage.local.get('sessionId');
         if (sessionConfig && sessionConfig.sessionId) {
             document.querySelector('.no_session_key').style.display = 'none';
@@ -347,7 +254,6 @@ class MainPageApp {
             document.querySelector('#api-config-tab i').classList.add('api-key-warning');
         }
 
-
         let sessionId = await chrome.storage.local.get('sessionId');
         sessionId = sessionId.sessionId || '';
         this.session_id_input.value = sessionId;
@@ -355,69 +261,7 @@ class MainPageApp {
         let apiToken = await chrome.storage.local.get('apiToken');
         apiToken = apiToken.apiToken || '';
         this.api_token_input.value = apiToken;
-
-        let lastSelection = await chrome.storage.local.get('lastSelection');
-        lastSelection = lastSelection.lastSelection || "";
-        this.query_source_text.value = lastSelection;
-        this.updateQuerySourceDetails();
-
-        this.renderOutputDisplay();
-        this.renderHistoryDisplay();
-
-        const setNames = await this.extCommon.getAnalysisSetNames();
-        let html = "";
-        setNames.forEach((setName) => {
-            html += `<option value="${setName}">${setName}</option>`;
-        });
-        let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
-        let slimOptions = [];
-        setNames.forEach((setName) => {
-            slimOptions.push({ text: setName, value: setName });
-        });
-        const slimOptionsString = JSON.stringify(slimOptions);
-        if (this.previousSlimOptions !== slimOptionsString) {
-            this.analysis_set_slimselect.setData(slimOptions);
-            this.previousSlimOptions = slimOptionsString;
-        }
-
-        if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
-            this.analysis_set_slimselect.setSelected(selectedAnalysisSets.selectedAnalysisSets);
-            let domSelections = this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value');
-            let indexMap = {};
-            domSelections.forEach((item, index) => {
-                indexMap[item.innerText] = index;
-            });
-            let setOrder = selectedAnalysisSets.selectedAnalysisSets;
-            setOrder.forEach((setName, index) => {
-                let domIndex = indexMap[setName];
-                if (domSelections[domIndex]) {
-                    this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
-                }
-            });
-        }
-        if (this.analysis_set_slimselect.getSelected().length === 0) {
-            this.analysis_set_slimselect.setSelected([setNames[0]]);
-        }
     }
-    updateQuerySourceDetails() {
-        let lastSelection = this.query_source_text.value;
-        this.query_source_tokens_length.innerHTML = lastSelection.length + ' characters';
-
-        /*
-let tokenCount = "N/A";
-try {
-    tokenCount = encode(text).length.toString() + " tokens";
-} catch (err) {
-    let cleanText = "";
-    if (text) cleanText = text;
-    cleanText = cleanText.replace(/[^a-z0-9\s]/gi, "");
-
-    tokenCount = encode(text).length.toString() + " tokens";
-}
-this.query_source_tokens_length.innerHTML = tokenCount;
-*/
-    }
-
     async renderHistoryDisplay() {
         let history = await chrome.storage.local.get('history');
         history = history.history || [];
@@ -460,14 +304,12 @@ this.query_source_tokens_length.innerHTML = tokenCount;
         }
         document.querySelector('.history_display').innerHTML = historyHtml;
     }
-
     truncateText(text, maxLength) {
         if (text.length <= maxLength) {
             return text;
         }
         return text.slice(0, maxLength) + '...';
     }
-
     formatAMPM(date) {
         let hours = date.getHours();
         let minutes = date.getMinutes();
@@ -477,7 +319,6 @@ this.query_source_tokens_length.innerHTML = tokenCount;
         minutes = minutes < 10 ? "0" + minutes : minutes;
         return hours + ":" + minutes + " " + ampm;
     }
-
     showGmailStyleDate(ISOdate, amFormat = false) {
         let date = new Date(ISOdate);
         if (Date.now() - date.getTime() < 24 * 60 * 60 * 1000) {
