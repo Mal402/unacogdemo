@@ -205,6 +205,13 @@ class MetricSidePanelApp {
             modal.hide();
         });
 
+        this.show_main_page_btn = document.querySelector('.show_main_page_btn');
+        if (this.show_main_page_btn) {
+            this.show_main_page_btn.addEventListener('click', () => {
+                chrome.tabs.create({ url: 'main.html' });
+            });
+        }
+
         this.initPromptTable();
         this.hydrateAllPromptRows();
 
