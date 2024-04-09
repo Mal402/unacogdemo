@@ -1,12 +1,6 @@
-/*
-import {
-    encode,
-} from "gpt-tokenizer";
-*/
-const metricAnalyzerObject = getMetricAnalysis();
-
-class MetricSidePanelApp {
-    constructor() {
+class MainPageApp {
+    constructor(extCommon) {
+        this.extCommon = extCommon;
         this.api_token_input = document.querySelector('.api_token_input');
         this.session_id_input = document.querySelector('.session_id_input');
         this.query_source_text_length = document.querySelector('.query_source_text_length');
@@ -149,11 +143,11 @@ class MetricSidePanelApp {
             document.getElementById('wizard-prompt-tab').click();
             let newPrompt = '';
             if (this.prompt_type.value === 'metric') {
-                newPrompt = await metricAnalyzerObject.getMetricPromptForDescription(text);
+                newPrompt = await this.extCommon.getMetricPromptForDescription(text);
             } else if (this.prompt_type.value === 'keywords') {
-                newPrompt = await metricAnalyzerObject.getKeywordPromptForDescription(text);
+                newPrompt = await this.extCommon.getKeywordPromptForDescription(text);
             } else if (this.prompt_type.value === 'shortsummary') { 
-                newPrompt = await metricAnalyzerObject.getSummaryPromptForDescription(text);
+                newPrompt = await this.extCommon.getSummaryPromptForDescription(text);
                 console.log('shortSummary', newPrompt);
             };
             this.prompt_template_text.value = newPrompt;
@@ -222,8 +216,7 @@ class MetricSidePanelApp {
         this.paintData();
     }
     async hydrateAllPromptRows() {
-        let allPrompts = await metricAnalyzerObject.getAnalysisPrompts();
-        console.log('allPrompts', allPrompts);
+        let allPrompts = await this.extCommon.getAnalysisPrompts();
         this.promptsTable.setData(allPrompts);
     }
     initPromptTable() {
@@ -246,7 +239,7 @@ class MetricSidePanelApp {
                 action: async (e, row) => {
                     const prompt = row.getRow().getData();
                     let text = this.query_source_text.value;
-                    let result = await metricAnalyzerObject.runAnalysisPrompts(text, 'Manual', prompt);
+                    let result = await this.extCommon.runAnalysisPrompts(text, 'Manual', prompt);
                     this.renderOutputDisplay('test_metric_container');
                 }
             }, {
@@ -302,7 +295,7 @@ class MetricSidePanelApp {
     }
     async getAnalysisSetNameList() {
         let html = '';
-        let promptSetNames = await metricAnalyzerObject.getAnalysisSetNames();
+        let promptSetNames = await this.extCommon.getAnalysisSetNames();
         promptSetNames.forEach((setName) => {
             html += `<option>${setName}</option>`;
         });
@@ -316,7 +309,7 @@ class MetricSidePanelApp {
     }
     async runMetrics() {
         let text = this.query_source_text.value;
-        await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
+        await this.extCommon.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
     async renderOutputDisplay(className = 'analysis_display') {
@@ -324,7 +317,7 @@ class MetricSidePanelApp {
         let html = '';
         if (lastResult && lastResult.lastResult) {
             lastResult.lastResult.forEach((result) => {
-                html += metricAnalyzerObject.getHTMLforPromptResult(result);
+                html += this.extCommon.getHTMLforPromptResult(result);
             });
         }
         document.querySelector('.' + className).innerHTML = html;
@@ -371,7 +364,7 @@ class MetricSidePanelApp {
         this.renderOutputDisplay();
         this.renderHistoryDisplay();
 
-        const setNames = await metricAnalyzerObject.getAnalysisSetNames();
+        const setNames = await this.extCommon.getAnalysisSetNames();
         let html = "";
         setNames.forEach((setName) => {
             html += `<option value="${setName}">${setName}</option>`;
@@ -455,7 +448,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
                 <div class="history_results">
           `;
             for (let result of entry.results) {
-                entryHtml += metricAnalyzerObject.getHTMLforPromptResult(result);
+                entryHtml += this.extCommon.getHTMLforPromptResult(result);
             }
             entryHtml += `
                 </div>
@@ -501,6 +494,8 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
-    window.metricAppInstance = new MetricSidePanelApp();
+window.addEventListener('DOMContentLoaded', async (event) => {
+    let module = await import('./extensioncommon.js');
+    window.extensionCommon = new module.AnalyzerExtensionCommon();
+    window.appMainPage = new MainPageApp(window.extensionCommon);
 });

@@ -1,6 +1,8 @@
-importScripts("./node_modules/mustache/mustache.min.js");
-importScripts("./runmetrics.js");
 
+import { AnalyzerExtensionCommon } from "./extensioncommon.js";
+function loadExtensionCommonObject() {
+    return new AnalyzerExtensionCommon();
+}
 chrome.runtime.onInstalled.addListener(async () => {
     chrome.tabs.create({ url: 'startpage.html' });
     chrome.contextMenus.create({
@@ -30,7 +32,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (info.menuItemId === 'analyzeSelection') {
         text = info.selectionText;
         text = text.slice(0, 20000);
-        let abc = getMetricAnalysis();
+        let abc = await loadExtensionCommonObject();
         result = await abc.runAnalysisPrompts(text, tab.url);
     }
     else if (info.menuItemId === 'analyzePage') {
@@ -43,7 +45,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         });
         text = scrapes[0].result;
         text = text.slice(0, 20000);
-        let abc = getMetricAnalysis();
+        let abc = await loadExtensionCommonObject();
         result = await abc.runAnalysisPrompts(text, tab.url);
     }
     async function paintInDocumentHTMLResultDisplay(html) {
@@ -133,7 +135,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         }
 
     }
-    let abc = getMetricAnalysis();
+    let abc = await loadExtensionCommonObject();
     console.log("super result", result);
     let def = '';
     result.results.forEach((result) => {

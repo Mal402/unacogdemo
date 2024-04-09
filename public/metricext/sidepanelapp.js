@@ -1,12 +1,6 @@
-/*
-import {
-    encode,
-} from "gpt-tokenizer";
-*/
-const metricAnalyzerObject = getMetricAnalysis();
-
 class SidePanelApp {
-    constructor() {
+    constructor(extCommon) {
+        this.extCommon = extCommon;
         this.query_source_text_length = document.querySelector('.query_source_text_length');
         this.query_source_tokens_length = document.querySelector('.query_source_tokens_length');
         this.analysis_set_select = document.querySelector('.analysis_set_select');
@@ -99,7 +93,7 @@ class SidePanelApp {
     }
     async runMetrics() {
         let text = this.query_source_text.value;
-        await metricAnalyzerObject.runAnalysisPrompts(text, 'user input');
+        await this.extCommon.runAnalysisPrompts(text, 'user input');
         this.renderOutputDisplay();
     }
     async renderOutputDisplay(className = 'analysis_display') {
@@ -107,7 +101,7 @@ class SidePanelApp {
         let html = '';
         if (lastResult && lastResult.lastResult) {
             lastResult.lastResult.forEach((result) => {
-                html += metricAnalyzerObject.getHTMLforPromptResult(result);
+                html += this.extCommon.getHTMLforPromptResult(result);
             });
         }
         document.querySelector('.' + className).innerHTML = html;
@@ -129,7 +123,7 @@ class SidePanelApp {
 
         this.renderOutputDisplay();
 
-        const setNames = await metricAnalyzerObject.getAnalysisSetNames();
+        const setNames = await this.extCommon.getAnalysisSetNames();
         let html = "";
         setNames.forEach((setName) => {
             html += `<option value="${setName}">${setName}</option>`;
@@ -184,6 +178,8 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     }
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
-    window.appSidePanel = new SidePanelApp();
+window.addEventListener('DOMContentLoaded', async (event) => {
+    let module = await import('./extensioncommon.js');
+    window.extensionCommon = new module.AnalyzerExtensionCommon();
+    window.appSidePanel = new SidePanelApp(window.extensionCommon);
 });

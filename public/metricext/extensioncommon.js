@@ -1,4 +1,4 @@
-class MetricAnalyzer {
+export class AnalyzerExtensionCommon {
   constructor() {
     this.promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
   }
@@ -252,9 +252,4 @@ class MetricAnalyzer {
     {{query}}`;
     return newPromptContent;
   }
-}
-
-
-function getMetricAnalysis() {
-  return new MetricAnalyzer();
 }

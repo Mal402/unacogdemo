@@ -1,4 +1,4 @@
-async function initializeSidePanel() {
+async function main() {
     const [tab] = await chrome.tabs.query({
         active: true,
         lastFocusedWindow: true
@@ -10,10 +10,10 @@ async function initializeSidePanel() {
         await chrome.sidePanel.open({ tabId });
         await chrome.sidePanel.setOptions({
             tabId,
-            path: 'index.html',
+            path: 'sidepanel.html',
             enabled: true
         });
     });
 }
 
-initializeSidePanel();
+main();
