@@ -1,3 +1,4 @@
+import Mustache from './node_modules/mustache/mustache.mjs';
 export class AnalyzerExtensionCommon {
   constructor() {
     this.promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
