@@ -22,11 +22,6 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     chrome.sidePanel.open({ tabId: tab.id });
 
-    await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: paintInDocumentHTMLResultDisplay,
-        args: ['Running...']
-    });
     let text = '';
     let result = {};
     if (info.menuItemId === 'analyzeSelection') {
@@ -55,12 +50,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     result.results.forEach((result) => {
         def += abc.getHTMLforPromptResult(result);
     });
-
-    await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: paintInDocumentHTMLResultDisplay,
-        args: [def]
-    });
+    
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
