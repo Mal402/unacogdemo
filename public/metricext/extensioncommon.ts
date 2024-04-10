@@ -72,7 +72,7 @@ export class AnalyzerExtensionCommon {
     const promises:any[] = [];
     defaultPromptList.forEach((url) => {
       promises.push((async (url) => {
-        let promptQuery = await fetch("defaults/" + url + ".json");
+        let promptQuery = await fetch("/defaults/" + url + ".json");
         let defaultPrompts = await promptQuery.json();
         const allPrompts: any[] = [];
         defaultPrompts.forEach((prompt: any) => {

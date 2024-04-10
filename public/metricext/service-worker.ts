@@ -25,9 +25,10 @@ chrome.contextMenus.onClicked.addListener(async (info: any, tab: any) => {
     let result: any = {};
     if (info.menuItemId === 'analyzeSelection') {
         text = info.selectionText;
+        console.log("info", info);
         text = text.slice(0, 20000);
         let abc = new AnalyzerExtensionCommon(chrome);
-        result = await abc.runAnalysisPrompts(chrome, text, tab.url);
+        result = await abc.runAnalysisPrompts(text, tab.url);
     }
     else if (info.menuItemId === 'analyzePage') {
         function getDom() {
@@ -40,7 +41,7 @@ chrome.contextMenus.onClicked.addListener(async (info: any, tab: any) => {
         text = scrapes[0].result;
         text = text.slice(0, 20000);
         let abc = new AnalyzerExtensionCommon(chrome);
-        result = await abc.runAnalysisPrompts(chrome, text, tab.url);
+        result = await abc.runAnalysisPrompts(text, tab.url);
     }
 
     let abc = new AnalyzerExtensionCommon(chrome);
