@@ -5,14 +5,11 @@
   <link rel="stylesheet" href="lib/materialiconsoutlined.css">
   <link href="lib/bootstrap.min.css" rel="stylesheet">
   <script src="lib/bootstrap.bundle.min.js"></script>
-  <script src="lib/mustachees5.js"></script>
-  <script src="lib/tabulator.js"></script>
   <link href="lib/tabulator.css" rel="stylesheet">
   <link href="lib/tabsimple.css" rel="stylesheet">
   <link href="main.css" rel="stylesheet">
-  <script src="lib/slimselect.min.js"></script>
   <link href="lib/slimselect.css" rel="stylesheet">
-  <script src="mainpageapp.js"></script>
+  <script src="models/index.js"></script>
   </link>
 </head>
 
@@ -65,7 +62,8 @@
       <div class="library_container">
         <div class="prompt_list_editor"></div>
       </div>
-      <div class="test_metric_container"></div>
+      <button style="visibility: hidden;" class="show_test_prompt_modal" data-bs-toggle="modal" data-bs-target="#testModal">Test
+        Metric</button></button>
     </div>
     <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
@@ -109,6 +107,25 @@
       <div class="history_display"></div>
     </div>
   </div>
+  <!-- test modal -->
+  <div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="testModalLabel">Test Metric</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <div class="test_metric_container"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- create prompt wizard -->
   <div class="modal fade" id="promptWizard" tabindex="-1" aria-labelledby="promptWizardLabel" aria-hidden="true">
     <div class="modal-dialog">

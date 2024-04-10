@@ -1,12 +1,25 @@
-import Mustache from './node_modules/mustache/mustache.mjs';
+import Mustache from 'mustache';
+import SlimSelect from 'slim-select';
+
 export class AnalyzerExtensionCommon {
-  constructor() {
-    this.promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
+  promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
+  chrome: any;
+  query_source_text: any;
+  query_source_text_length: any;
+  query_source_tokens_length: any;
+  previousSlimOptions = '';
+  analysis_set_slimselect: any;
+  analysis_set_select: any;
+  query_source_action: any;
+
+  constructor(chrome: any) {
+    this.chrome = chrome;
+
   }
-  async sendPromptToLLM(message) {
-    let apiToken = await chrome.storage.local.get('apiToken');
+  async sendPromptToLLM(message: string) {
+    let apiToken = await this.chrome.storage.local.get('apiToken');
     apiToken = apiToken.apiToken || '';
-    let sessionId = await chrome.storage.local.get('sessionId');
+    let sessionId = await this.chrome.storage.local.get('sessionId');
     sessionId = sessionId.sessionId || '';
 
     const body = {
@@ -39,7 +52,7 @@ export class AnalyzerExtensionCommon {
       return promptResult.assist.assist.choices["0"].message.content;
     }
   }
-  async sendPromptForMetric(promptTemplate, query) {
+  async sendPromptForMetric(promptTemplate: string, query:string) {
     try {
       let result = Mustache.render(promptTemplate, { query });
       return result;
@@ -56,13 +69,13 @@ export class AnalyzerExtensionCommon {
       "Message",
       "Summary",
     ];
-    const promises = [];
+    const promises:any[] = [];
     defaultPromptList.forEach((url) => {
       promises.push((async (url) => {
         let promptQuery = await fetch("defaults/" + url + ".json");
         let defaultPrompts = await promptQuery.json();
-        const allPrompts = [];
-        defaultPrompts.forEach((prompt) => {
+        const allPrompts: any[] = [];
+        defaultPrompts.forEach((prompt: any) => {
           prompt.setName = url;
           allPrompts.push(prompt);
         });
@@ -70,9 +83,9 @@ export class AnalyzerExtensionCommon {
       })(url));
     });
     const defaultPrompts = await Promise.all(promises);
-    const resultPrompts = [];
+    const resultPrompts: any[] = [];
     defaultPrompts.forEach((promptList, index) => {
-      promptList.forEach((prompt) => {
+      promptList.forEach((prompt:any) => {
         resultPrompts.push(prompt);
       });
     });
@@ -80,7 +93,7 @@ export class AnalyzerExtensionCommon {
   }
   async getAnalysisPrompts() {
     let prompts = await this.getDefaultAnalysisPrompts();
-    let rawData = await chrome.storage.local.get('masterAnalysisList');
+    let rawData = await this.chrome.storage.local.get('masterAnalysisList');
     if (rawData && rawData.masterAnalysisList && Object.keys(rawData.masterAnalysisList).length > 0) {
       prompts = rawData.masterAnalysisList;
     }
@@ -88,7 +101,7 @@ export class AnalyzerExtensionCommon {
   }
   async getAnalysisSetNames() {
     let allPrompts = await this.getAnalysisPrompts();
-    let analysisSets = {};
+    let analysisSets:any = {};
     allPrompts.forEach((prompt) => {
       if (!analysisSets[prompt.setName]) {
         analysisSets[prompt.setName] = [];
@@ -98,36 +111,34 @@ export class AnalyzerExtensionCommon {
 
     return Object.keys(analysisSets);
   }
-  async runAnalysisPrompts(text, url = "", promptToUse = null) {
+  async runAnalysisPrompts(text: string, url = "", promptToUse = null) {
     const runDate = new Date().toISOString();
-    let running = await chrome.storage.local.get('running');
+    let running = await this.chrome.storage.local.get('running');
     if (running && running.running) {
       return;
     }
-    await chrome.storage.local.set({
+    await this.chrome.storage.local.set({
       lastSelection: text,
       lastResult: "",
       running: true,
     });
 
-    let prompts = [];
-    let analysisPrompts = await this.getAnalysisPrompts();
-    let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
+    let prompts: any = [];
+    let analysisPrompts:any = await this.getAnalysisPrompts();
+    let selectedAnalysisSets:any = await this.chrome.storage.local.get("selectedAnalysisSets");
     if (promptToUse) {
       prompts = [promptToUse];
     } else if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
       selectedAnalysisSets = selectedAnalysisSets.selectedAnalysisSets;
       for (let set of selectedAnalysisSets) {
-        let localPrompts = analysisPrompts.filter((prompt) => prompt.setName === set);
-        localPrompts.forEach((prompt) => {
+        let localPrompts = analysisPrompts.filter((prompt: any) => prompt.setName === set);
+        localPrompts.forEach((prompt:any) => {
           prompts.push(prompt);
         });
       }
-    } else {
-      prompts = analysisSets["Summary"];
     }
 
-    const runPrompt = async (prompt, text) => {
+    const runPrompt = async (prompt: any, text:string) => {
       let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
       let result = await this.sendPromptToLLM(fullPrompt);
       return {
@@ -142,7 +153,7 @@ export class AnalyzerExtensionCommon {
     }
 
     let results = await Promise.all(promises);
-    let history = await chrome.storage.local.get('history');
+    let history = await this.chrome.storage.local.get('history');
     history = history.history || [];
     let historyEntry = {
       text,
@@ -152,14 +163,14 @@ export class AnalyzerExtensionCommon {
     };
     history.unshift(historyEntry);
     history = history.slice(0, 10);
-    await chrome.storage.local.set({
+    await this.chrome.storage.local.set({
       lastResult: results,
       running: false,
       history,
     });
     return historyEntry;
   }
-  getHTMLforPromptResult(result) {
+  getHTMLforPromptResult(result:any) {
     if (result.prompt.prompttype === 'text') {
       return `
           <div class="prompt_result text_result">
@@ -209,7 +220,7 @@ export class AnalyzerExtensionCommon {
         `;
     }
   }
-  async getSummaryPromptForDescription(description) {
+  async getSummaryPromptForDescription(description: string): Promise<string> {
     const newPromptAgent = `Please help me form a concise set of guidenlines for summarizing content based on the following description: ${description}`;
     let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
     newPromptContent += `
@@ -219,7 +230,7 @@ export class AnalyzerExtensionCommon {
   {{query}}`;
     return newPromptContent;
   }
-  async getKeywordPromptForDescription(description) {
+  async getKeywordPromptForDescription(description: string): Promise<string> {
     const newPromptAgent = `Please help form a concise set guidelines for keywords using following description: ${description}
     `;
 
@@ -230,7 +241,7 @@ export class AnalyzerExtensionCommon {
     `;
     return newPromptContent;
   }
-  async getMetricPromptForDescription(description) {
+  async getMetricPromptForDescription(description: string): Promise<string> {
     const newPromptAgent = `Please help form a new concise set guidelines for scoring content.
     I would like one based on the following description: ${description}
     
@@ -250,14 +261,14 @@ export class AnalyzerExtensionCommon {
     return newPromptContent;
   }
   async renderDisplay(className = 'analysis_display') {
-    let lastResult = await chrome.storage.local.get('lastResult');
+    let lastResult = await this.chrome.storage.local.get('lastResult');
     let html = '';
     if (lastResult && lastResult.lastResult) {
-      lastResult.lastResult.forEach((result) => {
+      lastResult.lastResult.forEach((result:any) => {
         html += this.getHTMLforPromptResult(result);
       });
     }
-    document.querySelector('.' + className).innerHTML = html;
+    (<any>document.querySelector('.' + className)).innerHTML = html;
   }
   updateQuerySourceDetails() {
     let lastSelection = this.query_source_text.value;
@@ -278,7 +289,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
 */
   }
   async paintAnalysisTab() {
-    let running = await chrome.storage.local.get('running');
+    let running = await this.chrome.storage.local.get('running');
     if (running && running.running) {
       document.body.classList.add("extension_running");
       document.body.classList.remove("extension_not_running");
@@ -287,7 +298,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
       document.body.classList.add("extension_not_running");
     }
 
-    let lastSelection = await chrome.storage.local.get('lastSelection');
+    let lastSelection = await this.chrome.storage.local.get('lastSelection');
     lastSelection = lastSelection.lastSelection || "";
     this.query_source_text.value = lastSelection;
     this.updateQuerySourceDetails();
@@ -299,8 +310,8 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     setNames.forEach((setName) => {
       html += `<option value="${setName}">${setName}</option>`;
     });
-    let selectedAnalysisSets = await chrome.storage.local.get("selectedAnalysisSets");
-    let slimOptions = [];
+    let selectedAnalysisSets = await this.chrome.storage.local.get("selectedAnalysisSets");
+    let slimOptions:any[] = [];
     setNames.forEach((setName) => {
       slimOptions.push({ text: setName, value: setName });
     });
@@ -313,12 +324,12 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
       this.analysis_set_slimselect.setSelected(selectedAnalysisSets.selectedAnalysisSets);
       let domSelections = this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value');
-      let indexMap = {};
-      domSelections.forEach((item, index) => {
+      let indexMap:any = {};
+      domSelections.forEach((item: any, index:any) => {
         indexMap[item.innerText] = index;
       });
       let setOrder = selectedAnalysisSets.selectedAnalysisSets;
-      setOrder.forEach((setName, index) => {
+      setOrder.forEach((setName:any, index:any) => {
         let domIndex = indexMap[setName];
         if (domSelections[domIndex]) {
           this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
@@ -347,9 +358,9 @@ this.query_source_tokens_length.innerHTML = tokenCount;
       },
       events: {
         afterChange: async (newVal) => {
-          let selectedAnalysisSets = [];
+          let selectedAnalysisSets:any[] = [];
           this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value')
-            .forEach((item) => {
+            .forEach((item: any) => {
               selectedAnalysisSets.push(item.innerText);
             });
           if (selectedAnalysisSets.length <= 1) {
@@ -357,17 +368,17 @@ this.query_source_tokens_length.innerHTML = tokenCount;
           } else {
             this.analysis_set_select.classList.remove('slimselect_onevalue');
           }
-          await chrome.storage.local.set({ selectedAnalysisSets });
+          await this.chrome.storage.local.set({ selectedAnalysisSets });
         },
       },
     });
 
-    this.query_source_text.addEventListener('input', async (e) => {
+    this.query_source_text.addEventListener('input', async (e: Event) => {
       this.updateQuerySourceDetails();
     });
 
     this.query_source_action = document.querySelector(".query_source_action");
-    this.query_source_action.addEventListener('click', async (e) => {
+    this.query_source_action.addEventListener('click', async (e: Event) => {
       let index = this.query_source_action.selectedIndex;
       if (index > 0) {
         if (index === 1) {
@@ -377,11 +388,11 @@ this.query_source_tokens_length.innerHTML = tokenCount;
           navigator.clipboard.writeText(this.query_source_text.value);
         } else if (index === 3) {
           function getSelection() {
-            return document.getSelection().toString();
+            return document.getSelection()?.toString();
           }
-          let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
+          let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
           let tab = tabResults[0];
-          let scrapes = await chrome.scripting.executeScript({
+          let scrapes = await this.chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getSelection,
           });
@@ -393,9 +404,9 @@ this.query_source_tokens_length.innerHTML = tokenCount;
           function getDom() {
             return document.body.innerText;
           }
-          let tabResults = await chrome.tabs.query({ active: true, currentWindow: true });
+          let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
           let tab = tabResults[0];
-          let scrapes = await chrome.scripting.executeScript({
+          let scrapes = await this.chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: getDom,
           });
