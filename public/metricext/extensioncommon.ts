@@ -285,7 +285,7 @@ export class AnalyzerExtensionCommon {
   }
   updateQuerySourceDetails() {
     let lastSelection = this.query_source_text.value;
-    this.query_source_tokens_length.innerHTML = lastSelection.length + ' characters';
+    this.query_source_text_length.innerHTML = lastSelection.length + ' characters';
 
     /*
 let tokenCount = "N/A";

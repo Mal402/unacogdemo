@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Analysis Configuration</title>
+  <title>Analysis Configuration</title>
   <link rel="stylesheet" href="lib/materialiconsoutlined.css">
   <link href="lib/bootstrap.min.css" rel="stylesheet">
   <script src="lib/bootstrap.bundle.min.js"></script>
@@ -17,8 +17,8 @@
   <div class="tab_container">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab"
-          aria-controls="config" aria-selected="true">
+        <button class="nav-link active" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button"
+          role="tab" aria-controls="config" aria-selected="true">
           <i class="material-icons-outlined">integration_instructions</i>
           Prompts
         </button>
@@ -53,8 +53,8 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="config" role="tabpanel" aria-labelledby="config-tab">
       <div class="data_controls">
-        <button class="una_btn show_prompt_dialouge" id="add_prompt_btn" data-bs-toggle="modal" data-bs-target="#promptWizard"
-          type="button">Add Metric</button>
+        <button class="una_btn show_prompt_dialouge" id="add_prompt_btn" data-bs-toggle="modal"
+          data-bs-target="#promptWizard" type="button">Add Metric</button>
         <button class="una_btn export_rows">Export</button>
         <button class="una_btn import_rows">Import</button>
         <input type="file" id="file_input" accept=".json" style="display: none;">
@@ -62,34 +62,39 @@
       <div class="library_container">
         <div class="prompt_list_editor"></div>
       </div>
-      <button style="visibility: hidden;" class="show_test_prompt_modal" data-bs-toggle="modal" data-bs-target="#testModal">Test
+      <button style="visibility: hidden;" class="show_test_prompt_modal" data-bs-toggle="modal"
+        data-bs-target="#testModal">Test
         Metric</button></button>
     </div>
     <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
-        <div class="analysis_options">
-          <div class="analysis_sets_configuration">
-            <select class="analysis_set_select" multiple>
-            </select>
-          </div>
-          <div class="analysis_actions">
-            <button class="btn btn-primary run_analysis_btn">Run Analysis</button>
-            <button class="btn btn-secondary copy_to_clipboard_btn">Copy to Clipboard</button>
-          </div>
-        </div>
         <div class="analysis_content">
           <div class="analysis_input">
-            <h5 class="category_header">Text to Analyze</h5>
-            <div class="query_source_controls">
-              <div class="query_text_description">
-                <div class="query_source_text_length"></div>
-                <div class="query_source_tokens_length">&nbsp;</div>
+            <div class="form-floating">
+              <label for="floatingQueryTextarea">Your Text</label>
+              <textarea class="query_source_text" id="floatingQueryTextarea"
+                placeholder="Analyze text for summary, keywords, or score for your use case..."></textarea>
+            </div>
+            <div class="query_text_description">
+              <div class="query_source_text_length"></div>
+              <div class="query_source_tokens_length">&nbsp;</div>
+              <button class="btn btn-secondary copy_to_clipboard_btn">
+                Copy to Clipboard</button>
+            </div>
+            <div class="analysis_menu">
+              <div class="analysis_sets_configuration">
+                <span>Metric Sets</span>
+                <select class="analysis_set_select" multiple>
+                </select>
+              </div>
+              <div class="analysis_actions">
+                <button class="btn run_analysis_btn">
+                  <span class="btn_text">Run</span> <i class="material-icons-outlined">play_arrow</i>
+                </button>
               </div>
             </div>
-            <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
           </div>
           <div class="analysis_output">
-            <h5 class="category_header analysis_complete">Analysis Results</h5>
             <h5 class="category_header analysis_running">Analysis Running...</h5>
             <div class="analysis_display"></div>
           </div>
@@ -110,7 +115,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-        <div class="test_metric_container"></div>
+          <div class="test_metric_container"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -119,7 +124,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- create prompt wizard -->
   <div class="modal fade" id="promptWizard" tabindex="-1" aria-labelledby="promptWizardLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -127,8 +132,9 @@
         <div class="modal-header">
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="wizard-config-tab" data-bs-toggle="tab" data-bs-target="#wizard-config" type="button"
-                role="tab" aria-controls="wizard-config" aria-selected="true">
+              <button class="nav-link active" id="wizard-config-tab" data-bs-toggle="tab"
+                data-bs-target="#wizard-config" type="button" role="tab" aria-controls="wizard-config"
+                aria-selected="true">
                 Configurations
               </button>
             </li>
@@ -143,7 +149,8 @@
         </div>
         <div class="modal-body">
           <div class="tab-content" id="wizardTabs">
-            <div class="tab-pane fade show active" id="wizard-config" role="tabpanel" aria-labelledby="wizard-config-tab">
+            <div class="tab-pane fade show active" id="wizard-config" role="tabpanel"
+              aria-labelledby="wizard-config-tab">
               <form class="prompt_template_form">
                 <div class="form_group">
                   <label for="prompt_setname_input">Set Name:</label>
@@ -177,7 +184,8 @@
             </div>
             <div class="tab-pane fade" id="wizard-prompt" role="tabpanel" aria-labelledby="wizard-prompt-tab">
               <label for="prompt_template_text">Prompt Output:</label><br>
-              <textarea class="prompt_template_text" style="width: 100%;white-space: pre-wrap;height: 15em;" name="prompt_template_text" required></textarea>
+              <textarea class="prompt_template_text" style="width: 100%;white-space: pre-wrap;height: 15em;"
+                name="prompt_template_text" required></textarea>
             </div>
           </div>
         </div>
