@@ -29,6 +29,8 @@ export default class MainPageApp {
     prompt_setname_input = document.querySelector('.prompt_setname_input') as HTMLInputElement;
     input_datalist_prompt_list = document.querySelector('#input_datalist_prompt_list') as HTMLDataListElement;
     query_source_text = document.querySelector('.query_source_text') as HTMLTextAreaElement;
+    run_analysis_btn = document.querySelector('.run_analysis_btn') as HTMLButtonElement;
+    copy_to_clipboard_btn = document.querySelector('.copy_to_clipboard_btn') as HTMLButtonElement;
     promptsTable: any;
     constructor() {
         this.extCommon.initCommonDom();
@@ -74,7 +76,22 @@ export default class MainPageApp {
                 location.reload();
             }
         });
+
+        this.run_analysis_btn.addEventListener('click', async () => { 
+            let text = this.query_source_text.value;
+            let result: any = await this.extCommon.runAnalysisPrompts(text, 'Manual');
+            let html = '';
+            for (let promptResult of result.results) {
+                html += this.extCommon.getHTMLforPromptResult(promptResult);
+            }
+            this.status_text.innerHTML = html;
+        });
         
+        this.copy_to_clipboard_btn.addEventListener('click', async () => {
+            let text = this.query_source_text.value;
+            navigator.clipboard.writeText(text);
+        });
+
         this.show_prompt_dialouge.addEventListener('click', async () => {
             this.prompt_setname_input.value = '';
             this.prompt_id_input.value = '';
@@ -303,11 +320,12 @@ export default class MainPageApp {
         let historyHtml = '';
         for (let i = 0; i < history.length; i++) {
             let entry = history[i];
+            console.log('entry', entry);
             let historyPrompt = "";
             try {
-                let result = entry.result;
-                if (!result) result = entry.results[0];
-                historyPrompt = `${result.prompt.id}: ${this.truncateText(result.prompt.prompt, 50)}`;
+                let resultHistory = entry.result;
+                if (!resultHistory) resultHistory = entry.results[0];
+                historyPrompt = `${resultHistory.prompt.id}: ${this.truncateText(resultHistory.prompt.prompt, 50)}`;
             } catch (e) {
                 historyPrompt = "Error loading prompt";
                 console.error(e);
@@ -326,12 +344,18 @@ export default class MainPageApp {
                 </div>
                 <div class="history_results">
           `;
+            let usageCreditTotal = 0;
+            entry.results.forEach((result: any) => {
+                usageCreditTotal += result.result.promptResult.ticketResults.usage_credits;
+            });
+
             for (let result of entry.results) {
                 entryHtml += this.extCommon.getHTMLforPromptResult(result);
             }
             entryHtml += `
                 </div>
               </div>
+              <div class="token_usage_total_display">Total Usage Credits: ${usageCreditTotal}</div>
             </div>
             <hr class="history_separator">
           `;

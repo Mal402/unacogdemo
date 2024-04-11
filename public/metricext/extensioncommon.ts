@@ -16,7 +16,7 @@ export class AnalyzerExtensionCommon {
     this.chrome = chrome;
 
   }
-  async sendPromptToLLM(message: string) {
+  async processPromptUsingUnacogAPI(message: string): Promise<any> {
     let apiToken = await this.chrome.storage.local.get('apiToken');
     apiToken = apiToken.apiToken || '';
     let sessionId = await this.chrome.storage.local.get('sessionId');
@@ -38,21 +38,30 @@ export class AnalyzerExtensionCommon {
       body: JSON.stringify(body),
     });
     const promptResult = await fetchResults.json();
+    let resultMessage = 'unknown error';
+    let error = true;
     if (!promptResult.success) {
       console.log("error", promptResult);
-      return promptResult.errorMessage;
+      resultMessage = promptResult.errorMessage;
     } else {
       console.log(promptResult);
     }
     if (promptResult.assist.error) {
-      return promptResult.assist.error.message;
+      resultMessage = promptResult.assist.error.message;
     } else if (promptResult.assist.assist.error) {
-      return promptResult.assist.assist.error.message;
+      resultMessage = promptResult.assist.assist.error.message;
     } else {
-      return promptResult.assist.assist.choices["0"].message.content;
+      resultMessage = promptResult.assist.assist.choices["0"].message.content;
+      error = false;
+    }
+    return {
+      resultMessage,
+      originalPrompt: message,
+      promptResult,
+      error,
     }
   }
-  async sendPromptForMetric(promptTemplate: string, query:string) {
+  async sendPromptForMetric(promptTemplate: string, query: string) {
     try {
       let result = Mustache.render(promptTemplate, { query });
       return result;
@@ -69,7 +78,7 @@ export class AnalyzerExtensionCommon {
       "Message",
       "Summary",
     ];
-    const promises:any[] = [];
+    const promises: any[] = [];
     defaultPromptList.forEach((url) => {
       promises.push((async (url) => {
         let promptQuery = await fetch("/defaults/" + url + ".json");
@@ -85,7 +94,7 @@ export class AnalyzerExtensionCommon {
     const defaultPrompts = await Promise.all(promises);
     const resultPrompts: any[] = [];
     defaultPrompts.forEach((promptList, index) => {
-      promptList.forEach((prompt:any) => {
+      promptList.forEach((prompt: any) => {
         resultPrompts.push(prompt);
       });
     });
@@ -101,7 +110,7 @@ export class AnalyzerExtensionCommon {
   }
   async getAnalysisSetNames() {
     let allPrompts = await this.getAnalysisPrompts();
-    let analysisSets:any = {};
+    let analysisSets: any = {};
     allPrompts.forEach((prompt) => {
       if (!analysisSets[prompt.setName]) {
         analysisSets[prompt.setName] = [];
@@ -124,23 +133,23 @@ export class AnalyzerExtensionCommon {
     });
 
     let prompts: any = [];
-    let analysisPrompts:any = await this.getAnalysisPrompts();
-    let selectedAnalysisSets:any = await this.chrome.storage.local.get("selectedAnalysisSets");
+    let analysisPrompts: any = await this.getAnalysisPrompts();
+    let selectedAnalysisSets: any = await this.chrome.storage.local.get("selectedAnalysisSets");
     if (promptToUse) {
       prompts = [promptToUse];
     } else if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
       selectedAnalysisSets = selectedAnalysisSets.selectedAnalysisSets;
       for (let set of selectedAnalysisSets) {
         let localPrompts = analysisPrompts.filter((prompt: any) => prompt.setName === set);
-        localPrompts.forEach((prompt:any) => {
+        localPrompts.forEach((prompt: any) => {
           prompts.push(prompt);
         });
       }
     }
 
-    const runPrompt = async (prompt: any, text:string) => {
+    const runPrompt = async (prompt: any, text: string) => {
       let fullPrompt = await this.sendPromptForMetric(prompt.prompt, text);
-      let result = await this.sendPromptToLLM(fullPrompt);
+      let result = await this.processPromptUsingUnacogAPI(fullPrompt);
       return {
         prompt,
         result,
@@ -170,19 +179,21 @@ export class AnalyzerExtensionCommon {
     });
     return historyEntry;
   }
-  getHTMLforPromptResult(result:any) {
+  getHTMLforPromptResult(result: any) {
+    const usageText = `<span class="token_usage_span">Token Usage: ${result.result.promptResult.ticketResults.usage_credits}</span>`;
     if (result.prompt.prompttype === 'text') {
       return `
           <div class="prompt_result text_result">
             <div class="prompt_header">
               <span class="prompt_id">${result.prompt.id}</span>
             </div>
-            <div class="result_content">${result.result}</div>
+            <div class="result_content">${result.result.resultMessage}</div>
+            <div class="result_usage">${usageText}</div>
           </div>
         `;
     } else if (result.prompt.prompttype === 'metric') {
       try {
-        let json = JSON.parse(result.result);
+        let json = JSON.parse(result.result.resultMessage);
         let metric = json.contentRating;
         return `
             <div class="prompt_result metric_result">
@@ -191,6 +202,7 @@ export class AnalyzerExtensionCommon {
               <div class="metric_bar">
                 <div class="metric_fill" style="width: ${metric * 10}%;"></div>
               </div>
+              <div class="result_usage">${usageText}</div>
             </div>
           `;
       } catch (error) {
@@ -199,16 +211,16 @@ export class AnalyzerExtensionCommon {
               <div class="prompt_header">
                 <span class="prompt_id">${result.prompt.id}</span>
               </div>
-              <pre class="result_content">${result.result}</pre>
+              <pre class="result_content">${result.result.resultMessage}</pre>
             </div>
           `;
       }
     } else {
       let resultDisplay = '';
       try {
-        resultDisplay = JSON.stringify(JSON.parse(result.result), null, 2);
+        resultDisplay = JSON.stringify(JSON.parse(result.result.resultMessage), null, 2);
       } catch (error) {
-        resultDisplay = result.result;
+        resultDisplay = result.result.resultMessage;
       }
       return `
           <div class="prompt_result json_result">
@@ -216,13 +228,14 @@ export class AnalyzerExtensionCommon {
               <span class="prompt_id">${result.prompt.id}</span>
             </div>
             <pre class="result_content">${resultDisplay}</pre>
+            <div class="result_usage">${usageText}</div>
           </div>
         `;
     }
   }
   async getSummaryPromptForDescription(description: string): Promise<string> {
     const newPromptAgent = `Please help me form a concise set of guidenlines for summarizing content based on the following description: ${description}`;
-    let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
+    let newPromptContent = (await this.processPromptUsingUnacogAPI(newPromptAgent)).resultMessage;
     newPromptContent += `
   This summary should be no longer than 50 or more words. Use the following format to answer:
   Summary: [summary of content]
@@ -234,7 +247,7 @@ export class AnalyzerExtensionCommon {
     const newPromptAgent = `Please help form a concise set guidelines for keywords using following description: ${description}
     `;
 
-    let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
+    let newPromptContent = (await this.processPromptUsingUnacogAPI(newPromptAgent)).resultMessage;
     newPromptContent += `Use the following format to answer, include up to 5: Keywords: [keyword1], [keyword2], [keyword3], ...
     Here is the content to analyze:
     {{query}}
@@ -249,7 +262,7 @@ export class AnalyzerExtensionCommon {
     Rate the following content 0-100, regarding its political content. 
     Guideline for political metrics: Assess political content by evaluating the depth of political commentary, the range of political perspectives presented, and the degree of bias or impartiality. Consider the relevance of political themes to current events, historical context, and societal impact. Examine the effectiveness of conveying political messages, the use of persuasive language or rhetoric, and the potential for inciting debate or controversy. Take into account the diversity of political ideologies and the potential for engaging audiences with different political beliefs.`;
 
-    let newPromptContent = await this.sendPromptToLLM(newPromptAgent);
+    let newPromptContent = (await this.processPromptUsingUnacogAPI(newPromptAgent)).resultMessage;
     newPromptContent += ` 
     Please respond with json and only json in this format:
     {
@@ -264,7 +277,7 @@ export class AnalyzerExtensionCommon {
     let lastResult = await this.chrome.storage.local.get('lastResult');
     let html = '';
     if (lastResult && lastResult.lastResult) {
-      lastResult.lastResult.forEach((result:any) => {
+      lastResult.lastResult.forEach((result: any) => {
         html += this.getHTMLforPromptResult(result);
       });
     }
@@ -311,7 +324,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
       html += `<option value="${setName}">${setName}</option>`;
     });
     let selectedAnalysisSets = await this.chrome.storage.local.get("selectedAnalysisSets");
-    let slimOptions:any[] = [];
+    let slimOptions: any[] = [];
     setNames.forEach((setName) => {
       slimOptions.push({ text: setName, value: setName });
     });
@@ -324,12 +337,12 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     if (selectedAnalysisSets && selectedAnalysisSets.selectedAnalysisSets) {
       this.analysis_set_slimselect.setSelected(selectedAnalysisSets.selectedAnalysisSets);
       let domSelections = this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value');
-      let indexMap:any = {};
-      domSelections.forEach((item: any, index:any) => {
+      let indexMap: any = {};
+      domSelections.forEach((item: any, index: any) => {
         indexMap[item.innerText] = index;
       });
       let setOrder = selectedAnalysisSets.selectedAnalysisSets;
-      setOrder.forEach((setName:any, index:any) => {
+      setOrder.forEach((setName: any, index: any) => {
         let domIndex = indexMap[setName];
         if (domSelections[domIndex]) {
           this.analysis_set_slimselect.render.main.values.appendChild(domSelections[domIndex]);
@@ -358,7 +371,7 @@ this.query_source_tokens_length.innerHTML = tokenCount;
       },
       events: {
         afterChange: async (newVal) => {
-          let selectedAnalysisSets:any[] = [];
+          let selectedAnalysisSets: any[] = [];
           this.analysis_set_slimselect.render.main.values.querySelectorAll('.ss-value')
             .forEach((item: any) => {
               selectedAnalysisSets.push(item.innerText);
@@ -378,47 +391,54 @@ this.query_source_tokens_length.innerHTML = tokenCount;
     });
 
     this.query_source_action = document.querySelector(".query_source_action");
-    this.query_source_action.addEventListener('click', async (e: Event) => {
-      let index = this.query_source_action.selectedIndex;
-      if (index > 0) {
-        if (index === 1) {
-          this.runMetrics();
-        } else if (index === 2) {
-          this.query_source_text.select();
-          navigator.clipboard.writeText(this.query_source_text.value);
-        } else if (index === 3) {
-          function getSelection() {
-            return document.getSelection()?.toString();
-          }
-          let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
-          let tab = tabResults[0];
-          let scrapes = await this.chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: getSelection,
-          });
-          let text = scrapes[0].result;
-          text = text.slice(0, 20000);
-          this.query_source_text.value = text;
-          this.runMetrics();
-        } else if (index === 4) {
-          function getDom() {
-            return document.body.innerText;
-          }
-          let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
-          let tab = tabResults[0];
-          let scrapes = await this.chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: getDom,
-          });
-          let text = scrapes[0].result;
-          text = text.slice(0, 20000);
-          this.query_source_text.value = text;
-          this.runMetrics();
-        }
-      }
-      this.query_source_action.selectedIndex = 0;
-    });
+    if (this.query_source_action) {
+      this.query_source_action.addEventListener('click', async (e: Event) => {
+        let index = this.query_source_action.selectedIndex;
+        this.query_source_action.selectedIndex = 0;
+        await  this.querySourceTextFromDom(index);
+      });
+    }
   }
+
+  async querySourceTextFromDom(index: any) {
+    if (index > 0) {
+      if (index === 1) {
+        this.runMetrics();
+      } else if (index === 2) {
+        this.query_source_text.select();
+        navigator.clipboard.writeText(this.query_source_text.value);
+      } else if (index === 3) {
+        function getSelection() {
+          return document.getSelection()?.toString();
+        }
+        let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
+        let tab = tabResults[0];
+        let scrapes = await this.chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: getSelection,
+        });
+        let text = scrapes[0].result;
+        text = text.slice(0, 20000);
+        this.query_source_text.value = text;
+        this.runMetrics();
+      } else if (index === 4) {
+        function getDom() {
+          return document.body.innerText;
+        }
+        let tabResults = await this.chrome.tabs.query({ active: true, currentWindow: true });
+        let tab = tabResults[0];
+        let scrapes = await this.chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: getDom,
+        });
+        let text = scrapes[0].result;
+        text = text.slice(0, 20000);
+        this.query_source_text.value = text;
+        this.runMetrics();
+      }
+    }
+  }
+
   async runMetrics() {
     let text = this.query_source_text.value;
     await this.runAnalysisPrompts(text, 'user input');

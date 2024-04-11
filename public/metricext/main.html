@@ -67,31 +67,32 @@
     </div>
     <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
-        <div class="output_container">
-          <h5 class="category_header analysis_complete">Analysis Results</h5>
-          <h5 class="category_header analysis_running">Analysis Running...</h5>
-          <div class="analysis_display"></div>
-        </div>
-        <div class="analysis_sets_configuration">
-          <select class="analysis_set_select" multiple>
-          </select>
-        </div>
-        <div class="textarea_container">
-          <h5 class="category_header">Text to Analyze</h5>
-          <div class="query_source_controls">
-            <div class="query_text_description">
-              <div class="query_source_text_length"></div>
-              <div class="query_source_tokens_length">&nbsp;</div>
-            </div>
-            <select class="query_source_action">
-              <option>Action</option>
-              <option>Analyze</option>
-              <option>Copy to Clipboard</option>
-              <option>Analyze Selection</option>
-              <option>Analyze Page</option>
+        <div class="analysis_options">
+          <div class="analysis_sets_configuration">
+            <select class="analysis_set_select" multiple>
             </select>
           </div>
-          <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
+          <div class="analysis_actions">
+            <button class="btn btn-primary run_analysis_btn">Run Analysis</button>
+            <button class="btn btn-secondary copy_to_clipboard_btn">Copy to Clipboard</button>
+          </div>
+        </div>
+        <div class="analysis_content">
+          <div class="analysis_input">
+            <h5 class="category_header">Text to Analyze</h5>
+            <div class="query_source_controls">
+              <div class="query_text_description">
+                <div class="query_source_text_length"></div>
+                <div class="query_source_tokens_length">&nbsp;</div>
+              </div>
+            </div>
+            <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
+          </div>
+          <div class="analysis_output">
+            <h5 class="category_header analysis_complete">Analysis Results</h5>
+            <h5 class="category_header analysis_running">Analysis Running...</h5>
+            <div class="analysis_display"></div>
+          </div>
         </div>
       </div>
     </div>

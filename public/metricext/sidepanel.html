@@ -9,7 +9,69 @@
   <script src="models/index.js"></script>
   </link>
 </head>
+<style>
+  .analysis_container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-medium);
+}
 
+.output_container {
+  flex: 1;
+  margin-bottom: var(--spacing-large);
+  overflow: auto;
+}
+
+.analysis_display {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+
+.analysis_sets_configuration {
+  margin-bottom: var(--spacing-medium);
+}
+
+.textarea_container {
+  margin-top: auto;
+}
+
+.query_source_controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-small);
+}
+
+.query_text_description {
+  display: flex;
+}
+
+.query_source_text_length,
+.query_source_tokens_length {
+  margin-right: var(--spacing-medium);
+}
+
+.query_source_action {
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.query_source_text {
+  width: 100%;
+  min-height: 150px;
+  padding: var(--spacing-medium);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  resize: vertical;
+}
+</style>
 <body>
   <div class="no_session_key" style="display: none;">
     <div class="message">
