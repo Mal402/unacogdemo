@@ -11,67 +11,86 @@
 </head>
 <style>
   .analysis_container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: var(--spacing-medium);
-}
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--spacing-medium);
+  }
 
-.output_container {
-  flex: 1;
-  margin-bottom: var(--spacing-large);
-  overflow: auto;
-}
+  .output_container {
+    flex: 1;
+    margin-bottom: var(--spacing-large);
+    overflow: auto;
+  }
 
-.analysis_display {
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  line-height: 1.5;
-}
+  .analysis_display {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+  }
 
-.analysis_sets_configuration {
-  margin-bottom: var(--spacing-medium);
-}
+  .analysis_sets_configuration {
+    margin-bottom: var(--spacing-medium);
+  }
 
-.textarea_container {
-  margin-top: auto;
-}
+  .textarea_container {
+    margin-top: auto;
+  }
 
-.query_source_controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-small);
-}
+  .query_source_controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-small);
+  }
 
-.query_text_description {
-  display: flex;
-}
+  .query_text_description {
+    display: flex;
+    position: relative;
+    top: -6px;
+    right: 0;
+  }
 
-.query_source_text_length,
-.query_source_tokens_length {
-  margin-right: var(--spacing-medium);
-}
+  .query_source_text_length,
+  .query_source_tokens_length {
+    margin-right: var(--spacing-medium);
+  }
 
-.query_source_action {
-  padding: var(--spacing-small) var(--spacing-medium);
-  font-size: var(--font-size-base);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-}
+  .query_source_action {
+    padding: var(--spacing-small) var(--spacing-medium);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+  }
 
-.query_source_text {
-  width: 100%;
-  min-height: 150px;
-  padding: var(--spacing-medium);
-  font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  line-height: 1.5;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  resize: vertical;
+  .query_source_text {
+    width: 100%;
+    min-height: 150px;
+    padding: var(--spacing-medium);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    resize: vertical;
+  }
+
+  .analysis_sets_configuration {
+    display: block;
+    margin-top: var(--spacing-medium);
+    flex: 0;
+  }
+  .analysis_container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--spacing-medium);
+  }
+  .query_source_text {
+    height: 20vh;
 }
 </style>
+
 <body>
   <div class="no_session_key" style="display: none;">
     <div class="message">
@@ -80,44 +99,42 @@
         started.</span>
     </div>
   </div>
-  <div class="">
-    <div class="analysis_container">
-      <div class="analysis_header">
-        <h5 class="category_header">Text to Analyze</h5>
-        <span class="status_text">Running...</span>
-        <button class="show_main_page_btn btn">
-          <i class="material-icons-outlined">home</i>
-        </button>
-      </div>
-      <div class="textarea_container">
-        <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
-        <div class="query_source_controls">
-          <div class="query_text_description">
-            <div class="query_source_text_length"></div>
-            <div class="query_source_tokens_length">&nbsp;</div>
-          </div>
-          <br>
-          <br>
-          <select class="query_source_action">
-            <option>Action</option>
-            <option>Analyze</option>
-            <option>Copy to Clipboard</option>
-            <option>Analyze Selection</option>
-            <option>Analyze Page</option>
-          </select>
+
+  <div class="analysis_container">
+    <div class="analysis_header">
+      <h5 class="category_header">AnalFeed</h5>
+      <span class="status_text">Running...</span>
+      <button class="show_main_page_btn btn">
+        <i class="material-icons-outlined">home</i>
+      </button>
+    </div>
+    <div class="analysis_sets_configuration">
+      <label class="positioned_label">Select Metrics for analysis</label>
+      <select class="analysis_set_select" multiple>
+      </select>
+    </div>
+    <div class="textarea_container">
+      <textarea class="query_source_text" placeholder="Enter text for analysis..."></textarea>
+      <div class="query_source_controls">
+        <div class="query_text_description">
+          <div class="query_source_text_length"></div>
+          <div class="query_source_tokens_length">&nbsp;</div>
         </div>
-      </div>
-      <div class="analysis_sets_configuration">
-        <select class="analysis_set_select" multiple>
+        <br>
+        <br>
+        <select class="query_source_action">
+          <option>Action</option>
+          <option>Analyze</option>
+          <option>Copy to Clipboard</option>
+          <option>Analyze Selection</option>
+          <option>Analyze Page</option>
         </select>
       </div>
-      <div>
-        <h5 class="category_header analysis_complete">Analysis Results</h5>
-        <h5 class="category_header analysis_running">Analysis Running...</h5>
-        <div class="output_container">
-          <div class="analysis_display"></div>
-        </div>
-      </div>
+    </div>
+
+    <div class="analysis_output">
+      <div class="analysis_display"></div>
+      <h5 class="category_header analysis_running">Analysis Running...</h5>
     </div>
   </div>
 

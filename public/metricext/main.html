@@ -7,8 +7,8 @@
   <script src="lib/bootstrap.bundle.min.js"></script>
   <link href="lib/tabulator.css" rel="stylesheet">
   <link href="lib/tabsimple.css" rel="stylesheet">
-  <link href="main.css" rel="stylesheet">
   <link href="lib/slimselect.css" rel="stylesheet">
+  <link href="main.css" rel="stylesheet">
   <script src="models/index.js"></script>
   </link>
 </head>
@@ -68,30 +68,30 @@
     </div>
     <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
       <div class="analysis_container">
+        <div class="analysis_menu">
+          <div class="analysis_sets_configuration">
+            <label class="positioned_label">Select Metrics for analysis</label>
+            <select class="analysis_set_select"  multiple>
+            </select>
+          </div>
+          <div class="analysis_actions">
+            <button class="btn copy_to_clipboard_btn">
+              <span class="btn_text">Copy</span> <i class="material-icons-outlined">content_paste</i></button>
+            <button class="btn run_analysis_btn">
+              <span class="btn_text">Run</span> <i class="material-icons-outlined">play_arrow</i>
+            </button>
+          </div>
+        </div>
         <div class="analysis_content">
           <div class="analysis_input">
             <div class="form-floating">
               <label for="floatingQueryTextarea">Your Text</label>
               <textarea class="query_source_text" id="floatingQueryTextarea"
-                placeholder="Analyze text for summary, keywords, or score for your use case..."></textarea>
-            </div>
-            <div class="query_text_description">
-              <div class="query_source_text_length"></div>
-              <div class="query_source_tokens_length">&nbsp;</div>
-              <button class="btn btn-secondary copy_to_clipboard_btn">
-                Copy to Clipboard</button>
-            </div>
-            <div class="analysis_menu">
-              <div class="analysis_sets_configuration">
-                <span>Metric Sets</span>
-                <select class="analysis_set_select" multiple>
-                </select>
-              </div>
-              <div class="analysis_actions">
-                <button class="btn run_analysis_btn">
-                  <span class="btn_text">Run</span> <i class="material-icons-outlined">play_arrow</i>
-                </button>
-              </div>
+                placeholder="Analyze text to return a subjective rating, keywords, summary..."></textarea>
+              <div class="query_text_description">
+                  <div class="query_source_text_length"></div>
+                  <div class="query_source_tokens_length">&nbsp;</div>
+                </div>
             </div>
           </div>
           <div class="analysis_output">
