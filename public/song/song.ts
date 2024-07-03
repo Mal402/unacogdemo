@@ -49,7 +49,7 @@ export class SongSearchApp {
     songChunkMeta = {
         apiToken: "96c1f684-5b41-4d44-a94a-802474993b98",
         sessionId: "n585l6hdn51m",
-        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fsongfull%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
         topK: 15,
     }
     stanzaChunkMeta = {
