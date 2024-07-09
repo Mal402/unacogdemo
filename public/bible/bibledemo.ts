@@ -20,12 +20,12 @@ export class BibleDemoApp {
   prompt_template_select_preset = document.body.querySelector(".prompt_template_select_preset") as HTMLSelectElement;
   reset_template_options_button = document.body.querySelector(".reset_template_options_button") as HTMLButtonElement;
   bibleData: any[] = [];
-  byVerseAPIToken = "9b2b6dcc-900d-4051-9947-a42830853d86";
-  byVerseSessionId = "lh3a4fui9n7j";
-  byChapterToken = "a1316745-313f-4bdf-b073-3705bf11a0e7";
-  byChapterSessionId = "vkuyk8lg74nq";
-  promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
-  queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
+  byVerseAPIToken = "e1fb3fa9-6bd4-43a1-874f-ed2be00cc619";
+  byVerseSessionId = "fj9r703hi53q";
+  byChapterToken = "5a098b7a-ad8a-4127-aba6-59c5aad1e447";
+  byChapterSessionId = "un74d9y24fk5";
+  promptUrl = `https://us-central1-unacog-68ebf.cloudfunctions.net/lobbyApi/session/external/message`;
+  queryUrl = `https://us-central1-unacog-68ebf.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
   loaded = false;
 
   constructor() {

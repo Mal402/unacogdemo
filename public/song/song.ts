@@ -47,27 +47,27 @@ export class SongSearchApp {
     lastSearchMatches: any[] = [];
     playlistIndex = -1;
     songChunkMeta = {
-        apiToken: "96c1f684-5b41-4d44-a94a-802474993b98",
-        sessionId: "n585l6hdn51m",
-        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fsongfull%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        apiToken: "cbaf6905-186e-4bce-94d0-b173db3939e1",
+        sessionId: "6kahpsh91wjr",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fsongfull2%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
         topK: 15,
     }
     stanzaChunkMeta = {
-        apiToken: "b0a5f137-b5ff-4b78-8074-79a3f775a212",
-        sessionId: "prg66uadseer",
-        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-4-1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        apiToken: "9191eb4e-6cb3-4ba4-b382-dd23198cf244",
+        sessionId: "7t2wu4p1hus9",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fstanza2%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
         topK: 15,
     }
     verseChunkMeta = {
-        apiToken: "6b71e856-1dee-4f9d-bd53-64b6adafc592",
-        sessionId: "bsec9cwrpl72",
-        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v6-verse%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        apiToken: "509482ee-021f-4dab-b11e-5cb6e9628d0b",
+        sessionId: "p9bjkalb8mvj",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fverse%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
         topK: 15,
     }
     doubleStanzaChunkMeta = {
-        apiToken: "3b09a640-7f63-4776-becc-7deab9b9507c",
-        sessionId: "ux4odeb8jqu7",
-        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fsong-demo-v3-double-stanze%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
+        apiToken: "a1da38e5-b8cd-433a-a264-d290297ff4db",
+        sessionId: "jb6lr0uwnl3c",
+        lookupPath: "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Flargestanza2%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media",
         topK: 15,
     }
     metricPrompts: any[] = [];

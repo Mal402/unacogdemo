@@ -26,9 +26,9 @@ export class CovidDemoApp {
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
-    chunkNormalAPIToken = "338ddcc0-e083-4057-a6bc-6ceecbd98cf6";
-    chunkNormalSessionId = "4fg8acknmo5u";
-    chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-sizechunk-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
+    chunkNormalAPIToken = "08a2c3b3-be42-4fd9-97e2-bb8f22fab447";
+    chunkNormalSessionId = "hctbp7oratve";
+    chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fcoviddocs%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     chunkNormaltopK = 25;
     chunkNormalincludeK = 5;
 
