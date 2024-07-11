@@ -26,26 +26,20 @@ export class CovidDemoApp {
     lookupData: any = {};
     lookedUpIds: any = {};
     semanticResults: any[] = [];
-    chunkNormalAPIToken = "08a2c3b3-be42-4fd9-97e2-bb8f22fab447";
-    chunkNormalSessionId = "hctbp7oratve";
+    chunkNormalAPIToken = "012be1c3-94c8-4593-bf9a-9b7711d734cb";
+    chunkNormalSessionId = "tuoakebhqb08";
     chunkNormalLookupPath = "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fcoviddocs%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     chunkNormaltopK = 25;
     chunkNormalincludeK = 5;
 
-    chunkRecursiveAPIToken = "12781bbc-5d71-4359-831b-377e06d4a27b";
-    chunkRecursiveSessionId = "cyf1pd1l4wpc";
-    chunkRecursiveLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-list-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
+    chunkRecursiveAPIToken = "56f7323b-9abe-4b96-afed-1f4c0153d507";
+    chunkRecursiveSessionId = "clxafhh1nwt3";
+    chunkRecursiveLookupPath = "https://firebasestorage.googleapis.com/v0/b/unacog-68ebf.appspot.com/o/projectLookups%2FpDIh5p9CdXe1j5SN6deCqVrCsQw2%2Fcovidrecursive1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
     chunkRecursivetopK = 25;
     chunkRecursiveincludeK = 5;
 
-    sentenceChunkAPIToken = "1d4fffc7-5257-4ccd-bba3-6e96fcfd4722";
-    sentenceChunkSessionId = "1gcrc37j1miq";
-    sentenceChunkLookupPath = "https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FHlm0AZ9mUCeWrMF6hI7SueVPbrq1%2Fcovid-sentencechunk-v3%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media";
-    sentenceChunktopK = 15;
-    sentenceChunkincludeK = 3;
-
-    promptUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/message`;
-    queryUrl = `https://us-central1-promptplusai.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
+    promptUrl = `https://us-central1-unacog-68ebf.cloudfunctions.net/lobbyApi/session/external/message`;
+    queryUrl = `https://us-central1-unacog-68ebf.cloudfunctions.net/lobbyApi/session/external/vectorquery`;
     loaded = false;
     lookUpKeys: string[] = [];
     verboseDebugging = false;
@@ -87,8 +81,6 @@ export class CovidDemoApp {
         let chunkType = localStorage.getItem("covid_datachunk_source_size");
         if (chunkType === "chunkRecursive") {
             this.datachunking_details.innerHTML = "Max Size: 300 tokens / 20 overlap";
-        } else if (chunkType === "sentenceChunk") {
-            this.datachunking_details.innerHTML = "15 sentence blocks with 3 overlap";
         } else {
             this.datachunking_details.innerHTML = "Sentence blocks sized 300 tokens";
         }
