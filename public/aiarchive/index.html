@@ -60,6 +60,7 @@
           <li class="dropdown-item active">AI Research Papers</li>
           <li><a class="dropdown-item" href="/covid">Covid Research Papers</a></li>
           <li><a class="dropdown-item" href="/bible">Semantic Bible Search</a></li>
+          <li><a class="dropdown-item" href="/song">Music Search</a></li>
           <li>
             <hr>
           </li>
@@ -85,11 +86,15 @@
         <div></div>
         <div class="initial_user_message" style="flex: 1;">
           <div class="d-flex flex-column justify-content-between" style="height: 100%;">
-            <div><span class="onboarding_text">Enter a prompt to begin.</span>
+            <div>
               <br><br>Powered by 2500+ research papers (1.5 million vectors)
               <br><br>
               <a href="template" role="button" data-bs-toggle="modal" data-bs-target="#templateModal">Configure</a>
               prompts and templates
+            </div>
+            <div class="alert alert-danger mt-auto mb-auto" role="alert">
+              <h4 class="alert-heading">Important Notice</h4>
+              <p>Sorry readers - this demo is no longer live. You can still explore our other demos by visiting the navigation menu above.</p>
             </div>
             <div class="mt-auto clear-fix text-muted" style="font-size: .6em;">
               <span class="float-start">Article source: <a href="https://arxiv.org/">arxiv.org</a></span>
@@ -103,10 +108,10 @@
       <div class="textarea-wrapper" style="position: relative; width: 100%;padding: 4px;">
         <textarea class="analyze_prompt_textarea form-control me-1 border border-secondary"
           style="padding-right: 70px;height: 5em;resize: none;border-color: rgb(100,100,255);"
-          placeholder="Prompt ai research papers..." type="text"></textarea>
+          placeholder="Prompt ai research papers..." type="text" disabled></textarea>
         <button class="analyze_prompt_button btn btn-primary p-2" type="submit"
-          style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;">
-          <span class="material-icons-outlined mt-1">
+          style="position: absolute; right: 12px; top: 24px;height: 50px;width: 42px;" disabled>
+          <span class="material-icons-outlined mt-1" >
             send
           </span>
         </button>

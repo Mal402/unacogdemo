@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -49,11 +49,66 @@
       window.appInstance = new mod.MetricHelperApp();
     });
   </script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .container-xl {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .nav-tabs {
+      border-bottom: 2px solid #dee2e6;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      color: #495057;
+      font-weight: 500;
+    }
+    .nav-tabs .nav-link.active {
+      color: #007bff;
+      border-bottom: 2px solid #007bff;
+    }
+    .tab-content {
+      padding-top: 20px;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+    .form-control {
+      margin-bottom: 15px;
+    }
+    .alert-info {
+      background-color: #cce5ff;
+      border-color: #b8daff;
+      color: #004085;
+    }
+    .menu_nav {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+    .next_button {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  </style>
 </head>
 
-<body class="initial">
+<body>
   <div class="container-xl">
-    <ul class="nav nav-tabs mt-2">
+    <h1 class="mb-4">Metric Helper</h1>
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
           role="tab" aria-selected="true">Instructions</a>
@@ -75,80 +130,71 @@
           role="tab" aria-selected="false">Console</a>
       </li>
     </ul>
-    <div class="py-3">
-      <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
-          tabindex="0">
-          INSTRUCTionS UNCLEAR I SPENT $2000 on LLM
-        </div>
-        <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab" tabindex="0">
-          <div class="d-flex flex-column justify-content-between">
-            <div class="form-control">
-              <label class="form-label">session api token</label>
-              <input type="text" class="session_api_token form-control"
-                value="cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16"><br>
-              <label class="form-label">session id</label>
-              <input type="text" class="session_id form-control" value="8umxl4rdt32x"><br>
-              <label class="form-label">session lookup path</label>
-              <input type="text" class="session_lookup_path form-control"
-                value="https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media"><br>
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="nav-metric-prompts" role="tabpanel" aria-labelledby="nav-metric-prompts-tab"
-          tabindex="0">
-          <button class="btn btn-secondary prompt_upload_button mb-2">
-            <i class="material-icons">upload_file</i>
-            Upload prompt list
-          </button>
-          <input class="import_prompt_list_file" style="display:none;" type="file" accept=".json,.csv">
-          &nbsp; &nbsp;
-          <div class="prompt_list_preview">upload file to start</div>
-          <div class="prompt_table_preview"></div>
-        </div>
-        <div class="tab-pane fade" id="nav-text-source" role="tabpanel" aria-labelledby="nav-text-source-tab"
-          tabindex="0">
-          <button class="btn btn-secondary id_upload_button mb-2">
-            <i class="material-icons">upload_file</i>
-            Upload id list
-          </button>
-          <input class="import_id_list_file" style="display:none;" type="file" accept=".json,.csv">
-          &nbsp; &nbsp;
-          <div class="id_list_preview">id list required</div>
-          <div class="document_table_preview"></div>
-        </div>
-        <div class="tab-pane fade" id="nav-console" role="tabpanel" aria-labelledby="nav-console-tab" tabindex="0">
-          <button class="btn btn-primary run_prompts_button">Run
-            prompts</button>
-            <button class="btn btn-primary download_results_button">Download</button>
-              
-          <div class="prompt_log_console mb-3"></div>
-          <div class="console_table_preview"></div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
+        tabindex="0">
+        <h2 class="mb-3">Instructions</h2>
+        <p class="lead">
+          This page is used to run subjective metrics on a list of documents using a list of prompts. <br><br>
+          Bulk analysis is useful for many things, including comparing the performance of different prompts 
+          or creating useful evaluation metrics for data.  
+        </p>
+        <div class="alert alert-info">
+          <strong>Important Notice:</strong> This page is no longer supported. We recommend accessing Klyde through the Google Chrome Store to install our extension.
         </div>
       </div>
-      <div class="menu_nav" style="line-height: 2em;">
-        <button type="button" class="btn btn-lg btn-primary next_button">Next</button>
+      <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab" tabindex="0">
+        <h2 class="mb-3">Configuration</h2>
+        <form>
+          <div class="mb-3">
+            <label for="session_api_token" class="form-label">Session API Token</label>
+            <input type="text" class="form-control session_api_token" id="session_api_token" value="cfbde57f-a4e6-4eb9-aea4-36d5fbbdad16">
+          </div>
+          <div class="mb-3">
+            <label for="session_id" class="form-label">Session ID</label>
+            <input type="text" class="form-control session_id" id="session_id" value="8umxl4rdt32x">
+          </div>
+          <div class="mb-3">
+            <label for="session_lookup_path" class="form-label">Session Lookup Path</label>
+            <input type="text" class="form-control session_lookup_path" id="session_lookup_path" value="https://firebasestorage.googleapis.com/v0/b/promptplusai.appspot.com/o/projectLookups%2FiMY1WwR6NkVnNkLId5bnKT59Np42%2Fsong-demo-v1%2FbyDocument%2FDOC_ID_URIENCODED.json?alt=media">
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane fade" id="nav-metric-prompts" role="tabpanel" aria-labelledby="nav-metric-prompts-tab"
+        tabindex="0">
+        <button class="btn btn-secondary prompt_upload_button mb-2">
+          <i class="material-icons">upload_file</i>
+          Upload prompt list
+        </button>
+        <input class="import_prompt_list_file" style="display:none;" type="file" accept=".json,.csv">
+        &nbsp; &nbsp;
+        <div class="prompt_list_preview">upload file to start</div>
+        <div class="prompt_table_preview"></div>
+      </div>
+      <div class="tab-pane fade" id="nav-text-source" role="tabpanel" aria-labelledby="nav-text-source-tab"
+        tabindex="0">
+        <button class="btn btn-secondary id_upload_button mb-2">
+          <i class="material-icons">upload_file</i>
+          Upload id list
+        </button>
+        <input class="import_id_list_file" style="display:none;" type="file" accept=".json,.csv">
+        &nbsp; &nbsp;
+        <div class="id_list_preview">id list required</div>
+        <div class="document_table_preview"></div>
+      </div>
+      <div class="tab-pane fade" id="nav-console" role="tabpanel" aria-labelledby="nav-console-tab" tabindex="0">
+        <button class="btn btn-primary run_prompts_button">Run
+          prompts</button>
+          <button class="btn btn-primary download_results_button">Download</button>
+            
+        <div class="prompt_log_console mb-3"></div>
+        <div class="console_table_preview"></div>
       </div>
     </div>
   </div>
-  <style>
-    html,
-    body {
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    .menu_nav {
-      position: absolute;
-      bottom: 20px;
-      left: 85%;
-      transform: translateX(-50%);
-    }
-    .btn-lg.next_button {
-      font-size: 24px;
-      padding: 20px 40px;
-    }
-  </style>
+  <div class="menu_nav">
+    <button type="button" class="btn btn-primary next_button">Next</button>
+  </div>
 </body>
 
 </html>
